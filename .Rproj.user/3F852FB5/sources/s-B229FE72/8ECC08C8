@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1540337370349.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "8ECC08C8",
+    "lastKnownWriteTime" : 1540338189,
+    "last_content_update" : 1540338189926,
+    "path" : "/Volumes/AML_RNA/quaglieri.a/R_packages/lineplots/R/import_blast.R",
+    "project_path" : "R/import_blast.R",
+    "properties" : {
+        "cursorPosition" : "0,0",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -1,0 +1,89 @@
+#import the relevant data and make the plots
+
+#source the functions
+source('/stornext/Genomics/data/AML_RNA/venetoclax_trial/scripts/06-lineplots/importData.R')
+source('/stornext/Genomics/data/AML_RNA/venetoclax_trial/scripts/06-lineplots/plot.R')
+
+
+#im using this for some plotting functions...
+library(devtools)
+#install_github('ChristofferFlensburg/superFreq')
+library(superFreq)
+
+#import genes of interest (are the paths different from the unixes and milton? Do these paths work for you anna?)
+genes <- readRDS("/stornext/Genomics/data/AML_RNA/venetoclax_trial/scripts/04-Mutations/../05-batches123_exploratory/05-batches123_exploratory_data/Venetoclax_batch123_dgeList.rds")
+rownames(genes) <- genes$genes$Symbol
+apotosis_genes_from_Ian <- read_excel("/stornext/Genomics/data/AML_RNA/venetoclax_trial/data_infos/apotosis_genes_from_Ian.xlsx")
+studyGenes <- as.character(apotosis_genes_from_Ian$Symbol)
+
+#import the indels
+indels <- readRDS('data/combined_indels_vardict_venetoclax.rds')
+
+#indels = indels %>%
+#  separate(SampleName,into=c("OurPID","Time","Status","Repl.within","batch","Outcome"),remove = FALSE,sep="[.]")
+#metaData = importSampleMetaData('/stornext/Genomics/data/AML_RNA/venetoclax_trial/superFreq/metaData.tsv')
+#indels$OurPID = metaData[gsub('^P', 'D', indels$SampleName),]$INDIVIDUAL #translate to new sample names
+
+
+#import clinical meta data
+clinicalPath = '/stornext/Genomics/data/AML_RNA/venetoclax_trial/data_infos/master_spreadsheet/master_Venetoclax_batch123.csv'
+clinicalData <- read_csv(clinicalPath) %>%
+  dplyr::select(OurSampleName, OurPID, batch,Time,Status,Outcome,AgeDiagnosis,Gender,WBC,Blast,THERAPY) %>%
+  dplyr::rename(SampleName = OurSampleName)
+
+#import superfreq mutations
+load('/stornext/Genomics/data/AML_RNA/venetoclax_trial/superFreq/R/mutationSummary.Rdata')
+
+#plot directory
+plotDir = '/stornext/Genomics/data/AML_RNA/venetoclax_trial/plots'
+if ( !dir.exists(plotDir) ) dir.create(plotDir)
+
+#directory to save processed data to, if needed
+saveDir = '/stornext/Genomics/data/AML_RNA/venetoclax_trial/Rdata'
+if ( !dir.exists(saveDir) ) dir.create(saveDir)
+
+
+#loop over patients
+patientIDs = paste0('D', 1:40)
+mutationList = list()
+pdf('/stornext/Genomics/data/AML_RNA/venetoclax_trial/plots/linePlots.pdf', width=10)
+for ( patient in patientIDs ) {
+  cat('Plotting line plot for ', patient, '.\n')
+
+  #set up subdirectory for patient
+  patientPlotDir = paste0(plotDir, '/', patient)
+  if ( !dir.exists(patientPlotDir) ) dir.create(patientPlotDir)
+  patientSaveDir = paste0(saveDir, '/', patient)
+  if ( !dir.exists(patientSaveDir) ) dir.create(patientSaveDir)
+  
+  #import mutations for the patient
+  indels_to_plot <- import_indels_for_lineplot(indels = indels,
+                                               patientID = patient,
+                                               minQual = 20,
+                                               minLength = 2,
+                                               clinicalPath = clinicalPath,
+                                               studyGenes = studyGenes,
+                                               outDir = patientSaveDir)
+
+  blasts_to_plot = import_blast_for_lineplot(clinicalData=clinicalData, patientID=patient)
+  #blast content is used for meta data, so just skip ahead if it fails
+  if ( class(blasts_to_plot) == 'NULL' ) next
+
+  snvs_to_plot = import_snvs_for_lineplot(mutationSummary=mutationSummary, patientID=patient)
+  cnas_to_plot = import_cnas_for_lineplot(mutationSummary=mutationSummary, patientID=patient)
+  clones_to_plot = import_clones_for_lineplot(patientID=patient)
+  
+  #plot line plot to some suitable place.
+  plotFile = paste0(patientPlotDir, '/', 'lineplot.pdf')
+  #pdf(plotFile, width=10)
+  mutationList[[patient]] =
+    plot_mutation_lines(blasts_to_plot=blasts_to_plot,
+                        indels_to_plot=indels_to_plot,
+                        snvs_to_plot=snvs_to_plot,
+                        cnas_to_plot=cnas_to_plot,
+                        clones_to_plot=clones_to_plot)
+  #dev.off()
+  
+}
+dev.off()
+WriteXLS('mutationList', '/stornext/Genomics/data/AML_RNA/venetoclax_trial/plots/linePlots.xls', row.names=T, col.names=T)

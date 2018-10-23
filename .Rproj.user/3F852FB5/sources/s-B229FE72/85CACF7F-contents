@@ -1,0 +1,21 @@
+Package: lineplots
+Type: Package
+Title: Making lineplots
+Version: 0.1.0
+Author: Who wrote it
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: Making lineplots of VAF of patients RNA-Seq samples across time combining point mutations, INDELS, CNV and clinical information.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+Depends: 
+  R (>= 3.5)
+Remotes: 
+  ChristofferFlensburg/superFreq
+Imports:
+  dplyr,
+  tidyr,
+  readxl,
+  matrixStats,
+  edgeR
+RoxygenNote: 6.1.0

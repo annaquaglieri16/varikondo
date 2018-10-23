@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1540334848177.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "AEBF1EB8",
+    "lastKnownWriteTime" : 1540336561,
+    "last_content_update" : 1540336561330,
+    "path" : "/Volumes/AML_RNA/quaglieri.a/R_packages/lineplots/R/import_indels.R",
+    "project_path" : "R/import_indels.R",
+    "properties" : {
+        "cursorPosition" : "8,44",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
