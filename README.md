@@ -1,6 +1,6 @@
 README
 ================
-Anna Quaglieri
+Anna Quaglieri and Christoffer Flensburg
 
 ``` r
 library(devtools)
