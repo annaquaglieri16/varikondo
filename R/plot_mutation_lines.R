@@ -21,7 +21,7 @@ plot_mutation_lines = function(blasts_to_plot, indels_to_plot, snvs_to_plot, cna
   labels = data.frame(y=numeric(0), label=character(0), col=character(0))
   plot(0, type='n', xlim=c(0.5, N+2), ylim=c(-0.15,1.1), frame=F, xlab='', xaxt='n', ylab='clonality', main=patient)
   if ( class(indels_to_plot) != 'NULL' ) {
-    indelCol = mcri('red')
+    indelCol = superFreq::mcri('red')
     yMx = indels_to_plot$y_matrix[,samples,drop=F]
     for ( row in 1:nrow(yMx) ) lines(1:N+spread*(0.5-row/nrow(yMx)), yMx[row,], lwd=2, col=indelCol)
     if ( ncol(yMx) == 1 ) points(1+spread*(0.5-row(yMx)/nrow(yMx)), yMx, cex=1.5, pch=16, col=indelCol)
@@ -30,7 +30,7 @@ plot_mutation_lines = function(blasts_to_plot, indels_to_plot, snvs_to_plot, cna
     totalYmx = yMx
   }
   if ( class(clones_to_plot) != 'NULL' ) {
-    clonesCol = mcri('grey')
+    clonesCol = superFreq::mcri('grey')
     yMx = clones_to_plot$y_matrix[,samples,drop=F]
     for ( row in 1:nrow(yMx) ) lines(1:N+spread*(0.5-row/nrow(yMx)), yMx[row,], lwd=2, col=clonesCol)
     if ( ncol(yMx) == 1 ) points(1+spread*(0.5-row(yMx)/nrow(yMx)), yMx, cex=1.5, pch=16, col=clonesCol)
@@ -48,7 +48,7 @@ plot_mutation_lines = function(blasts_to_plot, indels_to_plot, snvs_to_plot, cna
     totalYmx = rbind(totalYmx, yMx)
   }
   if ( class(snvs_to_plot) != 'NULL' ) {
-    snvCol = mcri('blue')
+    snvCol = superFreq::mcri('blue')
     yMx = snvs_to_plot$y_matrix[,samples,drop=F]
     for ( row in 1:nrow(yMx) ) lines(1:N+spread*(0.5-row/nrow(yMx)), yMx[row,], lwd=2, col=snvCol)
     if ( ncol(yMx) == 1 ) points(1+spread*(0.5-row(yMx)/nrow(yMx)), yMx, cex=1.5, pch=16, col=snvCol)
@@ -57,7 +57,7 @@ plot_mutation_lines = function(blasts_to_plot, indels_to_plot, snvs_to_plot, cna
     totalYmx = rbind(totalYmx, yMx)
   }
   if ( class(cnas_to_plot) != 'NULL' ) {
-    cnaCol = mcri('green')
+    cnaCol = superFreq::mcri('green')
     yMx = cnas_to_plot$y_matrix[,samples,drop=F]
     for ( row in 1:nrow(yMx) ) lines(1:N+spread*(0.5-row/nrow(yMx)), yMx[row,], lwd=2, col=cnaCol)
     if ( ncol(yMx) == 1 ) points(1+spread*(0.5-row(yMx)/nrow(yMx)), yMx, cex=1.5, pch=16, col=cnaCol)
