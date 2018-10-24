@@ -1,12 +1,12 @@
 #' Import clones detected by superFreq for lineplots
-#' @param stories_dir path to where the superFreq stories.Rdata files is saved.
+#' @param file path to where the superFreq stories.Rdata for `patientID` is saved.
 #' @param patientID a character vector specifying the patient/s id/s for which stories have to be imported.
 
 
 
-import_clones_for_lineplot = function(stories_dir, patientID) {
+import_clones_for_lineplot = function(file, patientID) {
   #import data and subset on patient
-  file = file.path(stories_dir, patientID, 'stories.Rdata')
+  #file = file.path(stories_dir, patientID, 'stories.Rdata')
 
   if ( !file.exists(file) ){
     message(paste0(file," does not exist for patient ",patientID))
