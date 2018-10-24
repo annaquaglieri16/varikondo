@@ -29,8 +29,6 @@ import_indels_for_lineplot = function(indels = indels, patientID, studyGenes, mi
 
   # needed to get all the sample names
   clinicalData <- clinicalData %>%
-    dplyr::select(OurSampleName, OurPID, batch,Time,Status,Outcome,AgeDiagnosis,Gender,WBC,Blast,THERAPY) %>%
-    dplyr::rename(SampleName = OurSampleName) %>%
     dplyr::filter(OurPID %in% patientID & !is.na(Time)) # some samples with NA time that messed things up, this should be corrected now
 
   # we will add the clinical information for samples without mutation
