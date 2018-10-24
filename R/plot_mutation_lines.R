@@ -7,7 +7,15 @@
 #' @param spread
 
 
-plot_mutation_lines = function(blasts_to_plot, indels_to_plot, snvs_to_plot, cnas_to_plot, clones_to_plot, spread=0.1) {
+plot_mutation_lines = function(clinicalData, stories_dir,mutationSummary,indels,studyGenes,patientID,minQual=20, minLength=2) {
+
+
+  blasts_to_plot <- import_blast_for_lineplot(clinicalData = clinicalData, patientID = patientID)
+  indels_to_plot <- import_indels_for_lineplot(indels = indels, patientID = patientID, studyGenes = studyGenes, minQual = minQual, minLength = minLength,
+                                              clinicalData)
+  snvs_to_plot <- import_snvs_for_lineplot(mutationSummary = mutationSummary, patientID = patientID)
+  cnas_to_plot <- import_cnas_for_lineplot(mutationSummary = mutationSummary, patientID = patientID)
+  clones_to_plot <- import_clones_for_lineplot(stories_dir = stories_dir, patientID = patientID)
 
   samples = colnames(blasts_to_plot$y_matrix)
   time = gsub('\\..+$', '', gsub('^D[0-9]*\\.', '', samples))

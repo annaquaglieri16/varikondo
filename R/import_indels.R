@@ -5,8 +5,7 @@
 
 
 import_indels_for_lineplot = function(indels = indels, patientID, studyGenes, minQual=20, minLength=2,
-                                      clinicalPath = clinicalPath,
-                                      outDir = outDir) {
+                                      clinicalData) {
 
   if ( nrow(indels) == 0 ) {
     warning(paste0("No variants available in input for patient ",patientID))
@@ -29,7 +28,7 @@ import_indels_for_lineplot = function(indels = indels, patientID, studyGenes, mi
   if ( nrow(indels) == 0 ) return(NULL)
 
   # needed to get all the sample names
-  clinicalData <- read_csv(clinicalPath) %>%
+  clinicalData <- clinicalData %>%
     dplyr::select(OurSampleName, OurPID, batch,Time,Status,Outcome,AgeDiagnosis,Gender,WBC,Blast,THERAPY) %>%
     dplyr::rename(SampleName = OurSampleName) %>%
     dplyr::filter(OurPID %in% patientID & !is.na(Time)) # some samples with NA time that messed things up, this should be corrected now
