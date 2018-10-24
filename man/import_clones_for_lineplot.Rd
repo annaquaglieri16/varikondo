@@ -4,10 +4,10 @@
 \alias{import_clones_for_lineplot}
 \title{Import clones detected by superFreq for lineplots}
 \usage{
-import_clones_for_lineplot(stories_dir, patientID)
+import_clones_for_lineplot(file, patientID)
 }
 \arguments{
-\item{stories_dir}{path to where the superFreq stories.Rdata files is saved.}
+\item{file}{path to where the superFreq stories.Rdata for `patientID` is saved.}
 
 \item{patientID}{a character vector specifying the patient/s id/s for which stories have to be imported.}
 }
