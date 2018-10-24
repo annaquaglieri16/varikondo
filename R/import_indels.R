@@ -65,7 +65,12 @@ import_indels_for_lineplot = function(indels = indels, patientID, studyGenes, mi
   ret = list(mutations=labels, y_matrix=y_matrix)
   ret$mutations =  ret$mutations[matrixStats::rowMaxs(ret$y_matrix) > 0.15]
   ret$y_matrix =  ret$y_matrix[matrixStats::rowMaxs(ret$y_matrix) > 0.15,,drop=F]
-  if ( length(ret$mutations) == 0 ) return(NULL)
+
+  if ( length(ret$mutations) == 0 ) {
+    message(paste0("No indels found in patient ",patientID))
+    return(NULL)
+  }
+
   return(ret)
 
 }

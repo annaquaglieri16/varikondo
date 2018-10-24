@@ -24,6 +24,14 @@ import_clones_for_lineplot = function(file, patientID) {
   ret = list(mutations=paste0('clone (', Nmut[use], ' anchors)'), y_matrix=storyMx[use,,drop=F])
   ret$mutations =  ret$mutations[matrixStats::rowMaxs(ret$y_matrix) > 0.15]
   ret$y_matrix =  ret$y_matrix[matrixStats::rowMaxs(ret$y_matrix) > 0.15,,drop=F]
-  if ( length(ret$mutations) == 0 ) return(NULL)
+
+
+  if ( length(ret$mutations) == 0 ) {
+    message(paste0("No clones found in patient ",patientID))
+    return(NULL)
+  }
+
+
   return(ret)
-}
+
+  }

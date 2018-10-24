@@ -11,8 +11,12 @@ import_cnas_for_lineplot = function(mutationSummary, patientID) {
   #only CNAs mutations, not from sex chromosomes
   mutations = mutations[mutations$x1 != mutations$x2 & !(superFreq::xToChr(mutations$x1, genome='hg38') %in% c('X', 'Y')),]
 
-  #return null if no mutations
-  if ( nrow(mutations) == 0 ) return(NULL)
+  #return null if no CNAs
+  if ( nrow(mutations) == 0 ){
+    warning(paste0("No CNA available in input for patient ",patientID))
+    return(NULL)
+  }
+
 
   #remove chromosome from the label, and add affected gene
   mutations$label = gsub('( ?)\\(.*\\)', '', mutations$label)
@@ -25,7 +29,12 @@ import_cnas_for_lineplot = function(mutationSummary, patientID) {
   ret = list(mutations=mutations$label, y_matrix=y_matrix)
   ret$mutations =  ret$mutations[matrixStats::rowMaxs(ret$y_matrix) > 0.15]
   ret$y_matrix =  ret$y_matrix[matrixStats::rowMaxs(ret$y_matrix) > 0.15,,drop=F]
-  if ( length(ret$mutations) == 0 ) return(NULL)
+
+  if ( length(ret$mutations) == 0 ) {
+    message(paste0("No CNAs found in patient ",patientID))
+    return(NULL)
+  }
+
   return(ret)
 }
 

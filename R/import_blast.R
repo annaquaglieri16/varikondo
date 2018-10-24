@@ -7,11 +7,14 @@ import_blast_for_lineplot = function(clinicalData, patientID) {
   clinicalData <- clinicalData %>%
     filter(OurPID %in% patientID & !is.na(Time)) #some samples with NA time that messed things up
 
-  if ( nrow(clinicalData) == 0 ) return(NULL)
+  if ( nrow(clinicalData) == 0 ){
+    message(paste0("The clinical data has no rows for patient ",patientID))
+    return(NULL)
+  }
 
   #convert to line plot format (whatever that will be)
   samples = unique(clinicalData$SampleName)
-  y_matrix = matrix(as.numeric(clinicalData$Blast)/100, ncol=length(samples), dimnames=list('Blast', samples))
+  y_matrix = matrix(as.numeric(as.character(clinicalData$Blast))/100, ncol=length(samples), dimnames=list('Blast', samples))
 
   #blast content sometimes missing or not parsed properly. Doesn't have to mean that it's 0, so throw a warning.
   if ( any(is.na(y_matrix)) ) {
