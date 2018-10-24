@@ -21,8 +21,5 @@ import_indels_for_lineplot(indels = indels, patientID, studyGenes,
 \item{clinicalData}{clinical data about the patients in the cohort. It has to contain a column `SampleName` which is made of the following information `OurPID`,`Time`,`Status`,`Repl.within`,`batch` and `Outcome` separated by a '.'.}
 }
 \description{
-Import INDELs detected by VarDict
-}
-\details{
 This function will take as input a data frame of INDELs `indels`. It will keep only the INDELs for `patientID` on `studyGenes` and with a `minQual` and `minLength` of the alt allele. It will return a matrix where the rows are all the unique INDELs found for `patientID` across time and the columns are the samples of `patientID` across time. Every entry of this matrix is the VAF for each sample for that row mutation. An INDEL is reported in output only if the max VAF across time is > 0.15
 }

@@ -17,6 +17,8 @@ plot_mutation_lines(blasts_to_plot, indels_to_plot, snvs_to_plot,
 \item{cnas_to_plot}{output from `import_cnas_for_lineplots()`}
 
 \item{clones_to_plot}{output from `import_clones_for_lineplots()`}
+
+\item{spread}{spread}
 }
 \description{
 Function to plot the lineplots with all clinical and genomic information

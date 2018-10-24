@@ -4,7 +4,7 @@
 #' @param snvs_to_plot output from `import_snvs_for_lineplots()`
 #' @param cnas_to_plot output from `import_cnas_for_lineplots()`
 #' @param clones_to_plot output from `import_clones_for_lineplots()`
-#' @param spread
+#' @param spread spread
 
 
 plot_mutation_lines = function(blasts_to_plot, indels_to_plot, snvs_to_plot, cnas_to_plot, clones_to_plot, spread=0.1) {

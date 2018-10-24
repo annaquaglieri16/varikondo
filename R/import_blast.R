@@ -1,5 +1,6 @@
-#' Import blast contect a specific patient
-#' @param clinicalData data frame with the `Blast` information (as %) for the patients in the cohort.
+#' Import blast contect for a specific patient
+#' @param clinicalData data frame with the percentage of `Blast` information for the patients in the cohort.
+#'
 #' @param patientID a character vector specifying the patient/s id/s for which stories have to be imported.
 
 import_blast_for_lineplot = function(clinicalData, patientID) {
