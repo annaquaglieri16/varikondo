@@ -2,7 +2,7 @@
 % Please edit documentation in R/import_clones.R
 \name{import_clones_for_lineplot}
 \alias{import_clones_for_lineplot}
-\title{Import clones detected by superFreq for lineplots}
+\title{Import clones detected by superFreq for a specific patient}
 \usage{
 import_clones_for_lineplot(file, patientID)
 }
@@ -12,5 +12,5 @@ import_clones_for_lineplot(file, patientID)
 \item{patientID}{a character vector specifying the patient/s id/s for which stories have to be imported.}
 }
 \description{
-Import clones detected by superFreq for lineplots
+Import clones detected by superFreq for a specific patient
 }

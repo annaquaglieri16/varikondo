@@ -2,7 +2,7 @@
 % Please edit documentation in R/import_cnas.R
 \name{import_cnas_for_lineplot}
 \alias{import_cnas_for_lineplot}
-\title{Import copy number variation for lineplots}
+\title{Import copy number variation detected by superFreq for a specific patient}
 \usage{
 import_cnas_for_lineplot(mutationSummary, patientID)
 }
@@ -12,5 +12,5 @@ import_cnas_for_lineplot(mutationSummary, patientID)
 \item{patientID}{a character vector specifying the patient/s id/s for which mutations have to be imported. This value has to correspond to the names used to save the `mutationSummary` object.}
 }
 \description{
-Import copy number variation for lineplots
+Import copy number variation detected by superFreq for a specific patient
 }

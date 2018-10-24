@@ -1,4 +1,4 @@
-#' Import copy number variation for lineplots
+#' Import copy number variation detected by superFreq for a specific patient
 #' @param mutationSummary a matrix summarising mutations reported by superFreq. Every row is a CN event, every column is a sample and every entry is the VAF for that row mutation for that column sample.
 #' @param patientID a character vector specifying the patient/s id/s for which mutations have to be imported. This value has to correspond to the names used to save the `mutationSummary` object.
 

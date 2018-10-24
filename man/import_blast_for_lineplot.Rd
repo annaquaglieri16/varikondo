@@ -2,7 +2,7 @@
 % Please edit documentation in R/import_blast.R
 \name{import_blast_for_lineplot}
 \alias{import_blast_for_lineplot}
-\title{Import clones detected by superFreq for lineplots}
+\title{Import blast contect a specific patient}
 \usage{
 import_blast_for_lineplot(clinicalData, patientID)
 }
@@ -12,5 +12,5 @@ import_blast_for_lineplot(clinicalData, patientID)
 \item{patientID}{a character vector specifying the patient/s id/s for which stories have to be imported.}
 }
 \description{
-Import clones detected by superFreq for lineplots
+Import blast contect a specific patient
 }

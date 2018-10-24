@@ -1,7 +1,13 @@
-# This function will take as input a data frame of indels 'indels' where every row is an INDEL called for a specific sample (patinet at a time point)
-# # It will fiter the indels set by a patientID , studyGenes, minQual and minLength of the alt allele.
-# It will return a atrix where the rows are all the unique INDELs found for patientID across time and the columns are the samples of patientID across time. Every entry of this matrix is the VAF for each sample for that row mutation.
-# An INDEL is reported in output only if the max VAF across time is > 0.15
+#' Import INDELs detected by VarDict
+#' @param indels a data frame where every row is an INDEL for one sample at a specific time point
+#' @param patientID a character vector specifying the patient/s id/s for which INDELs have to be imported.
+#' @param studyGenes genes of interest used to subset the `indels` data frame.
+#' @param minQual minimum quality for an INDEL to be kept.
+#' @param minLength minimum length of the alternative allele required for an INDEL to be kept.
+#' @param clinicalData clinical data about the patients in the cohort. It has to contain a column `SampleName` which is made of the following information `OurPID`,`Time`,`Status`,`Repl.within`,`batch` and `Outcome` separated by a '.'.
+
+
+#' @details  This function will take as input a data frame of INDELs `indels`. It will keep only the INDELs for `patientID` on `studyGenes` and with a `minQual` and `minLength` of the alt allele. It will return a matrix where the rows are all the unique INDELs found for `patientID` across time and the columns are the samples of `patientID` across time. Every entry of this matrix is the VAF for each sample for that row mutation. An INDEL is reported in output only if the max VAF across time is > 0.15
 
 
 import_indels_for_lineplot = function(indels = indels, patientID, studyGenes, minQual=20, minLength=2,

@@ -1,4 +1,4 @@
-#' Import clones detected by superFreq for lineplots
+#' Import clones detected by superFreq for a specific patient
 #' @param file path to where the superFreq stories.Rdata for `patientID` is saved.
 #' @param patientID a character vector specifying the patient/s id/s for which stories have to be imported.
 

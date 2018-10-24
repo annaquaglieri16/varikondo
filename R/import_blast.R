@@ -1,4 +1,4 @@
-#' Import clones detected by superFreq for lineplots
+#' Import blast contect a specific patient
 #' @param clinicalData data frame with the `Blast` information (as %) for the patients in the cohort.
 #' @param patientID a character vector specifying the patient/s id/s for which stories have to be imported.
 
