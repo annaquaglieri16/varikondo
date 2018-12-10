@@ -2,13 +2,13 @@
 % Please edit documentation in R/import_indels.R
 \name{import_indels_for_lineplot}
 \alias{import_indels_for_lineplot}
-\title{Import INDELs detected by VarDict}
+\title{Import INDELs detected by VarDict or Mutect2}
 \usage{
-import_indels_for_lineplot(indels = indels, patientID, studyGenes,
-  minQual = 20, minLength = 2, clinicalData)
+import_indels_for_lineplot(variants = variants, patientID, studyGenes,
+  minQual = 20, minLength = 2, clinicalData, tidy = TRUE)
 }
 \arguments{
-\item{indels}{a data frame where every row is an INDEL for one sample at a specific time point}
+\item{variants}{a data frame where every row is an INDEL for one sample at a specific time point}
 
 \item{patientID}{a character vector specifying the patient/s id/s for which INDELs have to be imported.}
 
@@ -18,8 +18,51 @@ import_indels_for_lineplot(indels = indels, patientID, studyGenes,
 
 \item{minLength}{minimum length of the alternative allele required for an INDEL to be kept.}
 
-\item{clinicalData}{clinical data about the patients in the cohort. It has to contain a column `SampleName` which is made of the following information `OurPID`,`Time`,`Status`,`Repl.within`,`batch` and `Outcome` separated by a '.'.}
+\item{clinicalData}{clinical data about the patients in the cohort. It has to contain a column `SampleName` which is made of the following information `OurPID`,`Time`,`Status`,`Repl.within`,`batch` and `Outcome` separated by a '.'.
+#' @param tidy Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.}
 }
 \description{
-This function will take as input a data frame of INDELs `indels`. It will keep only the INDELs for `patientID` on `studyGenes` and with a `minQual` and `minLength` of the alt allele. It will return a matrix where the rows are all the unique INDELs found for `patientID` across time and the columns are the samples of `patientID` across time. Every entry of this matrix is the VAF for each sample for that row mutation. An INDEL is reported in output only if the max VAF across time is > 0.15
+This function will take as input a data frame of variants and return a filtered set of INDELs with sample's clinical infrmation. The variants can derive from any caller but the outout should be standardised to have the following columns: `SampleName`, `PID`, `Time`, `Status`, `Repl.within`, `batch`, `Outcome`, `chrom`, `pos`, `alt`, `ref`, `ref_depth`, `VAF`, `Consequence` and `IMPACT` as annotated by Variant Effect Predictor (VEP).
+}
+\details{
+This function will keep only the INDELs for `patientID` found on `studyGenes` and with a `minQual` and `minLength` of the alt allele. The function expects the mutations to be annotated with VEP which assign an IMPACT value (HIGH, MODERATE, LOW, MODIFIER) based on https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html. The function only preserves mutations with HIGH or MODERATE impact and for every sample within every patient if a mutation appears twice with different impacts values it will only keep the one with the most damaging impact The INDELs are then merged with the clinical information in `clinicalData` for `patientID`. This means that if no INDELs are returned for one time point within one `patientID` default entries fro Variant Allele Frequency (VAF), reference and alterative depths will be created. The default value is 0 for all of the above. An INDEL is reported for a patient only if at any time point its VAF >= 15 and the total depth is larger than 10. The function can return the INDELs in a tidy (long format) or untidy (wide, matrix and list) format. If `tidy = FALSE` the function will return a matrix where the rows are all the unique INDELs found for `patientID` across time and the columns are the samples of `patientID` across time.
+}
+\examples{
+
+minLength = 2
+patientID = "D1"
+minQual=20
+indels <- data.frame(PID = rep("D1",9),
+                     Repl.within = "R1",
+                     batch = "B1",
+                     Status = c(rep("Diag",3),rep("Rem",3),rep("Rel",3)),
+                     Outcome = "Rel",
+                     Time = c(rep("Screen",3),rep("Cyc1",3),rep("Cyc2",3)),
+                     Location = c("chr1_10","chr1_20","chr2_30","chr1_10","chr1_20","chr2_30","chr1_10","chr1_20","chr2_30"),
+                     alt = c("ACT","ACGTCG","AGG","ACT","ACGTCG","AGG","ACT","ACGTCG","AGG"),
+                     ref = c("A","G","A","A","G","AGG","A","G","A"),
+                     ref_depth = c(12,11,9,9,12,8,13,14,8),
+                     alt_depth = c(2,20,10,2,10,15,20,20,100),
+                     Consequence = rep(c("C1","C2","C3"),times=3),
+                     IMPACT = rep(c("MODERATE","HIGH","HIGH"),times=3),
+                     IMPACT_rank = rep(c(3,2,1),times=3),
+                     qual = 49,
+                     SYMBOL = "BCL2") \%>\%
+     dplyr::mutate(tot_depth = ref_depth + alt_depth) \%>\%
+  dplyr::mutate(VAF = alt_depth/tot_depth) \%>\%
+  tidyr::separate(Location,into = c("chrom","pos"),sep = "_") \%>\%
+  tidyr::unite(SampleName,PID,Time,Status,Repl.within,batch,Outcome,sep = ".") \%>\%
+  tidyr::separate(SampleName,into = c("PID"),sep = "[.]",remove=FALSE)
+
+clinicalData <- data.frame(SampleName = c("D1.Screen.Diag.R1.B1.Rel","D1.Cyc1.Rem.R1.B1.Rel",
+                                     "D1.Cyc2.Rem.R1.B1.Rel","D1.Cyc3.Rel.R1.B1.Rel"),
+                      AgeDiagnosis = 65,
+                      Sex = "F",
+                      BlastPerc = "80") \%>\%
+    tidyr::separate(SampleName,into=c("PID","Time","Status","Repl.within","batch","Outcome"),sep = "[.]",remove=FALSE)
+
+    import_indels <- import_indels_for_lineplot(variants,
+    patientID = "D1",
+    studyGenes = "BCL2",
+    clinicalData = clinicalData)
 }
