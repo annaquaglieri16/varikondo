@@ -29,6 +29,9 @@ import_indels_for_lineplot = function(indels = indels, patientID, studyGenes, mi
     dplyr::filter(qual > minQual) %>% # only keep good quality indels
     dplyr::filter(IMPACT %in% c("HIGH", 'MODERATE')) %>%
     dplyr::group_by(SampleName,Location,ref,alt) %>% # for every Sample: for every Location called and annotated multiple times only keep the highest rank
+    dplyr::filter(qual > minQual) %>%  #quality filter
+    dplyr::filter(IMPACT %in% c("HIGH", 'MODERATE')) %>%
+    dplyr::group_by(SampleName,Location,ref,alt) %>% # for every Location called only keep the highest rank
     dplyr::filter(order(IMPACT_rank) == order(IMPACT_rank)[which.min(order(IMPACT_rank))])
 
   # needed to get all the sample names
@@ -36,7 +39,7 @@ import_indels_for_lineplot = function(indels = indels, patientID, studyGenes, mi
     dplyr::filter(PID %in% patientID & !is.na(Time)) # some samples with NA time that messed things up, this should be corrected now
 
   # we will add the clinical information for samples without mutation
-  indelsAll <- indels[!duplicated(indels[,c("Location","ref","alt")]),]
+  #indelsAll <- indels[!duplicated(indels[,c("Location","ref","alt")]),]
 
   # indelsAll: inlcudes all unique indels called for this PID across time
   # indels: include all indels - the same one repeated twice if called at different times for the same patient
@@ -45,10 +48,11 @@ import_indels_for_lineplot = function(indels = indels, patientID, studyGenes, mi
 
   # Untidy version of the data
   #make a matrix of y-values for the plot, in this case VAFs
-  indelsAll$Mutation = paste0(indelsAll$Location, "_", indelsAll$ref, "_", indelsAll$alt)
-  indels$Mutation = paste0(indels$Location, "_", indels$ref, "_", indelsAll$alt)
-  mutations = indelsAll$Mutation[!duplicated(indelsAll$Mutation)]
-  labels = paste0(indelsAll$SYMBOL, ' ', gsub('&.+', '', indelsAll$Consequence))[!duplicated(indelsAll$Mutation)]
+  #indelsAll$Mutation = paste0(indelsAll$Location, "_", indelsAll$ref, "_", indelsAll$alt)
+  indels$Mutation = paste0(indels$Location, "_", indels$ref, "_", indels$alt)
+  uniqueMutations = !duplicated(indels$Mutation)
+  mutations = indels$Mutation[uniqueMutations]
+  labels = paste0(indels$SYMBOL, ' ', gsub('&.+', '', indels$Consequence))[uniqueMutations]
   samples = unique(clinicalData$SampleName)
   vafs =
     sapply(samples, function(sample) # for each sample - a patient at a specific time
