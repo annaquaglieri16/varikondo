@@ -131,19 +131,23 @@ import_indels_for_lineplot = function(variants = variants, patientID, studyGenes
                                        subset(indels_leave,Mutation %in% indels_keep$Mutation))
 
   # Re-add indels
+  options(warn=-1)
   indels_saver <- indels_saver %>%
       dplyr::mutate(Time = forcats::fct_relevel(Time,"Screen","Cyc1","Cyc2","Cyc3","Cyc4","Cyc9")) %>%
       dplyr::mutate(SampleName = forcats::fct_reorder(SampleName,as.numeric(Time)))
+  options(warn=0)
 
   ###########################
   # Untidy version of the data
   ###########################
 
+  options(warn=-1)
   indels_untidy <- indels_saver %>%
     dplyr::mutate(Time = forcats::fct_relevel(Time,"Screen","Cyc1","Cyc2","Cyc3","Cyc4","Cyc9")) %>%
     dplyr::mutate(SampleName = forcats::fct_reorder(SampleName,as.numeric(Time))) %>%
     dplyr::select(Mutation,SYMBOL,Consequence,VAF,SampleName) %>%
     tidyr::spread(key = SampleName,value=VAF,fill=NA)
+  options(warn=0)
 
   ret <- list()
   ret$y_matrix <- as.matrix(indels_untidy[,4:ncol(indels_untidy)])
