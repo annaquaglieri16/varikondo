@@ -128,8 +128,7 @@ import_indels_for_lineplot = function(variants = variants, patientID, studyGenes
   # 5. If some good quality indels are found then
   # re-add indels whose key (chrom_pos_alt) was present at other time points
   indels_saver <-  dplyr::bind_rows(indels_keep,
-                                       subset(indels_leave,Mutation %in% indels_keep$Mutation)) %>%
-    arrange(Time,key)
+                                       subset(indels_leave,Mutation %in% indels_keep$Mutation))
 
   indels_saver <- indels_saver %>%
       dplyr::mutate(Time = forcats::fct_relevel(Time,"Screen","Cyc1","Cyc2","Cyc3","Cyc4","Cyc9")) %>%
