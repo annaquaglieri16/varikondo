@@ -6,7 +6,7 @@
 import_blast_for_lineplot = function(clinicalData, patientID) {
   #import blast fraction
   clinicalData <- clinicalData %>%
-    filter(OurPID %in% patientID & !is.na(Time)) #some samples with NA time that messed things up
+    filter(PID %in% patientID & !is.na(Time)) #some samples with NA time that messed things up
 
   if ( nrow(clinicalData) == 0 ){
     message(paste0("The clinical data has no rows for patient ",patientID))
