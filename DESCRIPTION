@@ -16,6 +16,5 @@ Imports:
   dplyr,
   tidyr,
   readxl,
-  matrixStats,
-  edgeR
+  matrixStats
 RoxygenNote: 6.1.0
