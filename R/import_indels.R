@@ -114,10 +114,10 @@ import_indels_for_lineplot = function(variants = variants, patientID, studyGenes
            tot_depth = ifelse(is.na(tot_depth),0,tot_depth))
 
   # 4. Filter based on minimal required ref_depth threshold and re-add lost mutations later
-  indels_keep <- clinical_indels_fill %>% filter(ref_depth >= 10 & VAF >= 0.15)
+  indels_keep <- clinical_indels_fill %>% filter(tot_depth >= 10 & VAF >= 0.15)
 
   # indels_leave contains some indels not found and some that do not meet the filters
-  indels_leave <- clinical_indels_fill %>% filter(ref_depth < 10 | VAF < 0.15)
+  indels_leave <- clinical_indels_fill %>% filter(tot_depth < 10 | VAF < 0.15)
 
 
   if(nrow(indels_keep) == 0){

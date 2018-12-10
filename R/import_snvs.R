@@ -3,7 +3,6 @@
 #' @param patientID a character vector specifying the patient/s id/s for which mutations have to be imported. This value has to correspond to the names used to save the `mutationSummary` object.
 
 
-
 import_snvs_for_lineplot = function(mutationSummary, patientID) {
 
   #import data and subset on patient
