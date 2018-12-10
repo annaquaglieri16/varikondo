@@ -145,10 +145,11 @@ import_indels_for_lineplot = function(variants = variants, patientID, studyGenes
     dplyr::select(Mutation,SYMBOL,Consequence,VAF,SampleName) %>%
     tidyr::spread(key = SampleName,value=VAF,fill=NA)
 
-  ret$y_matrix <- as.matrix(add_left_indels_wide[,4:ncol(add_left_indels_wide)])
-  rownames(ret$y_matrix) <- add_left_indels_wide$Mutation
+  ret <- list()
+  ret$y_matrix <- as.matrix(indels_untidy[,4:ncol(indels_untidy)])
+  rownames(ret$y_matrix) <- indels_untidy$Mutation
 
-  ret$mutations <- paste(add_left_indels_wide$SYMBOL,add_left_indels_wide$Consequence)
+  ret$mutations <- paste(indels_untidy$SYMBOL,indels_untidy$Consequence)
 
   if (tidy) {
     return(indels_saver)
