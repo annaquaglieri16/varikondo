@@ -130,6 +130,7 @@ import_indels_for_lineplot = function(variants = variants, patientID, studyGenes
   indels_saver <-  dplyr::bind_rows(indels_keep,
                                        subset(indels_leave,Mutation %in% indels_keep$Mutation))
 
+  # Re-add indels
   indels_saver <- indels_saver %>%
       dplyr::mutate(Time = forcats::fct_relevel(Time,"Screen","Cyc1","Cyc2","Cyc3","Cyc4","Cyc9")) %>%
       dplyr::mutate(SampleName = forcats::fct_reorder(SampleName,as.numeric(Time)))
