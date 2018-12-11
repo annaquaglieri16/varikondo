@@ -1,7 +1,8 @@
 #' Import blast contect for a specific patient
 #' @param clinicalData data frame with the percentage of `Blast` information for the patients in the cohort.
-#'
+#' @param tidy Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.
 #' @param patientID a character vector specifying the patient/s id/s for which stories have to be imported.
+#'
 #' @examples
 #'
 #' patientID = "D1"
@@ -19,7 +20,7 @@
 #'     clinicalData = clinicalData)
 
 
-import_blast_for_lineplot = function(clinicalData, patientID) {
+import_blast_for_lineplot = function(clinicalData, patientID, tidy = TRUE) {
 
   #import blast fraction
   clinicalData <- clinicalData %>%

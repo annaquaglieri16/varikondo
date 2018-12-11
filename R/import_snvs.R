@@ -1,6 +1,7 @@
 #' Import point mutations for lineplots
 #' @param mutationSummary a matrix summarising mutations reported by superFreq. Every row is a muations, every column is a sample and every entry is the VAF for that row mutation for that column sample.
 #' @param patientID a character vector specifying the patient/s id/s for which mutations have to be imported. This value has to correspond to the names used to save the `mutationSummary` object.
+#' @param tidy Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.
 #'
 #' @examples
 #'

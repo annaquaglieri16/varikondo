@@ -6,7 +6,7 @@
 #' @param minQual minimum quality for an INDEL to be kept.
 #' @param minLength minimum length of the alternative allele required for an INDEL to be kept.
 #' @param clinicalData clinical data about the patients in the cohort. It has to contain a column `SampleName` which is made of the following information `OurPID`,`Time`,`Status`,`Repl.within`,`batch` and `Outcome` separated by a '.'.
-#' #' @param tidy Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.
+#' @param tidy Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.
 #'
 #' @description   This function will take as input a data frame of variants and return a filtered set of INDELs with sample's clinical infrmation. The variants can derive from any caller but the outout should be standardised to have the following columns: `SampleName`, `PID`, `Time`, `Status`, `Repl.within`, `batch`, `Outcome`, `chrom`, `pos`, `alt`, `ref`, `ref_depth`, `VAF`, `Consequence` and `IMPACT` as annotated by Variant Effect Predictor (VEP).
 
