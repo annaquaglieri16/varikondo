@@ -101,7 +101,7 @@ import_indels_for_lineplot = function(variants = variants, patientID, studyGenes
   # was actually still present but was partially reduced at some stages.
 
   # 1. Define all the unique indels found for patientID
-  unique_indels <- unique(indels[,c("chrom","pos","ref","Location","Mutation","alt","SYMBOL","Consequence")])
+  unique_indels <- unique(indels[,c("chrom","pos","ref","Location","mutation_det","alt","SYMBOL","Consequence")])
 
   # 2. Create all the possible combinations between variants found and clinical samples
   clinical_indels_empty <- merge(clinicalData ,unique_indels,all=TRUE)
@@ -128,7 +128,7 @@ import_indels_for_lineplot = function(variants = variants, patientID, studyGenes
   # 5. If some good quality indels are found then
   # re-add indels whose key (chrom_pos_alt) was present at other time points
   indels_saver <-  dplyr::bind_rows(indels_keep,
-                                       subset(indels_leave,Mutation %in% indels_keep$Mutation))
+                                       subset(indels_leave,mutation_det %in% indels_keep$mutation_det))
 
   # Re-add indels
   options(warn=-1)
@@ -145,13 +145,13 @@ import_indels_for_lineplot = function(variants = variants, patientID, studyGenes
   indels_untidy <- indels_saver %>%
     dplyr::mutate(Time = forcats::fct_relevel(Time,"Screen","Cyc1","Cyc2","Cyc3","Cyc4","Cyc9")) %>%
     dplyr::mutate(SampleName = forcats::fct_reorder(SampleName,as.numeric(Time))) %>%
-    dplyr::select(Mutation,SYMBOL,Consequence,VAF,SampleName) %>%
+    dplyr::select(mutation_det,SYMBOL,Consequence,VAF,SampleName) %>%
     tidyr::spread(key = SampleName,value=VAF,fill=NA)
   options(warn=0)
 
   ret <- list()
   ret$y_matrix <- as.matrix(indels_untidy[,4:ncol(indels_untidy)])
-  rownames(ret$y_matrix) <- indels_untidy$Mutation
+  rownames(ret$y_matrix) <- indels_untidy$mutation_det
 
   ret$mutations <- paste(indels_untidy$SYMBOL,indels_untidy$Consequence)
 
