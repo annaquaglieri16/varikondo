@@ -65,6 +65,7 @@ import_snvs_for_lineplot = function(mutationSummary, patientID, tidy = TRUE) {
       tidyr::separate(SampleName, into = c("PID","Time","Status","Repl.Within","Batch","Outcome"),sep="[.]",remove=FALSE) %>%
       dplyr::mutate(Time = forcats::fct_relevel(Time,"Screen","Cyc1","Cyc2","Cyc3","Cyc4","Cyc9")) %>%
       dplyr::mutate(SampleName = forcats::fct_reorder(SampleName,as.numeric(Time))) %>%
+      tidyr::separate(mutation_det, into = c("SYMBOL"),sep=" ",remove=FALSE) %>%
       dplyr::mutate(variant_type = "superfreq")
   }
   options(warn=0)
