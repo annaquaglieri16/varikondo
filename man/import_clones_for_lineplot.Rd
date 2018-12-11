@@ -4,12 +4,14 @@
 \alias{import_clones_for_lineplot}
 \title{Import clones detected by superFreq for a specific patient}
 \usage{
-import_clones_for_lineplot(file, patientID)
+import_clones_for_lineplot(file, patientID, tidy = TRUE)
 }
 \arguments{
 \item{file}{path to where the superFreq stories.Rdata for `patientID` is saved.}
 
 \item{patientID}{a character vector specifying the patient/s id/s for which stories have to be imported.}
+
+\item{tidy}{Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.}
 }
 \description{
 Import clones detected by superFreq for a specific patient

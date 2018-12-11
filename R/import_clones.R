@@ -1,10 +1,11 @@
 #' Import clones detected by superFreq for a specific patient
 #' @param file path to where the superFreq stories.Rdata for `patientID` is saved.
 #' @param patientID a character vector specifying the patient/s id/s for which stories have to be imported.
+#' @param tidy Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.
 
 
 
-import_clones_for_lineplot = function(file, patientID) {
+import_clones_for_lineplot = function(file, patientID, tidy = TRUE) {
   #import data and subset on patient
   #file = file.path(stories_dir, patientID, 'stories.Rdata')
 
@@ -31,7 +32,24 @@ import_clones_for_lineplot = function(file, patientID) {
     return(NULL)
   }
 
+  options(warn=-1)
+  if(tidy){
 
-  return(ret)
+    tidy_clones <- data.frame(ret$y_matrix) %>%
+      dplyr::mutate(mutation_key = rownames(ret$y_matrix)) %>%
+      dplyr::mutate(mutation_det = ret$mutations) %>%
+      tidyr::gather(SampleName,VAF, 1:ncol(ret$y_matrix)) %>%
+      tidyr::separate(SampleName, into = c("PID","Time","Status","Repl.Within","Batch","Outcome"),sep="[.]",remove=FALSE) %>%
+      dplyr::mutate(Time = forcats::fct_relevel(Time,"Screen","Cyc1","Cyc2","Cyc3","Cyc4","Cyc9")) %>%
+      dplyr::mutate(SampleName = forcats::fct_reorder(SampleName,as.numeric(Time))) %>%
+      dplyr::mutate(variant_type = "superfreq")
+  }
+  options(warn=0)
+
+  if(tidy){
+    return(tidy_clones)
+  }else{
+    return(ret)
+  }
 
   }
