@@ -60,7 +60,7 @@ import_blast_for_lineplot = function(clinicalData, patientID, tidy = TRUE) {
   options(warn=0)
 
   if(tidy){
-    return(tidy_snvs)
+    return(tidy_blast)
   }else{
     return(ret)
   }

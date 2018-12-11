@@ -51,7 +51,7 @@ import_cnas_for_lineplot = function(mutationSummary, patientID, tidy = TRUE) {
   options(warn=0)
 
   if(tidy){
-    return(tidy_snvs)
+    return(tidy_cnas)
   }else{
     return(ret)
   }
