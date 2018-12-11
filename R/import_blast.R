@@ -2,8 +2,25 @@
 #' @param clinicalData data frame with the percentage of `Blast` information for the patients in the cohort.
 #'
 #' @param patientID a character vector specifying the patient/s id/s for which stories have to be imported.
+#' @examples
+#'
+#' patientID = "D1"
+#'
+#' clinicalData <- data.frame(SampleName = c("D1.Screen.Diag.R1.B1.Rel","D1.Cyc1.Rem.R1.B1.Rel",
+#'                                      "D1.Cyc2.Rem.R1.B1.Rel","D1.Cyc3.Rel.R1.B1.Rel"),
+#'                       AgeDiagnosis = 65,
+#'                       Sex = "F",
+#' BlastPerc = c(80,5,7,40)) %>%
+#'     tidyr::separate(SampleName,into=c("PID","Time","Status","Repl.within","batch","Outcome"),sep = "[.]",remove=FALSE)
+#'
+#'     import_indels <- import_indels_for_lineplot(variants,
+#'     patientID = "D1",
+#'     studyGenes = "BCL2",
+#'     clinicalData = clinicalData)
+
 
 import_blast_for_lineplot = function(clinicalData, patientID) {
+
   #import blast fraction
   clinicalData <- clinicalData %>%
     filter(PID %in% patientID & !is.na(Time)) #some samples with NA time that messed things up
@@ -12,6 +29,7 @@ import_blast_for_lineplot = function(clinicalData, patientID) {
     message(paste0("The clinical data has no rows for patient ",patientID))
     return(NULL)
   }
+
 
   #convert to line plot format (whatever that will be)
   samples = unique(clinicalData$SampleName)
@@ -24,5 +42,26 @@ import_blast_for_lineplot = function(clinicalData, patientID) {
   }
 
   ret = list(mutations='Blast', y_matrix=y_matrix)
-  return(ret)
+
+  options(warn=-1)
+
+  if(tidy){
+
+    tidy_blast <- data.frame(ret$y_matrix) %>%
+      dplyr::mutate(mutation_key = rownames(ret$y_matrix)) %>%
+      dplyr::mutate(mutation_det = ret$mutations) %>%
+      tidyr::gather(SampleName,VAF, 1:ncol(ret$y_matrix)) %>%
+      tidyr::separate(SampleName, into = c("PID","Time","Status","Repl.Within","Batch","Outcome"),sep="[.]",remove=FALSE) %>%
+      dplyr::mutate(Time = forcats::fct_relevel(Time,"Screen","Cyc1","Cyc2","Cyc3","Cyc4","Cyc9")) %>%
+      dplyr::mutate(SampleName = forcats::fct_reorder(SampleName,as.numeric(Time))) %>%
+      dplyr::mutate(variant_type = "Blasts")
+  }
+  options(warn=0)
+
+  if(tidy){
+    return(tidy_snvs)
+  }else{
+    return(ret)
+  }
+
 }

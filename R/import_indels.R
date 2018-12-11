@@ -46,7 +46,7 @@
 #'                                      "D1.Cyc2.Rem.R1.B1.Rel","D1.Cyc3.Rel.R1.B1.Rel"),
 #'                       AgeDiagnosis = 65,
 #'                       Sex = "F",
-#'                       BlastPerc = "80") %>%
+#'                       BlastPerc = c(80,5,7,40)) %>%
 #'     tidyr::separate(SampleName,into=c("PID","Time","Status","Repl.within","batch","Outcome"),sep = "[.]",remove=FALSE)
 #'
 #'     import_indels <- import_indels_for_lineplot(variants,
@@ -73,7 +73,7 @@ import_indels_for_lineplot = function(variants = variants, patientID, studyGenes
   indels <- variants %>%
     dplyr::filter(nchar(as.character(alt)) > minLength) %>%
     tidyr::unite(Location, chrom, pos ,sep="_",remove=FALSE) %>% # create columns that will be useful later
-    tidyr::unite(Mutation, Location,ref,alt,sep = "_",remove=FALSE) %>% # create columns that will be useful later
+    tidyr::unite(mutation_det, Location,ref,alt,sep = "_",remove=FALSE) %>% # create columns that will be useful later
     tidyr::separate(SampleName,into=c("PID","Time","Status","Repl.within","batch","Outcome"),remove = FALSE,sep="[.]") %>%
     dplyr::filter(PID %in% patientID) %>% # restrict analysis to OurPID
     dplyr::filter(SYMBOL %in% studyGenes) %>% # restrict analysis to specific genes
