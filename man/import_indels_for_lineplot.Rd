@@ -18,8 +18,9 @@ import_indels_for_lineplot(variants = variants, patientID, studyGenes,
 
 \item{minLength}{minimum length of the alternative allele required for an INDEL to be kept.}
 
-\item{clinicalData}{clinical data about the patients in the cohort. It has to contain a column `SampleName` which is made of the following information `OurPID`,`Time`,`Status`,`Repl.within`,`batch` and `Outcome` separated by a '.'.
-#' @param tidy Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.}
+\item{clinicalData}{clinical data about the patients in the cohort. It has to contain a column `SampleName` which is made of the following information `OurPID`,`Time`,`Status`,`Repl.within`,`batch` and `Outcome` separated by a '.'.}
+
+\item{tidy}{Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.}
 }
 \description{
 This function will take as input a data frame of variants and return a filtered set of INDELs with sample's clinical infrmation. The variants can derive from any caller but the outout should be standardised to have the following columns: `SampleName`, `PID`, `Time`, `Status`, `Repl.within`, `batch`, `Outcome`, `chrom`, `pos`, `alt`, `ref`, `ref_depth`, `VAF`, `Consequence` and `IMPACT` as annotated by Variant Effect Predictor (VEP).
@@ -58,7 +59,7 @@ clinicalData <- data.frame(SampleName = c("D1.Screen.Diag.R1.B1.Rel","D1.Cyc1.Re
                                      "D1.Cyc2.Rem.R1.B1.Rel","D1.Cyc3.Rel.R1.B1.Rel"),
                       AgeDiagnosis = 65,
                       Sex = "F",
-                      BlastPerc = "80") \%>\%
+                      BlastPerc = c(80,5,7,40)) \%>\%
     tidyr::separate(SampleName,into=c("PID","Time","Status","Repl.within","batch","Outcome"),sep = "[.]",remove=FALSE)
 
     import_indels <- import_indels_for_lineplot(variants,

@@ -4,13 +4,31 @@
 \alias{import_blast_for_lineplot}
 \title{Import blast contect for a specific patient}
 \usage{
-import_blast_for_lineplot(clinicalData, patientID)
+import_blast_for_lineplot(clinicalData, patientID, tidy = TRUE)
 }
 \arguments{
 \item{clinicalData}{data frame with the percentage of `Blast` information for the patients in the cohort.}
 
 \item{patientID}{a character vector specifying the patient/s id/s for which stories have to be imported.}
+
+\item{tidy}{Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.}
 }
 \description{
 Import blast contect for a specific patient
+}
+\examples{
+
+patientID = "D1"
+
+clinicalData <- data.frame(SampleName = c("D1.Screen.Diag.R1.B1.Rel","D1.Cyc1.Rem.R1.B1.Rel",
+                                     "D1.Cyc2.Rem.R1.B1.Rel","D1.Cyc3.Rel.R1.B1.Rel"),
+                      AgeDiagnosis = 65,
+                      Sex = "F",
+BlastPerc = c(80,5,7,40)) \%>\%
+    tidyr::separate(SampleName,into=c("PID","Time","Status","Repl.within","batch","Outcome"),sep = "[.]",remove=FALSE)
+
+    import_indels <- import_indels_for_lineplot(variants,
+    patientID = "D1",
+    studyGenes = "BCL2",
+    clinicalData = clinicalData)
 }
