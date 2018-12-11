@@ -71,19 +71,22 @@ import_indels_for_lineplot = function(variants = variants, patientID, studyGenes
 
   # Keep only INDELs of interest based on patient, impact, quality and genes
   indels <- variants %>%
-    dplyr::filter(nchar(as.character(alt)) > minLength) %>%
-    tidyr::unite(Location, chrom, pos ,sep="_",remove=FALSE) %>% # create columns that will be useful later
-    tidyr::unite(mutation_det, Location,ref,alt,sep = "_",remove=FALSE) %>% # create columns that will be useful later
-    tidyr::separate(SampleName,into=c("PID","Time","Status","Repl.within","batch","Outcome"),remove = FALSE,sep="[.]") %>%
     dplyr::filter(PID %in% patientID) %>% # restrict analysis to OurPID
+    dplyr::filter(nchar(as.character(alt)) > minLength) %>%
+    tidyr::unite(Location, chrom, pos ,sep="_",remove=FALSE) %>% # create columns that will be useful later: do I need this?
+    tidyr::unite(mutation_key, chrom, pos, alt ,sep="_",remove=FALSE) %>% #  - unique IDs for a mutation
+    tidyr::separate(SampleName,into=c("PID","Time","Status","Repl.within","batch","Outcome"),remove = FALSE,sep="[.]") %>%
     dplyr::filter(SYMBOL %in% studyGenes) %>% # restrict analysis to specific genes
     dplyr::filter(qual > minQual) %>% # only keep good quality indels
     dplyr::filter(IMPACT %in% c("HIGH", 'MODERATE')) %>%
     dplyr::group_by(SampleName,Location,ref,alt) %>% # for every Sample: for every Location called and annotated multiple times only keep the highest rank
-    dplyr::filter(qual > minQual) %>%  #quality filter
+    dplyr::filter(qual > minQual) %>%  # quality filter
     dplyr::filter(IMPACT %in% c("HIGH", 'MODERATE')) %>%
     dplyr::group_by(SampleName,Location,ref,alt) %>% # for every Location called only keep the highest rank
-    dplyr::filter(order(IMPACT_rank) == order(IMPACT_rank)[which.min(order(IMPACT_rank))])
+    dplyr::filter(order(IMPACT_rank) == order(IMPACT_rank)[which.min(order(IMPACT_rank))]) %>%
+    dplyr::filter(!str_detect(Consequence,c("splice_donor"))) %>% # we are looking for ITDs
+    dplyr::filter(!str_detect(Consequence,c("splice_acceptor"))) %>%
+    dplyr::mutate(mutation_det = stringr::str_replace(mutation_det,"&.+",""))
 
   ################################################
   # Get all the clinical information for patientID
