@@ -154,7 +154,7 @@ import_indels_for_lineplot = function(variants = variants, patientID, studyGenes
   y_matrix <- as.matrix(indels_untidy[, as.character(unique(indels_saver$SampleName))])
   rownames(y_matrix) <- indels_untidy$mutation_key
 
-  mutations <- paste(indels_untidy$SYMBOL,indels_untidy$Consequence)
+  mutations <- paste(indels_untidy$SYMBOL,indels_untidy$mutation_det)
 
   ret$mutations <- mutations
   ret$y_matrix <- y_matrix
