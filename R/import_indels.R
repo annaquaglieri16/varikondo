@@ -80,13 +80,11 @@ import_indels_for_lineplot = function(variants = variants, patientID, studyGenes
     dplyr::filter(qual > minQual) %>% # only keep good quality indels
     dplyr::filter(IMPACT %in% c("HIGH", 'MODERATE')) %>%
     dplyr::group_by(SampleName,Location,ref,alt) %>% # for every Sample: for every Location called and annotated multiple times only keep the highest rank
-    dplyr::filter(qual > minQual) %>%  # quality filter
-    dplyr::filter(IMPACT %in% c("HIGH", 'MODERATE')) %>%
-    dplyr::group_by(SampleName,Location,ref,alt) %>% # for every Location called only keep the highest rank
     dplyr::filter(order(IMPACT_rank) == order(IMPACT_rank)[which.min(order(IMPACT_rank))]) %>%
     dplyr::filter(!str_detect(Consequence,c("splice_donor"))) %>% # we are looking for ITDs
     dplyr::filter(!str_detect(Consequence,c("splice_acceptor"))) %>%
-    dplyr::mutate(mutation_det = stringr::str_replace(mutation_det,"&.+",""))
+    dplyr::unite(mutation_det, SYMBOL, Consequence , sep = "",remove = FALSE) %>%
+    dplyr::mutate(mutation_det = stringr::str_replace(mutation_det,"&.+","")) # I needed to create this one
 
   ################################################
   # Get all the clinical information for patientID
