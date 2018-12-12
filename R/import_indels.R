@@ -74,7 +74,7 @@ import_indels_for_lineplot = function(variants = variants, patientID, studyGenes
     dplyr::filter(PID %in% patientID) %>% # restrict analysis to OurPID
     dplyr::filter(nchar(as.character(alt)) > minLength) %>%
     tidyr::unite(Location, chrom, pos ,sep="_",remove=FALSE) %>% # create columns that will be useful later: do I need this?
-    tidyr::unite(mutation_key, chrom, pos, alt ,sep="_",remove=FALSE) %>% #  - unique IDs for a mutation
+    tidyr::unite(mutation_key, chrom, pos, ref, alt ,sep="_",remove=FALSE) %>% #  - unique IDs for a mutation
     tidyr::separate(SampleName,into=c("PID","Time","Status","Repl.within","batch","Outcome"),remove = FALSE,sep="[.]") %>%
     dplyr::filter(SYMBOL %in% studyGenes) %>% # restrict analysis to specific genes
     dplyr::filter(qual > minQual) %>% # only keep good quality indels
@@ -146,7 +146,7 @@ import_indels_for_lineplot = function(variants = variants, patientID, studyGenes
   indels_untidy <- indels_saver %>%
     dplyr::mutate(Time = forcats::fct_relevel(Time,"Screen","Cyc1","Cyc2","Cyc3","Cyc4","Cyc9")) %>%
     dplyr::mutate(SampleName = forcats::fct_reorder(SampleName,as.numeric(Time))) %>%
-    dplyr::select(mutation_det,SYMBOL,Consequence,VAF,SampleName) %>%
+    dplyr::select(mutation_det,mutation_key,SYMBOL,Consequence,VAF,SampleName) %>%
     tidyr::spread(key = SampleName,value=VAF,fill=NA)
   options(warn=0)
 
