@@ -102,7 +102,7 @@ import_indels_for_lineplot = function(variants = variants, patientID, studyGenes
   # was actually still present but was partially reduced at some stages.
 
   # 1. Define all the unique indels found for patientID
-  unique_indels <- unique(indels[,c("chrom","pos","ref","Location","mutation_det","alt","SYMBOL","Consequence")])
+  unique_indels <- unique(indels[,c("chrom","pos","ref","Location","mutation_key","alt","SYMBOL","Consequence")])
 
   # 2. Create all the possible combinations between variants found and clinical samples
   clinical_indels_empty <- merge(clinicalData ,unique_indels,all=TRUE)
@@ -129,7 +129,7 @@ import_indels_for_lineplot = function(variants = variants, patientID, studyGenes
   # 5. If some good quality indels are found then
   # re-add indels whose key (chrom_pos_alt) was present at other time points
   indels_saver <-  dplyr::bind_rows(indels_keep,
-                                       subset(indels_leave,mutation_det %in% indels_keep$mutation_det))
+                                       subset(indels_leave,mutation_key %in% indels_keep$mutation_key))
 
   # Re-add indels
   options(warn=-1)
