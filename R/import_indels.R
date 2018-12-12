@@ -83,7 +83,7 @@ import_indels_for_lineplot = function(variants = variants, patientID, studyGenes
     dplyr::filter(order(IMPACT_rank) == order(IMPACT_rank)[which.min(order(IMPACT_rank))]) %>%
     dplyr::filter(!str_detect(Consequence,c("splice_donor"))) %>% # we are looking for ITDs
     dplyr::filter(!str_detect(Consequence,c("splice_acceptor"))) %>%
-    tidyr::unite(mutation_det, SYMBOL, Consequence , sep = "",remove = FALSE) %>%
+    tidyr::unite(mutation_det, SYMBOL, Consequence , sep = " ",remove = FALSE) %>%
     dplyr::mutate(mutation_det = stringr::str_replace(mutation_det,"&.+","")) # I needed to create this one
 
   ################################################
