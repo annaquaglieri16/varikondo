@@ -71,7 +71,7 @@
 
 #' @export
 
-import_indels_for_lineplot = function(variants = variants, patientID, studyGenes, minQual=20,
+import_any_for_lineplot = function(variants = variants, patientID, studyGenes, minQual=20,
                                       clinicalData, tidy = TRUE,
                                       time_order = c("Screen","Cyc1","Cyc2","Cyc3","Cyc4","Cyc9"),
                                       keep_impact = c("HIGH","MODERATE")) {
