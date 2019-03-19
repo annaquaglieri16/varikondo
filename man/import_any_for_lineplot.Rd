@@ -4,10 +4,10 @@
 \alias{import_any_for_lineplot}
 \title{Import INDELs detected by VarDict or Mutect2}
 \usage{
-import_any_for_lineplot(variants = variants, patientID, studyGenes,
-  minQual = 20, clinicalData, tidy = TRUE, time_order = c("Screen",
-  "Cyc1", "Cyc2", "Cyc3", "Cyc4", "Cyc9"), keep_impact = c("HIGH",
-  "MODERATE"))
+import_any_for_lineplot(variants = NA, patientID = NA,
+  studyGenes = NA, minQual = 20, clinicalData = NA, tidy = TRUE,
+  time_order = c("Screen", "Cyc1", "Cyc2", "Cyc3", "Cyc4", "Cyc9"),
+  keep_impact = c("HIGH", "MODERATE"))
 }
 \arguments{
 \item{variants}{a data frame where every row is a variant for one sample at a specific time point. See below for more details about this data frame.}

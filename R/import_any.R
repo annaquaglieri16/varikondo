@@ -73,79 +73,123 @@
 
 #' @export
 
-import_any_for_lineplot = function(variants = variants, patientID, studyGenes, minQual=20,
-                                      clinicalData, tidy = TRUE,
-                                      time_order = c("Screen","Cyc1","Cyc2","Cyc3","Cyc4","Cyc9"),
-                                      keep_impact = c("HIGH","MODERATE")) {
 
-  if ( nrow(variants) == 0 ) {
-    warning(paste0("No variants available in input for patient ",patientID))
+import_any_for_lineplot = function(variants = NA, patientID = NA, studyGenes = NA, minQual=20,
+                                   clinicalData = NA, tidy = TRUE,
+                                   time_order = c("Screen","Cyc1","Cyc2","Cyc3","Cyc4","Cyc9"),
+                                   keep_impact = c("HIGH","MODERATE")) {
+
+  if( is.na(patientID) ){
+    stop("patientID is not defined.")
+  }
+
+
+
+  if ( nrow(clinicalData) == 0 ) {
+    warning(paste0("No clinicalData available."))
     return(NULL)
   }
 
+  if( is.na(studyGenes) ){
+    warning("studyGenes is not defined and all genes will be used.")
+    studyGenes <- as.character(unique(variants$SYMBOL))
+  }
+
   # Check variants existence and column requirements
-
   impact <- TRUE
-
   search_env <- pryr::where("tidy")
+
+  # Variants existence
   if(!exists("variants",where = search_env)){
-    stop("No set of true variants provided.")
-  } else {
+    warning("No set of true variants provided.")
+    return(NULL)
+  }
 
-    facultative_columns <-c("Consequence","IMPACT","qual")
-    check_columns <- sum(!(facultative_columns %in% colnames(variants)))
+  if ( nrow(variants) == 0 ) {
+    warning(paste0("No lines availble in input for variants."))
+    return(NULL)
+  }
 
-    # Check for facultative columns
-    if(check_columns > 0){
+  # Clinical data existence
+  if(!exists("clinicalData",where = search_env)){
+    warning("No set of true variants provided.")
+    return(NULL)
+  }
 
-      missing <- facultative_columns[!(facultative_columns %in% colnames(variants))]
-      warning(paste0("The following column names are missing in the variants set: ",missing,".
-                     They will be filled with default values."))
+  if ( nrow(clinicalData) == 0 ) {
+    warning(paste0("No lines availble in input for clinicalData"))
+    return(NULL)
+  }
 
-      if(sum(missing %in% "Consequence") > 0){
-        variants$Consequence <- ""
-        warning(paste0("Consequence is missing and will be filled with '.'"))
-      }
+  ##########################################
+  ### Check column requirements for variants
+  ##########################################
 
-      if(sum(missing %in% "IMPACT") > 0){
-        variants$IMPACT <- NA
-        warning(paste0("IMPACT is missing and will be filled with NAs."))
-      } else {
+  facultative_columns <- c("Consequence","IMPACT","qual")
+  check_columns <- sum(!(facultative_columns %in% colnames(variants)))
 
-        lev <- levels(factor(variants$IMPACT))
+  # Check for facultative columns
+  if(check_columns > 0){
 
-        if( sum(!(lev %in% c("HIGH","MODERATE","LOW","MODIFIER"))) > 0) {
+    missing <- facultative_columns[!(facultative_columns %in% colnames(variants))]
+    warning(paste0("The following column names are missing in the variants set: ",paste0(missing,collapse=","),".\n"))
 
-          warning(paste0("The impact columns contains unknown values and won't be used for filtering.
-                         They should only contain HIGH,MODERATE,LOW,MODIFIER.
-                         See https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html."))
+    if(sum(missing %in% "Consequence") > 0){
+      variants$Consequence <- ""
+      warning(paste0("Consequence is missing and will be filled with '.'\n"))
+    }
 
-          impact <- FALSE
+    if(sum(missing %in% "IMPACT") > 0){
+      variants$IMPACT <- NA
+      warning(paste0("IMPACT is missing and will be filled with NAs.\n"))
+    } else {
 
-        }
+      lev <- levels(factor(variants$IMPACT))
 
-      }
+      if( sum(!(lev %in% c("HIGH","MODERATE","LOW","MODIFIER"))) > 0) {
 
-      if(sum(missing %in% "qual") > 0){
-        variants$qual <- 0
-        warning(paste0("IMPACT is missing and will be filled with 0. Remember to set minQual = 0."))
+        warning(paste0("The impact columns contains unknown values and won't be used for filtering.
+                       They should only contain HIGH,MODERATE,LOW,MODIFIER.
+                       See https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html.\n"))
+
+        impact <- FALSE
+
       }
 
     }
 
-    # necessary columns
-    need_columns <- c("PID","Time","Repl.within","batch","Outcome","chrom",
-                      "pos","alt","ref","alt_depth","ref_depth","SYMBOL")
-
-    check_columns <- sum(!(need_columns %in% colnames(variants)))
-
-    if(check_columns > 0){
-      missing <- need_columns[!(need_columns %in% colnames(variants))]
-      stop(paste0("Check requirements for column names of variants The following columns are missing: ",
-                  paste0(missing,collapse=","), "\n"))
+    if(sum(missing %in% "qual") > 0){
+      variants$qual <- 0
+      minQual <- 0
+      warning(paste0("qual is missing and will be filled with 0 and minQual = 0.\n"))
     }
 
   }
+
+  # necessary columns
+  need_columns <- c("PID","Time","Status","Repl.within","batch","Outcome","chrom",
+                    "pos","alt","ref","alt_depth","ref_depth","SYMBOL")
+
+  check_columns <- sum(!(need_columns %in% colnames(variants)))
+
+  if(check_columns > 0){
+    missing <- need_columns[!(need_columns %in% colnames(variants))]
+    stop(paste0("The following columns are missing from variants: ",
+                paste0(missing,collapse=","), "\n"))
+  }
+
+
+  # Check clinical data
+  need_columns <- c("PID","Time","Status","Repl.within","batch","Outcome")
+
+  check_columns <- sum(!(need_columns %in% colnames(clinicalData)))
+
+  if(check_columns > 0){
+    missing <- need_columns[!(need_columns %in% colnames(clinicalData))]
+    stop(paste0("The following columns are missing for clinicalData: ",
+                paste0(missing,collapse=", ")))
+  }
+
 
   # Check done
 
@@ -190,7 +234,6 @@ import_any_for_lineplot = function(variants = variants, patientID, studyGenes, m
       dplyr::filter(!str_detect(Consequence,c("splice_acceptor"))) %>%
       dplyr::mutate(mutation_det = stringr::str_replace(mutation_det,"&.+",""))
 
-
   ################################################
   # Get all the clinical information for patientID
   ################################################
@@ -213,7 +256,7 @@ import_any_for_lineplot = function(variants = variants, patientID, studyGenes, m
   clinical_var_empty <- merge(clinicalData ,unique_var,all=TRUE)
 
   # 3. Fill NAs in VAF and ref_depth where a mutation wasn't found in the unfiltered data frames of indels
-  clinical_var_fill <- merge(clinical_var_empty,indels,all=TRUE) %>%
+  clinical_var_fill <- merge(clinical_var_empty,var,all=TRUE) %>%
     dplyr::mutate(ref_depth = ifelse(is.na(ref_depth),0,ref_depth),
            VAF = ifelse(is.na(VAF),0,VAF),
            alt_depth = ifelse(is.na(alt_depth),0,alt_depth),
@@ -239,7 +282,7 @@ import_any_for_lineplot = function(variants = variants, patientID, studyGenes, m
   # Re-add indels
   options(warn = -1)
   var_saver <- var_saver %>%
-      dplyr::mutate(Time = forcats::fct_relevel(Time,time_order)) %>%
+      dplyr::mutate(Time = factor(Time,levels = time_order)) %>%
       dplyr::mutate(SampleName = forcats::fct_reorder(SampleName,as.numeric(Time)))
   options(warn = 0)
 
