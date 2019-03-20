@@ -10,7 +10,7 @@ import_any_for_lineplot(variants = NA, patientID = NA,
   keep_impact = c("HIGH", "MODERATE"))
 }
 \arguments{
-\item{variants}{a data frame where every row is a variant for one sample at a specific time point. See below for more details about this data frame.}
+\item{variants}{a data frame where every row is a variant for one sample at a specific time point. See below for more details about this data frame. The variants can derive from any caller but the input should be standardised to have the following columns: 'PID', 'Time', 'Status', 'Repl.within', 'batch' ,'Outcome', 'chrom', 'pos', 'alt', 'ref', 'ref_depth','alt_depth'.}
 
 \item{patientID}{a character vector specifying the patient/s id/s for which variants have to be imported.}
 
@@ -30,7 +30,7 @@ import_any_for_lineplot(variants = NA, patientID = NA,
 This function will take as input a data frame of variants with specific column information and return a filtered set with sample's clinical infrmation and default variants information also for samples without variants.
 }
 \details{
-This function will keep only the variants for `patientID` found on `studyGenes` and with a `minQual`. If a sample has no variants, then only clinical information will be returned with default values for the variant information. The variants can derive from any caller but the input should be standardised to have the following columns: `PID`, `Time`, `Status`, `Repl.within`, `batch` ,`Outcome`, `chrom`, `pos`, `alt`, `ref`, `ref_depth`,`alt_depth`.
+This function will keep only the variants for `patientID` found on `studyGenes` and with a `minQual`. If a sample has no variants, then only clinical information will be returned with default values for the variant information.
 
 - `PID` stands for patient ID.
 - `Time` can be defined in any way and it should reflect the time of sample collection. For example it could be defined as Time0, Time1, Time2 etc... It is important that an order vector of `Time` is provided in `time_order` (c("Time0", "Time1", "Time2")) to allow proper ordering of the samples.
