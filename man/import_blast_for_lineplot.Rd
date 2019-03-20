@@ -2,19 +2,28 @@
 % Please edit documentation in R/import_blast.R
 \name{import_blast_for_lineplot}
 \alias{import_blast_for_lineplot}
-\title{Import blast contect for a specific patient}
+\title{Import clinical information for a specific patient}
 \usage{
-import_blast_for_lineplot(clinicalData, patientID, tidy = TRUE)
+import_blast_for_lineplot(clinicalData = NA, patientID = NA,
+  tidy = TRUE, extract_column = "Blast", sample_name_parts = c("PID",
+  "Time", "Status", "Repl.Within", "Batch", "Outcome"),
+  time_order = c("Screen", "Cyc1", "Cyc2", "Cyc3", "Cyc4", "Cyc9"))
 }
 \arguments{
-\item{clinicalData}{data frame with the percentage of `Blast` information for the patients in the cohort.}
+\item{clinicalData}{data frame containing the clinical information `extract_column` and `SampleName` for the patients in the cohort.}
 
 \item{patientID}{a character vector specifying the patient/s id/s for which stories have to be imported.}
 
 \item{tidy}{Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.}
+
+\item{extract_column}{vector specifying the column to be extracted. Currently only numeric variables wit values between 0 and 1 are allowed to be consistent with plotting together with clonality and VAF estimates.}
+
+\item{sample_name_parts}{vector with constitutive parts, separated by a ".", of the `SampleName` column. For example, if the `SampleName` entry for a generic patient looks like: P1.Screening.R1.Responder, `sample_name_parts` will look something like sample_name_parts = c("PID","Time","Replicate","Outcome") and it will be used to create separate columns for the relative information. The components `Time` and `PID` (patient ID) are required. Every sequencing sample needs to have the same `SampleName` structure.}
+
+\item{time_order}{vector specifying the order of time points, e.g. the levels of the `Time` variable extracted from the `SampleName` column of the input `variants`.}
 }
 \description{
-Import blast contect for a specific patient
+Import clinical information for a specific patient
 }
 \examples{
 

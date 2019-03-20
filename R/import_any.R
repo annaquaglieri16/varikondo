@@ -1,28 +1,30 @@
 #' General import for variants
 #'
-#' @param variants a data frame where every row is a variant for one sample at a specific time point. See below for more details about this data frame. The variants can derive from any caller but the input should be standardised to have the following columns: 'PID', 'Time', 'Status', 'Repl.within', 'batch' ,'Outcome', 'chrom', 'pos', 'alt', 'ref', 'ref_depth','alt_depth' and gene `SYMBOL` (see more information in Details). The columns `Consequence` and `IMPACT` (as annotated by Variant Effect Predictor (VEP) https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html) are filled with default values if not found. The column `Consequence` is used to create a mutation detail to be added to the gene (used for plotting purposes).
+#' @param variants a data frame where every row is a variant for one sample at a specific time point. The variants can derive from any caller but the input should be standardised to have the following columns: 'SampleName','chrom', 'pos', 'alt', 'ref', 'ref_depth','alt_depth' and (gene) 'SYMBOL' (see more information in Details). The columns `Consequence` and `IMPACT` (as annotated by Variant Effect Predictor (VEP) https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html) are filled with default values if not found. The `SampleName` columns is unique for every sequencing sample and its components are specified in `sample_name_parts`.
 #' @param patientID a character vector specifying the patient/s id/s for which variants have to be imported.
 #' @param studyGenes genes of interest.
 #' @param minQual minimum quality for a variant to be kept.
-#' @param clinicalData clinical data about the patients in the cohort. It has to contain the following columns: `PID`,`Time`,`Status`,`Repl.within`,`batch` and `Outcome` separated by a '.'.
+#' @param clinicalData clinical data about the patients in the cohort. It has to contain the a column `SampleName`.
 #' @param tidy Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.
-#' @param time_order vector specifying the order of time points, e.g. the levels of the `Time` variable in the `variants` data frame.
+#' @param sample_name_parts vector with constitutive parts, separated by a ".", of the `SampleName` column. For example, if the `SampleName` entry for a generic patient looks like: P1.Screening.R1.Responder, `sample_name_parts` will look something like sample_name_parts = c("PID","Time","Replicate","Outcome") and it will be used to create separate columns for the relative information. The components `Time` and `PID` (patient ID) are required. Every sequencing sample needs to have the same `SampleName` structure.
+#' @param time_order vector specifying the order of time points, e.g. the levels of the `Time` variable extracted from the `SampleName` column of the input `variants`.
 #' @param keep_impact vector specifying the IMPACT values to select variants. Values allowed are HIGH, MODERATE, LOW, MODIFIER ( https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html). IMPACT should be a columns of `variants`. If it is not found all variants are kept.
+#'
 #' @description   This function will take as input a data frame of variants with specific column information and return a filtered set with sample's clinical infrmation and default variants information also for samples without variants.
 
 #' @details This function will keep only the variants for `patientID` found on `studyGenes` and with a `minQual`. If a sample has no variants, then only clinical information will be returned with default values for the variant information.
 
 #' More details about the `variants` input:
-#' - `PID` stands for patient ID.
-#' - `Time` can be defined in any way and it should reflect the time of sample collection. For example it could be defined as Time0, Time1, Time2 etc... It is important that an order vector of `Time` is provided in `time_order` (c("Time0", "Time1", "Time2")) to allow proper ordering of the samples.
-#' - `Status` is used to classify the clinical status of a sample, e.g. Diagnosis, Remission, Relapse, Refractory.
-#' - `Repl.within` identifier for technical replicate within a cohort (e.g. R1, R2). If no replicates are availble it can be set ro R1 for all samples.
-#' - `batch` identifier for batch (e.g. B1, B2 etc..) for situations when samples were sequenced at different times across different batches.
-#' - `Outcome` represents the overall outcome of a patients in the study. For example if a patient never responded to treatment it could be cassified as Refractory or Respondent if a patient responded.
 #'
-#' - If VEP `Consequence` is not available it could populated with other informations like exon number, INDEL/SNV label etc... If the column `IMPACT` is not found it will be filled with NAs and no variants will be filtered. Otherwise, values of the columns are checked and if they are HIGH, MODERATE, LOW or MODIFIER only variants with `keep_impact` entries are kept. If a mutation appears twice with different `IMPACT` values only the most damaging will be kept if `IMPACT` is available.
+#' - The `Time` extracted from `SampleName` can be defined in any way and it should reflect the time of sample collection. For example it could be defined as Time0, Time1, Time2 etc... It is important that an ordered vector of `Time` is provided in `time_order` (c("Time0", "Time1", "Time2")) to allow proper ordering of the samples.
 #'
-#' The variants are then merged with the clinical information in `clinicalData` for `patientID`. This means that if no variants are returned for one time point for one `patientID`, default entries for Variant Allele Frequency (VAF), reference and alterative depths will be created. The default value is 0 for all of the above. A variant is reported for a patient only if at any time point its VAF >= 0.05 and the total depth is >= 10. The function can return the variants in a tidy (long format) or untidy (wide, matrix and list) format. If `tidy = FALSE` the function will return a matrix where the rows are all the unique variants found for `patientID` across time and the columns are the samples of `patientID` across time.
+#' - The column `Consequence` is used to add details to each mutations (used for plotting purposes).
+#'
+#' - If VEP `Consequence` is not available it could populated with any other informations like exon number, INDEL/SNV label etc...
+#'
+#' - If the column `IMPACT` is not found it will be filled with NAs and no variants will be filtered. Otherwise, values of the columns are checked and if they are within the expected values (HIGH, MODERATE, LOW or MODIFIER) only variants with `keep_impact` entries are kept. If a mutation appears twice with different `IMPACT` values only the most damaging will be kept.
+#'
+#' The variants are then merged with the clinical information of `patientID`. This step is needed so that if no variants are returned for one time point for one `patientID`, default entries for Variant Allele Frequency (VAF), reference and alterative depths will be created. The default value is 0 for all of the above. A variant is reported for a patient only if at any time point its VAF >= 0.15 and the total depth is >= 10. The function can return the variants in a tidy (long format) or untidy (wide, matrix and list) format. If `tidy = FALSE` the function will return a matrix where the rows are all the unique variants found for `patientID` across time and the columns are the samples of `patientID` across time.
 
 
 #' @examples
@@ -111,6 +113,14 @@ import_any_for_lineplot = function(variants = NA, patientID = NA, studyGenes = N
     return(NULL)
   }
 
+  if(sum(sample_name_parts %in% "Time") == 0){
+    stop("`Time` entry is required in sample name components specified in sample_name_parts argument.")
+  }
+
+  if(sum(sample_name_parts %in% "PID") == 0){
+    stop("`PID` entry, patient ID, is required in sample name components specified in sample_name_parts argument.")
+  }
+
   # Clinical data existence
   if(!exists("clinicalData",where = search_env)){
     warning("No set of true variants provided.")
@@ -168,7 +178,7 @@ import_any_for_lineplot = function(variants = NA, patientID = NA, studyGenes = N
   }
 
   # necessary columns
-  need_columns <- c("PID","Time","Status","Repl.within","batch","Outcome","chrom",
+  need_columns <- c("SampleName","chrom",
                     "pos","alt","ref","alt_depth","ref_depth","SYMBOL")
 
   check_columns <- sum(!(need_columns %in% colnames(variants)))
@@ -181,7 +191,7 @@ import_any_for_lineplot = function(variants = NA, patientID = NA, studyGenes = N
 
 
   # Check clinical data
-  need_columns <- c("PID","Time","Status","Repl.within","batch","Outcome")
+  need_columns <- c("SampleName")
 
   check_columns <- sum(!(need_columns %in% colnames(clinicalData)))
 
@@ -200,10 +210,10 @@ import_any_for_lineplot = function(variants = NA, patientID = NA, studyGenes = N
 
     # Keep only variants of interest based on patient, impact, quality and genes
     var <- variants %>%
+    tidyr::separate(SampleName,into = sample_name_parts,remove = FALSE,sep="[.]") %>%
       dplyr::filter(PID %in% patientID) %>% # restrict analysis to OurPID
       tidyr::unite(Location, chrom, pos ,sep="_",remove=FALSE) %>% # create columns that will be useful later: do I need this?
       tidyr::unite(mutation_key, chrom, pos, ref, alt ,sep="_",remove=FALSE) %>% #  - unique IDs for a mutation
-      tidyr::unite(SampleName,PID,Time,Status,Repl.within,batch,Outcome,remove = FALSE,sep=".") %>%
       dplyr::filter(SYMBOL %in% studyGenes) %>% # restrict analysis to specific genes
       dplyr::filter(qual > minQual) %>% # only keep good quality indels
       dplyr::mutate(tot_depth = alt_depth + ref_depth) %>%
@@ -239,7 +249,7 @@ import_any_for_lineplot = function(variants = NA, patientID = NA, studyGenes = N
   # Get all the clinical information for patientID
   ################################################
   clinicalData <- clinicalData %>%
-    tidyr::unite(SampleName,PID,Time,Status,Repl.within,batch,Outcome,remove = FALSE,sep=".") %>%
+    tidyr::separate(SampleName,into = sample_name_parts,remove = FALSE,sep="[.]") %>%
     dplyr::filter(PID %in% patientID)
 
   # The following part was added due to the fact that hard coded filters (depht/quality)
@@ -264,10 +274,10 @@ import_any_for_lineplot = function(variants = NA, patientID = NA, studyGenes = N
            tot_depth = ifelse(is.na(tot_depth),0,tot_depth))
 
   # 4. Filter based on minimal required ref_depth threshold and re-add lost mutations later
-  var_keep <- clinical_var_fill %>% dplyr::filter(tot_depth >= 10 & VAF >= 0.05)
+  var_keep <- clinical_var_fill %>% dplyr::filter(tot_depth >= 10 & VAF >= 0.15)
 
   # var_leave contains some indels not found and some that do not meet the filters
-  var_leave <- clinical_var_fill %>% dplyr::filter(tot_depth < 10 | VAF < 0.05)
+  var_leave <- clinical_var_fill %>% dplyr::filter(tot_depth < 10 | VAF < 0.15)
 
 
   if(nrow(var_keep) == 0){
@@ -284,7 +294,7 @@ import_any_for_lineplot = function(variants = NA, patientID = NA, studyGenes = N
   options(warn = -1)
   var_saver <- var_saver %>%
       dplyr::mutate(Time = factor(Time,levels = time_order)) %>%
-      dplyr::mutate(SampleName = forcats::fct_reorder(SampleName,as.numeric(Time)))
+      dplyr::mutate(SampleName = forcats::fct_reorder(SampleName,as.numeric(Time))) %>%
       dplyr::mutate(variant_type = variant_type)
   options(warn = 0)
 
