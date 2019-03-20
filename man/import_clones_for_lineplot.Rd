@@ -4,7 +4,10 @@
 \alias{import_clones_for_lineplot}
 \title{Import clones detected by superFreq for a specific patient}
 \usage{
-import_clones_for_lineplot(file, patientID, tidy = TRUE)
+import_clones_for_lineplot(file, patientID = NA, tidy = TRUE,
+  time_order = c("Screen", "Cyc1", "Cyc2", "Cyc3", "Cyc4", "Cyc9"),
+  sample_name_parts = c("PID", "Time", "Status", "Repl.Within", "Batch",
+  "Outcome"))
 }
 \arguments{
 \item{file}{path to where the superFreq stories.Rdata for `patientID` is saved.}
@@ -12,6 +15,10 @@ import_clones_for_lineplot(file, patientID, tidy = TRUE)
 \item{patientID}{a character vector specifying the patient/s id/s for which stories have to be imported.}
 
 \item{tidy}{Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.}
+
+\item{time_order}{vector specifying the order of time points, e.g. the levels of the `Time` variable `sample_name_parts` definition. This will be used to order samples for plotting purposes.}
+
+\item{sample_name_parts}{vector with constitutive parts of the names for every sample. For example, if the sample names are pf the format: patientID.Time.Status.Repl.within.batch.Outcome, the vector will be sample_name_parts = c("patientID","Time","Status","Repl.Within","Batch","Outcome"). The component `Time` is required.}
 }
 \description{
 Import clones detected by superFreq for a specific patient

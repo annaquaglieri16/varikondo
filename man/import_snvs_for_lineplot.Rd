@@ -4,7 +4,10 @@
 \alias{import_snvs_for_lineplot}
 \title{Import point mutations for lineplots}
 \usage{
-import_snvs_for_lineplot(mutationSummary, patientID, tidy = TRUE)
+import_snvs_for_lineplot(mutationSummary = NA, patientID = NA,
+  tidy = TRUE, time_order = c("Screen", "Cyc1", "Cyc2", "Cyc3", "Cyc4",
+  "Cyc9"), sample_name_parts = c("PID", "Time", "Status", "Repl.Within",
+  "Batch", "Outcome"))
 }
 \arguments{
 \item{mutationSummary}{a matrix summarising mutations reported by superFreq. Every row is a muations, every column is a sample and every entry is the VAF for that row mutation for that column sample.}
@@ -12,6 +15,10 @@ import_snvs_for_lineplot(mutationSummary, patientID, tidy = TRUE)
 \item{patientID}{a character vector specifying the patient/s id/s for which mutations have to be imported. This value has to correspond to the names used to save the `mutationSummary` object.}
 
 \item{tidy}{Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.}
+
+\item{time_order}{vector specifying the order of time points, e.g. the levels of the `Time` variable `sample_name_parts` definition. This will be used to order samples for plotting purposes.}
+
+\item{sample_name_parts}{vector with constitutive parts of the names for every sample. For example, if the sample names are pf the format: patientID.Time.Status.Repl.within.batch.Outcome, the vector will be sample_name_parts = c("patientID","Time","Status","Repl.Within","Batch","Outcome"). The component `Time` is required.}
 }
 \description{
 Import point mutations for lineplots

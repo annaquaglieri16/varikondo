@@ -20,7 +20,17 @@
 #'     clinicalData = clinicalData)
 
 
-import_blast_for_lineplot = function(clinicalData, patientID, tidy = TRUE) {
+import_blast_for_lineplot = function(clinicalData = NA, patientID = NA, tidy = TRUE) {
+
+  options(warn=-1)
+  if(is.na(clinicalData)){
+    stop("clinicalData not availble in input.")
+  }
+  options(warn=0)
+
+  if( is.na(patientID) ){
+    stop("patientID is not defined.")
+  }
 
   #import blast fraction
   clinicalData <- clinicalData %>%
@@ -31,8 +41,10 @@ import_blast_for_lineplot = function(clinicalData, patientID, tidy = TRUE) {
     return(NULL)
   }
 
+  # Check column requirements
+  need_columns <- c("SampleName","Blast")
 
-  #convert to line plot format (whatever that will be)
+  # convert to long format
   samples = unique(clinicalData$SampleName)
   y_matrix = matrix(as.numeric(as.character(clinicalData$Blast))/100, ncol=length(samples), dimnames=list('Blast', samples))
 
