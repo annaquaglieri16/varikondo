@@ -1,7 +1,7 @@
 Package: lineplots
 Type: Package
 Title: Making lineplots
-Version: 0.1.20
+Version: 0.2.1
 Author: Who wrote it
 Maintainer: The package maintainer <yourself@somewhere.net>
 Description: Making lineplots of VAF of patients RNA-Seq samples across time combining point mutations, INDELS, CNV and clinical information.

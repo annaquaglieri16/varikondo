@@ -7,12 +7,10 @@
 import_any_for_lineplot(variants = NA, patientID = NA,
   studyGenes = NA, minQual = 20, clinicalData = NA, tidy = TRUE,
   time_order = c("Screen", "Cyc1", "Cyc2", "Cyc3", "Cyc4", "Cyc9"),
-  sample_name_parts = c("PID", "Time", "Status", "Repl.Within", "Batch",
-  "Outcome"), keep_impact = c("HIGH", "MODERATE"),
-  variant_type = "indels-vardict")
+  keep_impact = c("HIGH", "MODERATE"), variant_type = "indels-vardict")
 }
 \arguments{
-\item{variants}{a data frame where every row is a variant for one sample at a specific time point. The variants can derive from any caller but the input should be standardised to have the following columns: 'SampleName','chrom', 'pos', 'alt', 'ref', 'ref_depth','alt_depth' and (gene) 'SYMBOL' (see more information in Details). The columns `Consequence` and `IMPACT` (as annotated by Variant Effect Predictor (VEP) https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html) are filled with default values if not found. The `SampleName` columns is unique for every sequencing sample and its components are specified in `sample_name_parts`.}
+\item{variants}{a data frame where every row is a variant for one sample at a specific time point. The variants can derive from any caller but the input should be standardised to have the following columns: 'SampleName','PID','Time','chrom', 'pos', 'alt', 'ref', 'ref_depth','alt_depth' and (gene) 'SYMBOL' (see more information in Details). The columns `Consequence` and `IMPACT` (as annotated by Variant Effect Predictor (VEP) https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html) are filled with default values if not found. The `SampleName` columns is unique for every sequencing sample while `PID` for every patient.}
 
 \item{patientID}{a character vector specifying the patient/s id/s for which variants have to be imported.}
 
@@ -26,8 +24,6 @@ import_any_for_lineplot(variants = NA, patientID = NA,
 
 \item{time_order}{vector specifying the order of time points, e.g. the levels of the `Time` variable extracted from the `SampleName` column of the input `variants`.}
 
-\item{sample_name_parts}{vector with constitutive parts, separated by a ".", of the `SampleName` column. For example, if the `SampleName` entry for a generic patient looks like: P1.Screening.R1.Responder, `sample_name_parts` will look something like sample_name_parts = c("PID","Time","Replicate","Outcome") and it will be used to create separate columns for the relative information. The components `Time` and `PID` (patient ID) are required. Every sequencing sample needs to have the same `SampleName` structure.}
-
 \item{keep_impact}{vector specifying the IMPACT values to select variants. Values allowed are HIGH, MODERATE, LOW, MODIFIER ( https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html). IMPACT should be a columns of `variants`. If it is not found all variants are kept.}
 }
 \description{
@@ -37,7 +33,7 @@ This function will take as input a data frame of variants with specific column i
 This function will keep only the variants for `patientID` found on `studyGenes` and with a `minQual`. If a sample has no variants, then only clinical information will be returned with default values for the variant information.
 More details about the `variants` input:
 
-- The `Time` extracted from `SampleName` can be defined in any way and it should reflect the time of sample collection. For example it could be defined as Time0, Time1, Time2 etc... It is important that an ordered vector of `Time` is provided in `time_order` (c("Time0", "Time1", "Time2")) to allow proper ordering of the samples.
+- The `Time` column can be defined in any way and it should reflect the time of sample collection. For example it could be defined as Time0, Time1, Time2 etc... It is important that an ordered vector of `Time` is provided in `time_order` (c("Time0", "Time1", "Time2")) to allow proper ordering of the samples.
 
 - The column `Consequence` is used to add details to each mutations (used for plotting purposes).
 

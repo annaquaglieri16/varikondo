@@ -1,12 +1,11 @@
 #' General import for variants
 #'
-#' @param variants a data frame where every row is a variant for one sample at a specific time point. The variants can derive from any caller but the input should be standardised to have the following columns: 'SampleName','chrom', 'pos', 'alt', 'ref', 'ref_depth','alt_depth' and (gene) 'SYMBOL' (see more information in Details). The columns `Consequence` and `IMPACT` (as annotated by Variant Effect Predictor (VEP) https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html) are filled with default values if not found. The `SampleName` columns is unique for every sequencing sample and its components are specified in `sample_name_parts`.
+#' @param variants a data frame where every row is a variant for one sample at a specific time point. The variants can derive from any caller but the input should be standardised to have the following columns: 'SampleName','PID','Time','chrom', 'pos', 'alt', 'ref', 'ref_depth','alt_depth' and (gene) 'SYMBOL' (see more information in Details). The columns `Consequence` and `IMPACT` (as annotated by Variant Effect Predictor (VEP) https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html) are filled with default values if not found. The `SampleName` columns is unique for every sequencing sample while `PID` for every patient.
 #' @param patientID a character vector specifying the patient/s id/s for which variants have to be imported.
 #' @param studyGenes genes of interest.
 #' @param minQual minimum quality for a variant to be kept.
 #' @param clinicalData clinical data about the patients in the cohort. It has to contain the a column `SampleName`.
 #' @param tidy Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.
-#' @param sample_name_parts vector with constitutive parts, separated by a ".", of the `SampleName` column. For example, if the `SampleName` entry for a generic patient looks like: P1.Screening.R1.Responder, `sample_name_parts` will look something like sample_name_parts = c("PID","Time","Replicate","Outcome") and it will be used to create separate columns for the relative information. The components `Time` and `PID` (patient ID) are required. Every sequencing sample needs to have the same `SampleName` structure.
 #' @param time_order vector specifying the order of time points, e.g. the levels of the `Time` variable extracted from the `SampleName` column of the input `variants`.
 #' @param keep_impact vector specifying the IMPACT values to select variants. Values allowed are HIGH, MODERATE, LOW, MODIFIER ( https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html). IMPACT should be a columns of `variants`. If it is not found all variants are kept.
 #'
@@ -16,7 +15,7 @@
 
 #' More details about the `variants` input:
 #'
-#' - The `Time` extracted from `SampleName` can be defined in any way and it should reflect the time of sample collection. For example it could be defined as Time0, Time1, Time2 etc... It is important that an ordered vector of `Time` is provided in `time_order` (c("Time0", "Time1", "Time2")) to allow proper ordering of the samples.
+#' - The `Time` column can be defined in any way and it should reflect the time of sample collection. For example it could be defined as Time0, Time1, Time2 etc... It is important that an ordered vector of `Time` is provided in `time_order` (c("Time0", "Time1", "Time2")) to allow proper ordering of the samples.
 #'
 #' - The column `Consequence` is used to add details to each mutations (used for plotting purposes).
 #'
@@ -80,7 +79,6 @@
 import_any_for_lineplot = function(variants = NA, patientID = NA, studyGenes = NA, minQual=20,
                                    clinicalData = NA, tidy = TRUE,
                                    time_order = c("Screen","Cyc1","Cyc2","Cyc3","Cyc4","Cyc9"),
-                                   sample_name_parts = c("PID","Time","Status","Repl.Within","Batch","Outcome"),
                                    keep_impact = c("HIGH","MODERATE"),
                                    variant_type = "indels-vardict") {
 
@@ -109,16 +107,8 @@ import_any_for_lineplot = function(variants = NA, patientID = NA, studyGenes = N
   }
 
   if ( nrow(variants) == 0 ) {
-    warning(paste0("No lines availble in input for variants."))
+    warning(paste0("No lines available in input for variants."))
     return(NULL)
-  }
-
-  if(sum(sample_name_parts %in% "Time") == 0){
-    stop("`Time` entry is required in sample name components specified in sample_name_parts argument.")
-  }
-
-  if(sum(sample_name_parts %in% "PID") == 0){
-    stop("`PID` entry, patient ID, is required in sample name components specified in sample_name_parts argument.")
   }
 
   # Clinical data existence
@@ -178,7 +168,7 @@ import_any_for_lineplot = function(variants = NA, patientID = NA, studyGenes = N
   }
 
   # necessary columns
-  need_columns <- c("SampleName","chrom",
+  need_columns <- c("SampleName","Time","PID","chrom",
                     "pos","alt","ref","alt_depth","ref_depth","SYMBOL")
 
   check_columns <- sum(!(need_columns %in% colnames(variants)))
@@ -191,7 +181,7 @@ import_any_for_lineplot = function(variants = NA, patientID = NA, studyGenes = N
 
 
   # Check clinical data
-  need_columns <- c("SampleName")
+  need_columns <- c("PID")
 
   check_columns <- sum(!(need_columns %in% colnames(clinicalData)))
 
@@ -210,7 +200,6 @@ import_any_for_lineplot = function(variants = NA, patientID = NA, studyGenes = N
 
     # Keep only variants of interest based on patient, impact, quality and genes
     var <- variants %>%
-    tidyr::separate(SampleName,into = sample_name_parts,remove = FALSE,sep="[.]") %>%
       dplyr::filter(PID %in% patientID) %>% # restrict analysis to OurPID
       tidyr::unite(Location, chrom, pos ,sep="_",remove=FALSE) %>% # create columns that will be useful later: do I need this?
       tidyr::unite(mutation_key, chrom, pos, ref, alt ,sep="_",remove=FALSE) %>% #  - unique IDs for a mutation
@@ -249,7 +238,6 @@ import_any_for_lineplot = function(variants = NA, patientID = NA, studyGenes = N
   # Get all the clinical information for patientID
   ################################################
   clinicalData <- clinicalData %>%
-    tidyr::separate(SampleName,into = sample_name_parts,remove = FALSE,sep="[.]") %>%
     dplyr::filter(PID %in% patientID)
 
   # The following part was added due to the fact that hard coded filters (depht/quality)
@@ -312,7 +300,10 @@ import_any_for_lineplot = function(variants = NA, patientID = NA, studyGenes = N
   options(warn=0)
 
   ret <- list()
-  y_matrix <- as.matrix(var_untidy[, as.character(unique(var_saver$SampleName))])
+  y_matrix <- var_untidy %>%
+    dplyr::select(-mutation_det,-mutation_key,-SYMBOL,-Consequence) %>%
+    as.matrix()
+
   rownames(y_matrix) <- var_untidy$mutation_key
 
   mutations <- var_untidy$mutation_det

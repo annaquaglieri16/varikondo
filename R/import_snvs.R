@@ -65,8 +65,8 @@ import_snvs_for_lineplot = function(mutationSummary = NA, patientID = NA, tidy =
   y_matrix = mutations$stories
 
   ret = list(mutations=mutations$label, y_matrix=y_matrix)
-  ret$mutations =  ret$mutations[matrixStats::rowMaxs(ret$y_matrix) > 0.05]
-  ret$y_matrix =  ret$y_matrix[matrixStats::rowMaxs(ret$y_matrix) > 0.05,,drop=F]
+  ret$mutations =  ret$mutations[matrixStats::rowMaxs(ret$y_matrix) > 0.15]
+  ret$y_matrix =  ret$y_matrix[matrixStats::rowMaxs(ret$y_matrix) > 0.15,,drop=F]
 
   if ( length(ret$mutations) == 0 ){
     message(paste0("No SNVs found in patient ",patientID))
