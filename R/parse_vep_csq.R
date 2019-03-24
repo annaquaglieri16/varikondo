@@ -23,7 +23,7 @@ parse_vep_csq <- function(vcf_path,vcf_df){
 
     # Duplicate rows of dataframe to allow VEP annotation
     nrepl <- sapply(VariantAnnotation::info(vcf)$CSQ,length)
-    df_repl <- vcf_df %>% dplyr::slice(rep(1:n(), times = nrepl))
+    df_repl <- vcf_df %>% dplyr::slice(rep(1:dplyr::n(), times = nrepl))
     vcf_df <- df_repl %>% dplyr::mutate(INFO_VEP = unlist(VariantAnnotation::info(vcf)$CSQ)) %>%
       tidyr::separate(INFO_VEP,into = des_vep_names,sep="[|]")
 

@@ -9,12 +9,17 @@ License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 Depends: 
-  R (>= 3.5)
+  R (>= 3.5),
+  dplyr
 Remotes: 
   ChristofferFlensburg/superFreq
 Imports:
-  dplyr,
   tidyr,
   readxl,
-  matrixStats
+  matrixStats,
+  plyranges
 RoxygenNote: 6.1.1
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

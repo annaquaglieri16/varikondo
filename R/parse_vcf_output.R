@@ -6,7 +6,7 @@
 #' @description It only works woth germline calls and for VCF from the following callers: GATK3 MuTect2, VarScan2 and VarDict.
 
 
-parse_vcf_output <- function(vcf_path, sample_name, caller, studyGenes) {
+parse_vcf_output <- function(vcf_path, sample_name, caller) {
 
   vcf <- VariantAnnotation::readVcf(vcf_path)
 
@@ -49,20 +49,22 @@ parse_vcf_output <- function(vcf_path, sample_name, caller, studyGenes) {
 
     if(caller == "mutect"){
 
+      # each row contains depth for the ref and alt allele, in order
+      allele_depths <- do.call(rbind,VariantAnnotation::geno(vcf)$AD[,1])
+      base_quality = do.call(rbind,VariantAnnotation::geno(vcf)$QSS[,1])
+
       vcf_df <- data.frame(data.frame(ranges(vcf)),
                            genotype= VariantAnnotation::geno(vcf)$GT[,1],
-                           #SampleName = VariantAnnotation::info(vcf)$SAMPLE,
-                           #qual = VariantAnnotation::qual(vcf),
                            filter = VariantAnnotation::filt(vcf),
-                           base_quality = VariantAnnotation::geno(vcf)$QSS[,1],
-                           alleles_depth = VariantAnnotation::geno(vcf)$AD[,1],
+                           base_quality = base_quality[,1],
+                           ref_depth = allele_depths[,1],
+                           alt_depth = allele_depths[,2],
                            VAF = VariantAnnotation::geno(vcf)$AF[,1],
                            alt_forw = VariantAnnotation::geno(vcf)$ALT_F1R2[,1],
                            alt_rev = VariantAnnotation::geno(vcf)$ALT_F2R1[,1],
                            ref_forw = VariantAnnotation::geno(vcf)$REF_F1R2[,1],
                            ref_rev = VariantAnnotation::geno(vcf)$REF_F2R1[,1]) %>%
 
-        tidyr::separate(alleles_depth, into = c("ref_depth","alt_depth"),sep=" ",remove=TRUE) %>%
         dplyr::mutate(ref_depth =  as.numeric(as.character(ref_depth)),
                       alt_depth = as.numeric(as.character(alt_depth)),
                       tot_depth = ref_depth + alt_depth) %>%
@@ -122,3 +124,12 @@ parse_vcf_output <- function(vcf_path, sample_name, caller, studyGenes) {
   return(vcf_df)
 
 }
+
+
+# Extract VAF from VarScan output
+parse_vaf_varscan <- function(freq){
+  freq <- gsub("%","",freq)
+  freq <- as.numeric(as.character(freq))/100
+  return(freq)
+}
+
