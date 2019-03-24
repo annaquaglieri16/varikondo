@@ -15,6 +15,7 @@ Remotes:
   ChristofferFlensburg/superFreq
 Imports:
   tidyr,
+  IRanges,
   readxl,
   matrixStats,
   plyranges
