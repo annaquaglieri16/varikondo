@@ -2,6 +2,7 @@
 #' @param vcf_path path to where the `.vcf` file for one sample is saved.
 #' @param vcf_df `R` object returned by `parse_vcf_output()` after parsing relevant fields from the `VCF` file.
 
+#' @export
 
 parse_vep_csq <- function(vcf_path,vcf_df){
 

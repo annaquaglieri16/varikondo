@@ -4,7 +4,7 @@
 \alias{parse_vcf_output}
 \title{Parse a VCF file and return a data frame with standardised fields across callers to use for caller comparison.}
 \usage{
-parse_vcf_output(vcf_path, sample_name, caller, studyGenes)
+parse_vcf_output(vcf_path, sample_name, caller)
 }
 \arguments{
 \item{vcf_path}{path to where the `.vcf` file for one sample is saved.}

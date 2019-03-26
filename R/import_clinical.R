@@ -21,9 +21,9 @@
 #'     patientID = "D1",
 #'     studyGenes = "BCL2",
 #'     clinicalData = clinicalData)
+#' @export
 
-
-import_blast_for_lineplot = function(clinicalData = NA, patientID = NA, tidy = TRUE,
+import_clinical = function(clinicalData = NA, patientID = NA, tidy = TRUE,
                                      extract_column = "Blast",
                                      sample_name_parts = c("PID","Time","Status","Repl.Within","Batch","Outcome"),
                                      time_order = c("Screen","Cyc1","Cyc2","Cyc3","Cyc4","Cyc9")) {

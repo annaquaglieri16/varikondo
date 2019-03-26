@@ -6,6 +6,8 @@
 #' @param clones_to_plot output from `import_clones_for_lineplots()`
 #' @param spread spread
 
+#' @export
+
 
 plot_mutation_lines = function(blasts_to_plot, indels_to_plot, snvs_to_plot, cnas_to_plot, clones_to_plot, spread=0.1) {
 

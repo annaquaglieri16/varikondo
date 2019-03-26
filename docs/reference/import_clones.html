@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function to plot the lineplots with all clinical and genomic information — plot_mutation_lines • lineplots</title>
+<title>Import clones detected by superFreq for a specific patient — import_clones • lineplots</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -31,9 +31,9 @@
 
 
 
-<meta property="og:title" content="Function to plot the lineplots with all clinical and genomic information — plot_mutation_lines" />
+<meta property="og:title" content="Import clones detected by superFreq for a specific patient — import_clones" />
 
-<meta property="og:description" content="Function to plot the lineplots with all clinical and genomic information" />
+<meta property="og:description" content="Import clones detected by superFreq for a specific patient" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -107,46 +107,44 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Function to plot the lineplots with all clinical and genomic information</h1>
+    <h1>Import clones detected by superFreq for a specific patient</h1>
     
-    <div class="hidden name"><code>plot_mutation_lines.Rd</code></div>
+    <div class="hidden name"><code>import_clones.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Function to plot the lineplots with all clinical and genomic information</p>
+    <p>Import clones detected by superFreq for a specific patient</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>plot_mutation_lines</span>(<span class='no'>blasts_to_plot</span>, <span class='no'>indels_to_plot</span>, <span class='no'>snvs_to_plot</span>,
-  <span class='no'>cnas_to_plot</span>, <span class='no'>clones_to_plot</span>, <span class='kw'>spread</span> <span class='kw'>=</span> <span class='fl'>0.1</span>)</pre>
+    <pre class="usage"><span class='fu'>import_clones</span>(<span class='no'>file</span>, <span class='kw'>patientID</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>tidy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>time_order</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"Screen"</span>, <span class='st'>"Cyc1"</span>, <span class='st'>"Cyc2"</span>, <span class='st'>"Cyc3"</span>, <span class='st'>"Cyc4"</span>, <span class='st'>"Cyc9"</span>),
+  <span class='kw'>sample_name_parts</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"PID"</span>, <span class='st'>"Time"</span>, <span class='st'>"Status"</span>, <span class='st'>"Repl.Within"</span>, <span class='st'>"Batch"</span>,
+  <span class='st'>"Outcome"</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>blasts_to_plot</th>
-      <td><p>output from `import_blast_for_lineplots()`</p></td>
+      <th>file</th>
+      <td><p>path to where the superFreq stories.Rdata for `patientID` is saved.</p></td>
     </tr>
     <tr>
-      <th>indels_to_plot</th>
-      <td><p>output from `import_indels_for_lineplots()`</p></td>
+      <th>patientID</th>
+      <td><p>a character vector specifying the patient/s id/s for which stories have to be imported.</p></td>
     </tr>
     <tr>
-      <th>snvs_to_plot</th>
-      <td><p>output from `import_snvs_for_lineplots()`</p></td>
+      <th>tidy</th>
+      <td><p>Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.</p></td>
     </tr>
     <tr>
-      <th>cnas_to_plot</th>
-      <td><p>output from `import_cnas_for_lineplots()`</p></td>
+      <th>time_order</th>
+      <td><p>vector specifying the order of time points, e.g. the levels of the `Time` variable `sample_name_parts` definition. This will be used to order samples for plotting purposes.</p></td>
     </tr>
     <tr>
-      <th>clones_to_plot</th>
-      <td><p>output from `import_clones_for_lineplots()`</p></td>
-    </tr>
-    <tr>
-      <th>spread</th>
-      <td><p>spread</p></td>
+      <th>sample_name_parts</th>
+      <td><p>vector with constitutive parts of the names for every sample. For example, if the sample names are pf the format: patientID.Time.Status.Repl.within.batch.Outcome, the vector will be sample_name_parts = c("patientID","Time","Status","Repl.Within","Batch","Outcome"). The component `Time` is required.</p></td>
     </tr>
     </table>
     

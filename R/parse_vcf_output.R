@@ -5,6 +5,7 @@
 
 #' @description It only works woth germline calls and for VCF from the following callers: GATK3 MuTect2, VarScan2 and VarDict.
 
+#' @export
 
 parse_vcf_output <- function(vcf_path, sample_name, caller) {
 
@@ -19,7 +20,7 @@ parse_vcf_output <- function(vcf_path, sample_name, caller) {
 
     if(caller == "varscan"){
 
-      vcf_df <- data.frame(data.frame(ranges(vcf)),
+      vcf_df <- data.frame(data.frame(IRanges::ranges(vcf)),
                            genotype= VariantAnnotation::geno(vcf)$GT[,1],
                            #SampleName = VariantAnnotation::info(vcf)$SAMPLE,
                            #qual = VariantAnnotation::qual(vcf),
@@ -53,7 +54,7 @@ parse_vcf_output <- function(vcf_path, sample_name, caller) {
       allele_depths <- do.call(rbind,VariantAnnotation::geno(vcf)$AD[,1])
       base_quality = do.call(rbind,VariantAnnotation::geno(vcf)$QSS[,1])
 
-      vcf_df <- data.frame(data.frame(ranges(vcf)),
+      vcf_df <- data.frame(data.frame(IRanges::ranges(vcf)),
                            genotype= VariantAnnotation::geno(vcf)$GT[,1],
                            filter = VariantAnnotation::filt(vcf),
                            base_quality = base_quality[,1],
@@ -88,7 +89,7 @@ parse_vcf_output <- function(vcf_path, sample_name, caller) {
 
     if(caller == "vardict"){
 
-      vcf_df <- data.frame(data.frame(ranges(vcf)),
+      vcf_df <- data.frame(data.frame(IRanges::ranges(vcf)),
                            genotype= VariantAnnotation::geno(vcf)$GT[,1],
                            #SampleName = VariantAnnotation::info(vcf)$SAMPLE,
                            qual = VariantAnnotation::info(vcf)$QUAL,

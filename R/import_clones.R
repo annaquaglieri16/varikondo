@@ -5,8 +5,9 @@
 #' @param sample_name_parts vector with constitutive parts of the names for every sample. For example, if the sample names are pf the format: patientID.Time.Status.Repl.within.batch.Outcome, the vector will be sample_name_parts = c("patientID","Time","Status","Repl.Within","Batch","Outcome"). The component `Time` is required.
 #' @param time_order vector specifying the order of time points, e.g. the levels of the `Time` variable `sample_name_parts` definition. This will be used to order samples for plotting purposes.
 
+#' @export
 
-import_clones_for_lineplot = function(file, patientID = NA, tidy = TRUE,
+import_clones = function(file, patientID = NA, tidy = TRUE,
                                       time_order = c("Screen","Cyc1","Cyc2","Cyc3","Cyc4","Cyc9"),
                                       sample_name_parts = c("PID","Time","Status","Repl.Within","Batch","Outcome")) {
   #import data and subset on patient

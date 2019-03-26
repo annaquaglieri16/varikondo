@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Making lineplots">
-<meta property="og:description" content="Making lineplots of VAF of patients RNA-Seq samples across time combining point mutations, INDELS, CNV and clinical information.">
+<meta property="og:description" content="The package was developed to standardise the variant calling output from several callers for a cohort of patients. The aim is to visualise shifts in mutations over time.">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">lineplots</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2</span>
       </span>
     </div>
 
@@ -74,160 +74,413 @@
 
     
     
-<div id="install" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#install" class="anchor"></a>Install</h1></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(devtools)
-devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"annaquaglieri16/lineplots"</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(lineplots)</code></pre></div>
-</div>
 <div id="scope-of-this-package" class="section level1">
-<h1 class="hasAnchor">
-<a href="#scope-of-this-package" class="anchor"></a>Scope of this package</h1>
-<p>The <code>lineplots</code> package was developed to standardise the variant calling output from a cohort of patients for a set of genes of interest to be then plotted over time. It has specific functions built to interact with the output from <code>superFreq</code> as well as more generic import functions to integrate calls from various callers (<code>import_any_for_lineplots</code>) or clinical information (<code>import_clinical_for_lineplots</code>). It was developed as part of the work done on an RNA-Seq cohort of Leukemia patients, of relatively small sample size, with multiple samples at different time points, sequenced across different batches and tissues. In these type of studies it is often the case that clinicians or biologists needs to explore the information for each patient, for each gene or have an overall view of the cohort at the same time. Lineplots over time as well as heatmaps showing the shifts in variant allele frequency and tumour content help exploring the various genetic results generated from sequencing data. We then developed a Shiny App <code>MuExplore</code> to allow interactive exploration across all the patients.</p>
-</div>
-<div id="example-of-the-cohort-structure" class="section level1">
-<h1 class="hasAnchor">
-<a href="#example-of-the-cohort-structure" class="anchor"></a>Example of the cohort structure</h1>
-<ul>
-<li>Every patient has different samples extracted at different time points: <code>Time0</code>, <code>Time1</code> and if available at <code>Time2</code>
-</li>
-<li>Samples were extracted across two different batches one year apart from each other: <code>Batch1</code> and <code>Batch2</code>
-</li>
-<li>There can be replicates samples (the same sample processed twice or more) within or between each batch</li>
-<li>Patients can have one out of two disease types: <code>A</code> or <code>B</code>
-</li>
-</ul>
-</div>
-<div id="background-and-purpuse" class="section level1">
-<h1 class="hasAnchor">
-<a href="#background-and-purpuse" class="anchor"></a>Background and purpuse</h1>
-<p>This package was developed by the necessity to standardise the output from several variant callers used to call variants in tumor-only RNA-Seq samples. In our research we focused on patients with multiple samples over time during treatment. The final aim was to have data in a suitable format to produce informative visualisation of the variant allele frequency (VAF) (or other features) of the mutations over time, here the name <code>lineplots</code>. There would be in principle no difference if variants were called using DNA-Seq. <code>lineplots</code> supports ouputs from the following callers run in tumour-only mode: <code>GATK3 MuTect2</code>, <code>VarScan2</code>, <code>VarDict</code> and <code>km</code>. It also supports slightly modified output from <code>superFreq</code>. Below is a graphic summary of the main purpose behind <code>lineplots</code>.</p>
-<p><strong>add pic</strong></p>
+<div class="page-header"><h1 class="hasAnchor">
+<a href="#scope-of-this-package" class="anchor"></a>Scope of this package</h1></div>
+<p>The <code>lineplots</code> package was developed to standardise the variant calling output from a cohort of patients for a set of genes of interest to then produce plots over time. It has specific functions built to interact with the output from <code>superFreq</code> as well as more generic import functions to integrate calls from various callers (<code>import_any</code>) or clinical information (<code>import_clinical</code>). It supports ouputs from the following callers run in tumour-only mode: <code>GATK3 MuTect2</code>, <code>VarScan2</code>, <code>VarDict</code> and <code>km</code>. The package was developed with variants from RNA-Seq samples but there would be in principle no difference if variants were called using DNA-Seq. It was developed as part of the work done on an RNA-Seq cohort of Leukemia patients, of relatively small sample size (~30 patients), with multiple samples at different time points, sequenced across different batches and tissues. In these type of studies it is often the case that clinicians or biologists needs to explore the information for each patient, for each gene or have an overall view of the cohort at the same time. Lineplots over time as well as heatmaps showing the shifts in variant allele frequency and tumour content help with exploring the various genetic results generated from sequencing data. A Shiny app, <a href="https://github.com/annaquaglieri16/mutexplore"><code>MuExplore</code></a>, is also under development to allow interactive exploration across all the patients.</p>
 <div id="a-multidude-of-outputs" class="section level2">
 <h2 class="hasAnchor">
 <a href="#a-multidude-of-outputs" class="anchor"></a>A multidude of outputs</h2>
 <p>Focusing on RNA-Seq, calling variants from RNA-Seq samples is increasing in popularity due to the large number of RNA-Seq data produced but only exploited for gene expression <strong>[papers]</strong>. Several benchmarking papers have been published comparing the performance of different callers [] and in recent years several new methods have been developed specifically to improve INDEL detection in RNA-Seq samples []. As part of a project done on two Leukemia clinical trials we assembled a pipeline to call variants in RNA-Seq (<a href="https://github.com/annaquaglieri16/RNA-seq-variant-calling" class="uri">https://github.com/annaquaglieri16/RNA-seq-variant-calling</a>) and use <a href="https://github.com/ChristofferFlensburg/superFreq">superFreq</a> to analyse clonal tracking and mutational development across treatment. We used combined calls from <a href="https://github.com/AstraZeneca-NGS/VarDict">VarDict</a> [Lai2016-ws] and <a href="https://github.com/iric-soft/km/tree/master/km/tools#output-description-1">km</a> <span class="citation">[@Software-km]</span> algorithm to define INDEL calls.</p>
 <p>After calling SNVs, CNVs and INDELs with different programs, it is often useful to combine all the results in a standardised way. Usually different programs output variants in different ways using slightly different conventions which makes it challenging to easily combine the results. For example, superFreq returns SNVs in <code>csv</code> files but CNVs in <code>Rdata</code> files; VarDict uses the standard <code>VCF</code> output but with different specification of quality measures compared to, for example, MuTect2 or VarScan2; km outputs INDELs in tab delimited format and so on. This makes it challenging to both create a comprehensive overview of the results for one sample as well as to compare results across callers. Another challenge comes from calling variants independently at different time points for the same patient. Variants might be present before treatment but absent after treatment and when a patient relapse or vice versa. We found it necessary to fill in all the missing time points especially for visualisations purposes. While superFreq takes this problem into account by keeping any variants found at different time points, other programs like km or VarDict don’t.</p>
 </div>
-<div id="time-course-data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#time-course-data" class="anchor"></a>Time course data</h2>
 </div>
-</div>
-<div id="setup-and-available-functions" class="section level1">
+<div id="example-of-a-cohort-structure" class="section level1">
 <h1 class="hasAnchor">
-<a href="#setup-and-available-functions" class="anchor"></a>Setup and available functions</h1>
+<a href="#example-of-a-cohort-structure" class="anchor"></a>Example of a cohort structure</h1>
+<p>Below is an example of a sample cohort structure:</p>
+<ul>
+<li>Every patient has different samples extracted at different time points: <code>Time0</code>, <code>Time1</code>, <code>Time2</code>;</li>
+<li>Samples were extracted across two different batches one year apart from each other: <code>Batch1</code> and <code>Batch2</code>;</li>
+<li>There can be replicates, i.e. the same sample processed twice or more within or between each batch;</li>
+<li>Patients can have one out of two disease types: <code>A</code> or <code>B</code>
+</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Define replicates within a batch: Two samples are replicate of each other if they belong to the same patient, they were collected at the same time and they come from the same tissue</span>
+patients_infos &lt;-<span class="st"> </span>example_data <span class="op">%&gt;%</span>
+<span class="st">  </span>tidyr<span class="op">::</span><span class="kw"><a href="https://tidyr.tidyverse.org/reference/unite.html">unite</a></span>(Repl.Within, Patient, Time, <span class="dt">sep =</span> <span class="st">"."</span>,<span class="dt">remove=</span><span class="ot">FALSE</span>)
+
+<span class="co"># 1. Take unique combinations of the variables that I want to display in the structure of the data</span>
+reduced_infos &lt;-<span class="st"> </span>patients_infos <span class="op">%&gt;%</span>
+<span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(Patient,DiseaseType,Time,Batch) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span>(<span class="dt">Nsam=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(Repl.Within)) 
+
+<span class="co"># Create variable used to spread the dataset from long to wide</span>
+reduced_infos &lt;-<span class="st"> </span>reduced_infos <span class="op">%&gt;%</span>
+<span class="st">  </span>tidyr<span class="op">::</span><span class="kw"><a href="https://tidyr.tidyverse.org/reference/unite.html">unite</a></span>(Time.Batch, Time, Batch,<span class="dt">sep=</span><span class="st">"."</span>)
+
+infos_wide &lt;-<span class="st"> </span>reduced_infos <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span>tidyr<span class="op">::</span><span class="kw"><a href="https://tidyr.tidyverse.org/reference/spread.html">spread</a></span>(<span class="dt">key =</span> Time.Batch,<span class="dt">value =</span> Nsam)
+
+<span class="co"># NA if there are no samples at that time point</span>
+infos_wide[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(infos_wide)] &lt;-<span class="st"> </span><span class="dv">0</span> 
+
+<span class="co"># The data to display have to be within a data.frame. Pheatmap needs rownames, therefore I need to convert it from tibble() to data.frame()</span>
+infos_wide &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(infos_wide)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">rownames</a></span>(infos_wide) &lt;-<span class="st"> </span>infos_wide<span class="op">$</span>Patient
+
+<span class="co"># Annotation for columns needed for heatmap</span>
+ann_columns &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">Batch=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Batch1"</span>,<span class="st">"Batch2"</span>,
+                                    <span class="st">"Batch1"</span>,<span class="st">"Batch2"</span>,
+                                    <span class="st">"Batch1"</span>,<span class="st">"Batch2"</span>),
+                           <span class="dt">Time=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Time0"</span>,<span class="st">"Time0"</span>,
+                                  <span class="st">"Time1"</span>,<span class="st">"Time1"</span>,
+                                  <span class="st">"Time2"</span>,<span class="st">"Time2"</span>))
+
+ann_colors_wide &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">Batch=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dt">Batch1 =</span> <span class="st">"#762a83"</span>, <span class="dt">Batch2 =</span> <span class="st">"#1b7837"</span>),
+                        <span class="dt">Time=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dt">Time0=</span><span class="st">"#662506"</span>,<span class="dt">Time1=</span><span class="st">"#993404"</span>,<span class="dt">Time2=</span><span class="st">"#ec7014"</span>),
+                        <span class="dt">DiseaseType =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dt">A=</span><span class="st">"#78c679"</span>,<span class="dt">B=</span><span class="st">"#f7fcb9"</span>))
+
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">rownames</a></span>(ann_columns) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(infos_wide)[<span class="op">-</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>)]
+
+<span class="co"># Row annotation</span>
+infos_wide<span class="op">$</span>DiseaseType &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/factor">factor</a></span>(infos_wide<span class="op">$</span>DiseaseType,<span class="dt">levels=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"A"</span>,<span class="st">"B"</span>),<span class="dt">ordered =</span> <span class="ot">TRUE</span>)
+infos_wide &lt;-<span class="st"> </span>infos_wide[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/order">order</a></span>(infos_wide<span class="op">$</span>DiseaseType),]
+infos_wide<span class="op">$</span>order &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(infos_wide)
+infos_wide<span class="op">$</span>order &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/factor">factor</a></span>(infos_wide<span class="op">$</span>order ,<span class="dt">levels=</span>infos_wide<span class="op">$</span>order ,<span class="dt">labels=</span>infos_wide<span class="op">$</span>Patient)
+
+annotation_row &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">DiseaseType =</span> infos_wide<span class="op">$</span>DiseaseType)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">rownames</a></span>(annotation_row) &lt;-<span class="st"> </span>infos_wide<span class="op">$</span>order
+
+infos_wide &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(infos_wide)
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">rownames</a></span>(infos_wide) &lt;-<span class="st"> </span>infos_wide<span class="op">$</span>Patient
+<span class="kw">pheatmap</span>(infos_wide[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/order">order</a></span>(infos_wide<span class="op">$</span>DiseaseType),<span class="op">-</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">ncol</a></span>(infos_wide))],
+         <span class="dt">main =</span> <span class="st">"Data Structure"</span>,
+         <span class="dt">cluster_cols=</span><span class="ot">FALSE</span>,<span class="dt">cluster_rows=</span><span class="ot">FALSE</span>,
+         <span class="dt">annotation_col =</span> ann_columns,
+         <span class="dt">annotation_row =</span> annotation_row,
+         <span class="dt">annotation_colors =</span> ann_colors_wide,
+        <span class="dt">breaks=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>,<span class="fl">0.9</span>,<span class="fl">1.9</span>,<span class="fl">2.9</span>,<span class="fl">3.9</span>,<span class="fl">4.9</span>),<span class="dt">col=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"#f1eef6"</span>,<span class="st">"#74a9cf"</span>,<span class="st">"#0570b0"</span>,<span class="st">"blue"</span>,<span class="st">"dark blue"</span>,<span class="st">"black"</span>,<span class="st">"grey"</span>),<span class="dt">show_colnames =</span> <span class="ot">FALSE</span>,
+        <span class="dt">width =</span> <span class="dv">11</span>,<span class="dt">height =</span> <span class="dv">10</span>)</code></pre></div>
+<div class="figure">
+<img src="index_files/figure-html/unnamed-chunk-2-1.png" alt="Example of cohort structure" width="700"><p class="caption">
+Example of cohort structure
+</p>
+</div>
+</div>
+<div id="setup" class="section level1">
+<h1 class="hasAnchor">
+<a href="#setup" class="anchor"></a>Setup</h1>
 <p>The <code>lineplots</code> R package comprises several helper and import functions that can be used to convert output from any of the callers mentioned above to a standardised format.</p>
-<p>In general, the import functions take in input variants for one <code>patientID</code> and for a set of <code>studyGenes</code> called by a caller as well as clinical information for all the patients in the cohort under investigation. The ouput can be in a tidy format, setting <code>tidy = TRUE</code>, where each row corresponds to a mutation for one samples and columns are samples and variant informations. <code>studygenes</code> are expected to be NCBI gene <code>Symbols</code> which means that variants need to be annotated with the gene they belong to before <code>lineplots</code> can be used. The clinical data at every time point is needed because if, for a patient, a variant is not detected at one time point, then only clinical information will be returned with default values for the variant information. This is useful for vidualisation purposes where one needs to track the development of mutation over time.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(devtools)
-devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"annaquaglieri16/lineplots"</span>,<span class="dt">force =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#detach("package:lineplots")</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(lineplots)</code></pre></div>
-<div id="parsing-functions-from-vcf-to-tidy-format" class="section level2">
-<h2 class="hasAnchor">
-<a href="#parsing-functions-from-vcf-to-tidy-format" class="anchor"></a>Parsing functions: from <code>VCF</code> to tidy format</h2>
+devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"annaquaglieri16/lineplots"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(lineplots)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/ls">ls</a></span>(<span class="st">"package:lineplots"</span>)</code></pre></div>
+<pre><code>## [1] "example_data"        "import_any"          "import_clinical"    
+## [4] "import_clones"       "import_cnas"         "parse_vcf_output"   
+## [7] "parse_vep_csq"       "plot_mutation_lines"</code></pre>
+</div>
+<div id="import-functions" class="section level1">
+<h1 class="hasAnchor">
+<a href="#import-functions" class="anchor"></a><code>import</code> functions</h1>
+<p>In general, the import functions take as input, in different formats, variants called by a caller as well as clinical information for all the patients in the cohort under investigation. Every input function requires a <code>patientID</code> to be provided and a set of <code>studyGenes</code> to focus the analysis on. <code>studygenes</code> are expected to be NCBI gene <code>Symbols</code>. This means that variants need to be annotated with the gene they belong to before <code>lineplots</code> can be used. The clinical data at every time point is needed because if, for a patient, a variant is not detected at one time point, then only clinical information will be returned with default values for the variant information. This is useful for visualisation purposes where one needs to track the development of mutation over time.</p>
+<p>Figure XX is a graphic summary of the input required for every <code>import</code> function.</p>
+<p><strong>add pic with input and output of every function</strong></p>
+</div>
+<div id="parsing-functions-from-vcf-to-tidy-format" class="section level1">
+<h1 class="hasAnchor">
+<a href="#parsing-functions-from-vcf-to-tidy-format" class="anchor"></a><code>parsing</code> functions: from <code>VCF</code> to tidy format</h1>
 <p>The function <code><a href="reference/parse_vcf_output.html">parse_vcf_output()</a></code> allows to convert a <code>.vcf</code> file generated by three different callers (<code>GATK3 MuTect2</code>, <code>VarDict</code> and <code>Samtools + VarScan2</code>) to a data frame with standardised fields. This is because different callers annotate the <code>INFO</code> field in the <code>VCF</code> ouput in different ways, using different names for read depth, variant allele frequency etc… The output from <code><a href="reference/parse_vcf_output.html">parse_vcf_output()</a></code> can then be used for <code>import_any_for_lineplots()</code>. If the variants in the <code>VCF</code> file were also annotated with the Variant Effect Predictor (VEP) <span class="citation">[@McLaren2016-lv]</span>, the <code><a href="reference/parse_vep_csq.html">parse_vep_csq()</a></code> can be subsequently used to parse the extra fields.</p>
 <p>It is to be noted that VEP usually annotate the same variant in multiple ways, depending on whether a variants falls on several transcripts. VEP pastes together different annotations on the same line. The <code><a href="reference/parse_vep_csq.html">parse_vep_csq()</a></code> will reshape the data and return it in a long format by stacking all the annotations one underneath each other. This has the potential of largely increasing the size of the ouput file and it is suggested that, if the input <code>VCF</code> file is too large, to, for example, subset variants based on genes of interest.</p>
 <p>Both parsing functions are built on top of the <a href="https://bioconductor.org/packages/release/bioc/html/VariantAnnotation.html"><code>VariantAnnotation</code></a> Bioconductor package <span class="citation">[@Obenchain2014-cd]</span> to read <code>VCF</code> files into <code>R</code> and extract fields.</p>
 <p>The example <code>VCF</code> files below were annotated with VEP. In order to extract VEP annotation, the file needs to be first parsed with <code>parse_vcf_output</code> and then with <code>parse_vep_csq</code>.</p>
-<div id="parse_vcf_output" class="section level3">
-<h3 class="hasAnchor">
+<div id="parse_vcf_output" class="section level2">
+<h2 class="hasAnchor">
 <a href="#parse_vcf_output" class="anchor"></a><code>parse_vcf_output</code>
-</h3>
+</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">annot_vcf_mutect &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"germline_mutect.vcf"</span>, <span class="dt">package =</span> <span class="st">"lineplots"</span>)
 annot_vcf_varscan &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"germline_varscan.vcf"</span>, <span class="dt">package =</span> <span class="st">"lineplots"</span>)
 annot_vcf_vardict &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"germline_vardict.vcf"</span>, <span class="dt">package =</span> <span class="st">"lineplots"</span>)
 
 annot_vcf_mutect</code></pre></div>
 <pre><code>## [1] "/Users/quaglieri.a/Library/R/3.5/library/lineplots/extdata/germline_mutect.vcf"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">parsed_vcf_mutect &lt;-<span class="st"> </span><span class="kw"><a href="reference/parse_vcf_output.html">parse_vcf_output</a></span>(annot_vcf_mutect, <span class="dt">caller =</span> <span class="st">"mutect"</span>,<span class="dt">sample_name =</span> <span class="st">"Sample1"</span>)
-parsed_vcf_varscan &lt;-<span class="st"> </span><span class="kw"><a href="reference/parse_vcf_output.html">parse_vcf_output</a></span>(annot_vcf_varscan, <span class="dt">caller =</span> <span class="st">"varscan"</span>,<span class="dt">sample_name =</span> <span class="st">"Sample1"</span>)
-parsed_vcf_vardict &lt;-<span class="st"> </span><span class="kw"><a href="reference/parse_vcf_output.html">parse_vcf_output</a></span>(annot_vcf_vardict, <span class="dt">caller =</span> <span class="st">"vardict"</span>,<span class="dt">sample_name =</span> <span class="st">"Sample1"</span>)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(parsed_vcf_mutect)</code></pre></div>
-<pre><code>##        Location  caller chrom      pos      end ref alt qual      filter
-## 1 chr1_36933772 mutect2  chr1 36933772 36933772   C   T   NA        PASS
-## 2 chr1_36935370 mutect2  chr1 36935370 36935370   T   C   NA t_lod_fstar
-## 3 chr1_36937059 mutect2  chr1 36937059 36937059   A   G   NA        PASS
-## 4 chr1_36939108 mutect2  chr1 36939108 36939108   T   C   NA        PASS
-## 5 chr1_36941395 mutect2  chr1 36941395 36941395   G   C   NA t_lod_fstar
-## 6 chr1_36941539 mutect2  chr1 36941539 36941539   G  GT   NA        PASS
-##   genotype tot_depth   VAF ref_depth alt_depth ref_forw ref_rev alt_forw
-## 1      0/1       532 0.017       523         9      261     262        7
-## 2      0/1       489 0.014       482         7      257     225        5
-## 3      0/1       488 0.504       249       239      123     126      109
-## 4      0/1       383 0.020       377         6      176     201        5
-## 5      0/1       226 0.016       223         3      122     101        1
-## 6      0/1       338 0.469       182       156       86      96       89
-##   alt_rev    start width ref_base_quality alt_base_quality
-## 1       2 36933772     1            15571               NA
-## 2       2 36935370     1            13932               NA
-## 3     130 36937059     1             7351               NA
-## 4       1 36939108     1            10997               NA
-## 5       2 36941395     1             6697               NA
-## 6      67 36941539     1             5449               NA</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(parsed_vcf_varscan)</code></pre></div>
-<pre><code>##        Location  caller chrom      pos      end ref alt qual filter
-## 1 chr1_36937059 varscan  chr1 36937059 36937059   A   G 29.0   PASS
-## 2 chr1_36941539 varscan  chr1 36941539 36941539   G  GT 39.0   PASS
-## 3 chr1_36942233 varscan  chr1 36942233 36942233   T   G 33.5   PASS
-## 4 chr1_36942436 varscan  chr1 36942436 36942437  AT   A 32.0   PASS
-## 5 chr1_36942470 varscan  chr1 36942470 36942470   T   C 38.5   PASS
-## 6 chr1_36942479 varscan  chr1 36942479 36942479   T   C 37.5   PASS
-##   genotype tot_depth    VAF ref_depth alt_depth ref_forw ref_rev alt_forw
-## 1      0/1       517 0.4855       266       251      145     121      141
-## 2      0/1       248 0.0323       240         8      155      85        6
-## 3      0/1        61 0.6557        19        40        8      11       26
-## 4      0/1       119 0.0672       106         8       82      24        6
-## 5      0/1       111 0.0721       103         8       61      42        7
-## 6      0/1       117 0.1368       101        16       61      40       11
-##   alt_rev    start width ref_base_quality alt_base_quality SampleName
-## 1     110 36937059     1               29               29    Sample1
-## 2       2 36941539     1               39               39    Sample1
-## 3      14 36942233     1               31               36    Sample1
-## 4       2 36942436     2               35               29    Sample1
-## 5       1 36942470     1               34               43    Sample1
-## 6       5 36942479     1               33               42    Sample1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(parsed_vcf_vardict)</code></pre></div>
-<pre><code>##        Location  caller chrom      pos      end ref
-## 1 chr1_36932480 vardict  chr1 36932480 36932480   C
-## 2 chr1_36934606 vardict  chr1 36934606 36934606   A
-## 3 chr1_36934756 vardict  chr1 36934756 36934756   C
-## 4 chr1_36937059 vardict  chr1 36937059 36937059   A
-## 5 chr1_36941539 vardict  chr1 36941539 36941539   G
-## 6 chr1_36941540 vardict  chr1 36941540 36941540   T
-##                                                       alt qual filter
-## 1                                                       T 38.0   PASS
-## 2                                                       G 38.0   PASS
-## 3 CCCATTTCTTGAGAGTAGAGGTGCTTTAGATGCAGCTCTGGGGCATGGGAGGGAG 34.2     p8
-## 4                                                       G 38.0   PASS
-## 5                                                      GT 34.7   PASS
-## 6                                                      TT 38.7   PASS
-##   genotype tot_depth    VAF ref_depth alt_depth ref_forw ref_rev alt_forw
-## 1      0/1        31 0.0645        29         2       12      17        0
-## 2      0/1        21 0.0952        19         2        7      12        0
-## 3      1/0        32 0.5313        15        17        4      11       11
-## 4      0/1       397 0.4912       202       195       77     124       84
-## 5      0/1       278 0.1151       246        32       84     162       14
-## 6      0/1       268 0.3582       172        96       58     114       30
-##   alt_rev width ADJVAF_ADJ_indels
-## 1       2     1            0.0000
-## 2       2     1            0.0000
-## 3       6     1            0.5313
-## 4     111     1            0.0000
-## 5      18     1            0.0971
-## 6      66     1            0.0299</code></pre>
-</div>
-<div id="parse_vep_csq" class="section level3">
-<h3 class="hasAnchor">
-<a href="#parse_vep_csq" class="anchor"></a><code>parse_vep_csq</code>
-</h3>
-<p>Now we can parse the <code>CSQ</code> field added by the VEP.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stand_out &lt;-<span class="st"> </span><span class="kw"><a href="reference/parse_vep_csq.html">parse_vep_csq</a></span>(<span class="dt">vcf_path =</span> annot_vcf_varscan, <span class="dt">vcf_df =</span> parsed_vcf_varscan)
-
-knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(stand_out[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Location"</span>,<span class="st">"caller"</span>,<span class="st">"Feature_type"</span>,<span class="st">"IMPACT"</span>)],<span class="dt">caption =</span> <span class="st">"Parse VCF from VarScan and annotated with VEP."</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">annot_vcf_varscan</code></pre></div>
+<pre><code>## [1] "/Users/quaglieri.a/Library/R/3.5/library/lineplots/extdata/germline_varscan.vcf"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">annot_vcf_vardict</code></pre></div>
+<pre><code>## [1] "/Users/quaglieri.a/Library/R/3.5/library/lineplots/extdata/germline_vardict.vcf"</code></pre>
+<p><code>VCF</code> files from <code>VarDict</code> and <code>VarScan</code> can be parsed by specifying <code>vardict</code> or <code>varscan</code> in the <code>caller</code> argument.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">parsed_vcf_mutect &lt;-<span class="st"> </span>lineplots<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/lineplots/topics/parse_vcf_output">parse_vcf_output</a></span>(annot_vcf_mutect, <span class="dt">caller =</span> <span class="st">"mutect"</span>,<span class="dt">sample_name =</span> <span class="st">"Sample1"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(parsed_vcf_mutect[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,],<span class="dt">caption =</span> <span class="st">"Parsed MuTect2 output, from VCF to data frame."</span>)</code></pre></div>
 <table class="table table">
-<caption>Parse VCF from VarScan and annotated with VEP.</caption>
+<caption>Parsed MuTect2 output, from VCF to data frame.</caption>
+<thead><tr class="header">
+<th align="left">Location</th>
+<th align="left">caller</th>
+<th align="left">chrom</th>
+<th align="left">pos</th>
+<th align="right">end</th>
+<th align="left">ref</th>
+<th align="left">alt</th>
+<th align="right">qual</th>
+<th align="left">filter</th>
+<th align="left">genotype</th>
+<th align="right">tot_depth</th>
+<th align="right">VAF</th>
+<th align="right">ref_depth</th>
+<th align="right">alt_depth</th>
+<th align="right">ref_forw</th>
+<th align="right">ref_rev</th>
+<th align="right">alt_forw</th>
+<th align="right">alt_rev</th>
+<th align="right">start</th>
+<th align="right">width</th>
+<th align="right">ref_base_quality</th>
+<th align="right">alt_base_quality</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">chr1_36933772</td>
+<td align="left">mutect2</td>
+<td align="left">chr1</td>
+<td align="left">36933772</td>
+<td align="right">36933772</td>
+<td align="left">C</td>
+<td align="left">T</td>
+<td align="right">NA</td>
+<td align="left">PASS</td>
+<td align="left">0/1</td>
+<td align="right">532</td>
+<td align="right">0.017</td>
+<td align="right">523</td>
+<td align="right">9</td>
+<td align="right">261</td>
+<td align="right">262</td>
+<td align="right">7</td>
+<td align="right">2</td>
+<td align="right">36933772</td>
+<td align="right">1</td>
+<td align="right">15571</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">chr1_36935370</td>
+<td align="left">mutect2</td>
+<td align="left">chr1</td>
+<td align="left">36935370</td>
+<td align="right">36935370</td>
+<td align="left">T</td>
+<td align="left">C</td>
+<td align="right">NA</td>
+<td align="left">t_lod_fstar</td>
+<td align="left">0/1</td>
+<td align="right">489</td>
+<td align="right">0.014</td>
+<td align="right">482</td>
+<td align="right">7</td>
+<td align="right">257</td>
+<td align="right">225</td>
+<td align="right">5</td>
+<td align="right">2</td>
+<td align="right">36935370</td>
+<td align="right">1</td>
+<td align="right">13932</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">chr1_36937059</td>
+<td align="left">mutect2</td>
+<td align="left">chr1</td>
+<td align="left">36937059</td>
+<td align="right">36937059</td>
+<td align="left">A</td>
+<td align="left">G</td>
+<td align="right">NA</td>
+<td align="left">PASS</td>
+<td align="left">0/1</td>
+<td align="right">488</td>
+<td align="right">0.504</td>
+<td align="right">249</td>
+<td align="right">239</td>
+<td align="right">123</td>
+<td align="right">126</td>
+<td align="right">109</td>
+<td align="right">130</td>
+<td align="right">36937059</td>
+<td align="right">1</td>
+<td align="right">7351</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">chr1_36939108</td>
+<td align="left">mutect2</td>
+<td align="left">chr1</td>
+<td align="left">36939108</td>
+<td align="right">36939108</td>
+<td align="left">T</td>
+<td align="left">C</td>
+<td align="right">NA</td>
+<td align="left">PASS</td>
+<td align="left">0/1</td>
+<td align="right">383</td>
+<td align="right">0.020</td>
+<td align="right">377</td>
+<td align="right">6</td>
+<td align="right">176</td>
+<td align="right">201</td>
+<td align="right">5</td>
+<td align="right">1</td>
+<td align="right">36939108</td>
+<td align="right">1</td>
+<td align="right">10997</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">chr1_36941395</td>
+<td align="left">mutect2</td>
+<td align="left">chr1</td>
+<td align="left">36941395</td>
+<td align="right">36941395</td>
+<td align="left">G</td>
+<td align="left">C</td>
+<td align="right">NA</td>
+<td align="left">t_lod_fstar</td>
+<td align="left">0/1</td>
+<td align="right">226</td>
+<td align="right">0.016</td>
+<td align="right">223</td>
+<td align="right">3</td>
+<td align="right">122</td>
+<td align="right">101</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">36941395</td>
+<td align="right">1</td>
+<td align="right">6697</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">chr1_36941539</td>
+<td align="left">mutect2</td>
+<td align="left">chr1</td>
+<td align="left">36941539</td>
+<td align="right">36941539</td>
+<td align="left">G</td>
+<td align="left">GT</td>
+<td align="right">NA</td>
+<td align="left">PASS</td>
+<td align="left">0/1</td>
+<td align="right">338</td>
+<td align="right">0.469</td>
+<td align="right">182</td>
+<td align="right">156</td>
+<td align="right">86</td>
+<td align="right">96</td>
+<td align="right">89</td>
+<td align="right">67</td>
+<td align="right">36941539</td>
+<td align="right">1</td>
+<td align="right">5449</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">chr1_36942233</td>
+<td align="left">mutect2</td>
+<td align="left">chr1</td>
+<td align="left">36942233</td>
+<td align="right">36942233</td>
+<td align="left">T</td>
+<td align="left">G</td>
+<td align="right">NA</td>
+<td align="left">PASS</td>
+<td align="left">0/1</td>
+<td align="right">97</td>
+<td align="right">0.644</td>
+<td align="right">29</td>
+<td align="right">68</td>
+<td align="right">12</td>
+<td align="right">16</td>
+<td align="right">25</td>
+<td align="right">37</td>
+<td align="right">36942233</td>
+<td align="right">1</td>
+<td align="right">765</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">chr1_36942369</td>
+<td align="left">mutect2</td>
+<td align="left">chr1</td>
+<td align="left">36942369</td>
+<td align="right">36942369</td>
+<td align="left">T</td>
+<td align="left">C</td>
+<td align="right">NA</td>
+<td align="left">clustered_events;homologous_mapping_event;t_lod_fstar</td>
+<td align="left">0/1</td>
+<td align="right">133</td>
+<td align="right">0.038</td>
+<td align="right">128</td>
+<td align="right">5</td>
+<td align="right">56</td>
+<td align="right">72</td>
+<td align="right">0</td>
+<td align="right">5</td>
+<td align="right">36942369</td>
+<td align="right">1</td>
+<td align="right">3802</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">chr1_36942428</td>
+<td align="left">mutect2</td>
+<td align="left">chr1</td>
+<td align="left">36942428</td>
+<td align="right">36942428</td>
+<td align="left">A</td>
+<td align="left">AT</td>
+<td align="right">NA</td>
+<td align="left">clustered_events;homologous_mapping_event</td>
+<td align="left">0/1</td>
+<td align="right">125</td>
+<td align="right">0.075</td>
+<td align="right">116</td>
+<td align="right">9</td>
+<td align="right">42</td>
+<td align="right">74</td>
+<td align="right">6</td>
+<td align="right">3</td>
+<td align="right">36942428</td>
+<td align="right">1</td>
+<td align="right">3249</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">chr1_36942470</td>
+<td align="left">mutect2</td>
+<td align="left">chr1</td>
+<td align="left">36942470</td>
+<td align="right">36942470</td>
+<td align="left">T</td>
+<td align="left">C</td>
+<td align="right">NA</td>
+<td align="left">clustered_events;homologous_mapping_event</td>
+<td align="left">0/1</td>
+<td align="right">117</td>
+<td align="right">0.074</td>
+<td align="right">107</td>
+<td align="right">10</td>
+<td align="right">43</td>
+<td align="right">64</td>
+<td align="right">7</td>
+<td align="right">3</td>
+<td align="right">36942470</td>
+<td align="right">1</td>
+<td align="right">2848</td>
+<td align="right">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="parse_vep_csq" class="section level2">
+<h2 class="hasAnchor">
+<a href="#parse_vep_csq" class="anchor"></a><code>parse_vep_csq</code>
+</h2>
+<p>Now we can parse the <code>CSQ</code> field added by the VEP.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stand_out &lt;-<span class="st"> </span><span class="kw"><a href="reference/parse_vep_csq.html">parse_vep_csq</a></span>(<span class="dt">vcf_path =</span> annot_vcf_mutect, <span class="dt">vcf_df =</span> parsed_vcf_mutect)
+
+knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(stand_out[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Location"</span>,<span class="st">"caller"</span>,<span class="st">"Feature_type"</span>,<span class="st">"IMPACT"</span>)],<span class="dt">caption =</span> <span class="st">"Parse VCF from MuTect2 and annotated with VEP."</span>)</code></pre></div>
+<table class="table table">
+<caption>Parse VCF from MuTect2 and annotated with VEP.</caption>
 <thead><tr class="header">
 <th align="left">Location</th>
 <th align="left">caller</th>
@@ -236,69 +489,73 @@ knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentat
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">chr1_36937059</td>
-<td align="left">varscan</td>
+<td align="left">chr1_36933772</td>
+<td align="left">mutect2</td>
 <td align="left">Transcript</td>
-<td align="left">LOW</td>
+<td align="left">MODERATE</td>
 </tr>
 <tr class="even">
-<td align="left">chr1_36937059</td>
-<td align="left">varscan</td>
+<td align="left">chr1_36933772</td>
+<td align="left">mutect2</td>
 <td align="left">Transcript</td>
-<td align="left">LOW</td>
+<td align="left">MODERATE</td>
 </tr>
 <tr class="odd">
-<td align="left">chr1_36937059</td>
-<td align="left">varscan</td>
+<td align="left">chr1_36933772</td>
+<td align="left">mutect2</td>
 <td align="left">Transcript</td>
-<td align="left">LOW</td>
+<td align="left">MODERATE</td>
 </tr>
 <tr class="even">
-<td align="left">chr1_36937059</td>
-<td align="left">varscan</td>
+<td align="left">chr1_36933772</td>
+<td align="left">mutect2</td>
 <td align="left">Transcript</td>
-<td align="left">LOW</td>
+<td align="left">MODERATE</td>
 </tr>
 <tr class="odd">
-<td align="left">chr1_36937059</td>
-<td align="left">varscan</td>
+<td align="left">chr1_36933772</td>
+<td align="left">mutect2</td>
 <td align="left">Transcript</td>
-<td align="left">LOW</td>
+<td align="left">MODERATE</td>
 </tr>
 <tr class="even">
-<td align="left">chr1_36937059</td>
-<td align="left">varscan</td>
+<td align="left">chr1_36933772</td>
+<td align="left">mutect2</td>
 <td align="left">Transcript</td>
-<td align="left">LOW</td>
+<td align="left">MODERATE</td>
 </tr>
 <tr class="odd">
-<td align="left">chr1_36937059</td>
-<td align="left">varscan</td>
-<td align="left">Transcript</td>
-<td align="left">LOW</td>
-</tr>
-<tr class="even">
-<td align="left">chr1_36937059</td>
-<td align="left">varscan</td>
-<td align="left">Transcript</td>
-<td align="left">LOW</td>
-</tr>
-<tr class="odd">
-<td align="left">chr1_36937059</td>
-<td align="left">varscan</td>
+<td align="left">chr1_36933772</td>
+<td align="left">mutect2</td>
 <td align="left">Transcript</td>
 <td align="left">MODIFIER</td>
 </tr>
 <tr class="even">
-<td align="left">chr1_36937059</td>
-<td align="left">varscan</td>
+<td align="left">chr1_36933772</td>
+<td align="left">mutect2</td>
 <td align="left">Transcript</td>
-<td align="left">LOW</td>
+<td align="left">MODERATE</td>
+</tr>
+<tr class="odd">
+<td align="left">chr1_36933772</td>
+<td align="left">mutect2</td>
+<td align="left">Transcript</td>
+<td align="left">MODERATE</td>
+</tr>
+<tr class="even">
+<td align="left">chr1_36933772</td>
+<td align="left">mutect2</td>
+<td align="left">Transcript</td>
+<td align="left">MODIFIER</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
+<div id="output-formats" class="section level1">
+<h1 class="hasAnchor">
+<a href="#output-formats" class="anchor"></a>Output formats</h1>
+<p>The ouput can be in a tidy format, setting <code>tidy = TRUE</code>, where each row corresponds to a mutation for one samples and columns are samples and variant informations.</p>
 </div>
   </div>
 
@@ -306,13 +563,14 @@ knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentat
     <div class="license">
 <h2>License</h2>
 <ul class="list-unstyled">
-<li>What license is it under?</li>
+<li><a href="LICENSE.html">Full license</a></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
-<li>The package maintainer <br><small class="roles"> Maintainer </small>  </li>
+<li>Anna Quaglieri <br><small class="roles"> Maintainer </small>  </li>
 </ul>
 </div>
 
@@ -322,7 +580,7 @@ knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentat
 
 
       <footer><div class="copyright">
-  <p>Developed by The package maintainer.</p>
+  <p>Developed by Anna Quaglieri.</p>
 </div>
 
 <div class="pkgdown">

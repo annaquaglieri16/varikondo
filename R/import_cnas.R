@@ -6,9 +6,9 @@
 #' @param time_order vector specifying the order of time points, e.g. the levels of the `Time` variable `sample_name_parts` definition. This will be used to order samples for plotting purposes.
 #' @param ref_genome character specifying the reference genome used. Default is 'hg38'.
 
+#' @export
 
-
-import_cnas_for_lineplot = function(mutationSummary = NA, patientID = NA, tidy = TRUE,
+import_cnas = function(mutationSummary = NA, patientID = NA, tidy = TRUE,
                                     time_order = c("Screen","Cyc1","Cyc2","Cyc3","Cyc4","Cyc9"),
                                     sample_name_parts = c("PID","Time","Status","Repl.Within","Batch","Outcome"),
                                     ref_genome = 'hg38') {

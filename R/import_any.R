@@ -76,7 +76,7 @@
 #' @export
 
 
-import_any_for_lineplot = function(variants = NA, patientID = NA, studyGenes = NA, minQual=20,
+import_any = function(variants = NA, patientID = NA, studyGenes = NA, minQual=20,
                                    clinicalData = NA, tidy = TRUE,
                                    time_order = c("Screen","Cyc1","Cyc2","Cyc3","Cyc4","Cyc9"),
                                    keep_impact = c("HIGH","MODERATE"),
