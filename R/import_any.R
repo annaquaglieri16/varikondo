@@ -76,22 +76,25 @@
 #' @export
 
 
-import_any = function(variants = NA, patientID = NA, studyGenes = NA, minQual=20,
-                                   clinicalData = NA, tidy = TRUE,
-                                   time_order = c("Screen","Cyc1","Cyc2","Cyc3","Cyc4","Cyc9"),
-                                   keep_impact = c("HIGH","MODERATE"),
-                                   variant_type = "indels-vardict") {
+import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQual=20,
+                      clinicalData = NULL, tidy = TRUE,
+                      time_order = c("Screen","Cyc1","Cyc2","Cyc3","Cyc4","Cyc9"),
+                      keep_impact = c("HIGH","MODERATE"),
+                      variant_type = "indels-vardict") {
 
-  if( is.na(patientID) ){
+  if( is.null(patientID) ){
     stop("patientID is not defined.")
   }
 
-  if ( nrow(clinicalData) == 0 ) {
-    warning(paste0("No clinicalData available."))
-    return(NULL)
+  if ( is.null(clinicalData)) {
+    stop(paste0("No clinicalData available."))
+  } else {
+    if(nrow(clinicalData) == 0){
+      stop(paste0("No lines available in clinicalData."))
+    }
   }
 
-  if( is.na(studyGenes) ){
+  if( is.null(studyGenes) ){
     warning("studyGenes is not defined and all genes will be used.")
     studyGenes <- as.character(unique(variants$SYMBOL))
   }
@@ -101,15 +104,10 @@ import_any = function(variants = NA, patientID = NA, studyGenes = NA, minQual=20
   search_env <- pryr::where("tidy")
 
   # Variants existence
-  if(!exists("variants",where = search_env)){
-    warning("No set of true variants provided.")
-    return(NULL)
-  }
-
-  if ( nrow(variants) == 0 ) {
-    warning(paste0("No lines available in input for variants."))
-    return(NULL)
-  }
+  # if(!exists("variants",where = search_env)){
+  #  warning("No set of true variants provided.")
+  #  return(NULL)
+  #}
 
   # Clinical data existence
   if(!exists("clinicalData",where = search_env)){
@@ -198,41 +196,41 @@ import_any = function(variants = NA, patientID = NA, studyGenes = NA, minQual=20
   ## Filter variants
   ##################
 
-    # Keep only variants of interest based on patient, impact, quality and genes
-    var <- variants %>%
-      dplyr::filter(PID %in% patientID) %>% # restrict analysis to OurPID
-      tidyr::unite(Location, chrom, pos ,sep="_",remove=FALSE) %>% # create columns that will be useful later: do I need this?
-      tidyr::unite(mutation_key, chrom, pos, ref, alt ,sep="_",remove=FALSE) %>% #  - unique IDs for a mutation
-      dplyr::filter(SYMBOL %in% studyGenes) %>% # restrict analysis to specific genes
-      dplyr::filter(qual > minQual) %>% # only keep good quality indels
-      dplyr::mutate(tot_depth = alt_depth + ref_depth) %>%
-      dplyr::mutate(VAF = alt_depth/tot_depth)
+  # Keep only variants of interest based on patient, impact, quality and genes
+  var <- variants %>%
+    dplyr::filter(PID %in% patientID) %>% # restrict analysis to OurPID
+    tidyr::unite(Location, chrom, pos ,sep="_",remove=FALSE) %>% # create columns that will be useful later: do I need this?
+    tidyr::unite(mutation_key, chrom, pos, ref, alt ,sep="_",remove=FALSE) %>% #  - unique IDs for a mutation
+    dplyr::filter(SYMBOL %in% studyGenes) %>% # restrict analysis to specific genes
+    dplyr::filter(qual >= minQual) %>% # only keep good quality indels
+    dplyr::mutate(tot_depth = alt_depth + ref_depth) %>%
+    dplyr::mutate(VAF = alt_depth/tot_depth)
 
 
-      # Missing VEP annotation like with km
-      if( sum(is.na(var$IMPACT)) == nrow(var) | !impact) {
+  # Missing VEP annotation like with km
+  if( sum(is.na(var$IMPACT)) == nrow(var) | !impact) {
 
-        # set all to HIGH
-        var <- var %>%
-          dplyr::mutate(IMPACT_rank = 1)
+    # set all to HIGH
+    var <- var %>%
+      dplyr::mutate(IMPACT_rank = 1)
 
-      } else {
+  } else {
 
-        # assign numeric ranking
-        var <- var %>%
-          dplyr::mutate(IMPACT_rank = factor(IMPACT, levels = c("HIGH","MODERATE","LOW","MODIFIER"), labels = c(1,2,3,4))) %>%
-          dplyr::mutate(IMPACT_rank = as.numeric(IMPACT_rank))
+    # assign numeric ranking
+    var <- var %>%
+      dplyr::mutate(IMPACT_rank = factor(IMPACT, levels = c("HIGH","MODERATE","LOW","MODIFIER"), labels = c(1,2,3,4))) %>%
+      dplyr::mutate(IMPACT_rank = as.numeric(IMPACT_rank))
 
-      }
+  }
 
   var <- var %>%
-      dplyr::filter(is.na(IMPACT) | IMPACT %in% keep_impact) %>% # keep NAs and annotated
-      dplyr::group_by(SampleName,Location,ref,alt) %>%
-      tidyr::unite(mutation_det, SYMBOL, Consequence , sep = " ",remove = FALSE) %>%
-      dplyr::filter(order(IMPACT_rank) == order(IMPACT_rank)[which.min(order(IMPACT_rank))]) %>%
-      dplyr::filter(!str_detect(Consequence,c("splice_donor"))) %>%
-      dplyr::filter(!str_detect(Consequence,c("splice_acceptor"))) %>%
-      dplyr::mutate(mutation_det = stringr::str_replace(mutation_det,"&.+",""))
+    dplyr::filter(is.na(IMPACT) | IMPACT %in% keep_impact) %>% # keep NAs and annotated
+    dplyr::group_by(SampleName,Location,ref,alt) %>%
+    tidyr::unite(mutation_det, SYMBOL, Consequence , sep = " ",remove = FALSE) %>%
+    dplyr::filter(order(IMPACT_rank) == order(IMPACT_rank)[which.min(order(IMPACT_rank))]) %>%
+    dplyr::filter(!str_detect(Consequence,c("splice_donor"))) %>%
+    dplyr::filter(!str_detect(Consequence,c("splice_acceptor"))) %>%
+    dplyr::mutate(mutation_det = stringr::str_replace(mutation_det,"&.+",""))
 
   ################################################
   # Get all the clinical information for patientID
@@ -257,9 +255,9 @@ import_any = function(variants = NA, patientID = NA, studyGenes = NA, minQual=20
   # 3. Fill NAs in VAF and ref_depth where a mutation wasn't found in the unfiltered data frames of indels
   clinical_var_fill <- merge(clinical_var_empty,var,all=TRUE) %>%
     dplyr::mutate(ref_depth = ifelse(is.na(ref_depth),0,ref_depth),
-           VAF = ifelse(is.na(VAF),0,VAF),
-           alt_depth = ifelse(is.na(alt_depth),0,alt_depth),
-           tot_depth = ifelse(is.na(tot_depth),0,tot_depth))
+                  VAF = ifelse(is.na(VAF),0,VAF),
+                  alt_depth = ifelse(is.na(alt_depth),0,alt_depth),
+                  tot_depth = ifelse(is.na(tot_depth),0,tot_depth))
 
   # 4. Filter based on minimal required ref_depth threshold and re-add lost mutations later
   var_keep <- clinical_var_fill %>% dplyr::filter(tot_depth >= 10 & VAF >= 0.15)
@@ -276,14 +274,14 @@ import_any = function(variants = NA, patientID = NA, studyGenes = NA, minQual=20
   # 5. If some good quality indels are found then
   # re-add indels whose key (chrom_pos_alt) was present at other time points
   var_saver <-  dplyr::bind_rows(var_keep,
-                                       subset(var_leave,mutation_key %in% var_keep$mutation_key))
+                                 subset(var_leave,mutation_key %in% var_keep$mutation_key))
 
   # Re-add indels
   options(warn = -1)
   var_saver <- var_saver %>%
-      dplyr::mutate(Time = factor(Time,levels = time_order)) %>%
-      dplyr::mutate(SampleName = forcats::fct_reorder(SampleName,as.numeric(Time))) %>%
-      dplyr::mutate(variant_type = variant_type)
+    dplyr::mutate(Time = factor(Time,levels = time_order)) %>%
+    dplyr::mutate(SampleName = forcats::fct_reorder(SampleName,as.numeric(Time))) %>%
+    dplyr::mutate(variant_type = variant_type)
   options(warn = 0)
 
   ###########################
@@ -291,25 +289,25 @@ import_any = function(variants = NA, patientID = NA, studyGenes = NA, minQual=20
   ###########################
 
   if( !tidy ){
-  options(warn=-1)
-  var_untidy <- var_saver %>%
-    dplyr::mutate(Time = forcats::fct_relevel(Time,time_order)) %>%
-    dplyr::mutate(SampleName = forcats::fct_reorder(SampleName,as.numeric(Time))) %>%
-    dplyr::select(mutation_det,mutation_key,SYMBOL,Consequence,VAF,SampleName) %>%
-    tidyr::spread(key = SampleName, value = VAF, fill = 0)
-  options(warn=0)
+    options(warn=-1)
+    var_untidy <- var_saver %>%
+      dplyr::mutate(Time = forcats::fct_relevel(Time,time_order)) %>%
+      dplyr::mutate(SampleName = forcats::fct_reorder(SampleName,as.numeric(Time))) %>%
+      dplyr::select(mutation_det,mutation_key,SYMBOL,Consequence,VAF,SampleName) %>%
+      tidyr::spread(key = SampleName, value = VAF, fill = 0)
+    options(warn=0)
 
-  ret <- list()
-  y_matrix <- var_untidy %>%
-    dplyr::select(-mutation_det,-mutation_key,-SYMBOL,-Consequence) %>%
-    as.matrix()
+    ret <- list()
+    y_matrix <- var_untidy %>%
+      dplyr::select(-mutation_det,-mutation_key,-SYMBOL,-Consequence) %>%
+      as.matrix()
 
-  rownames(y_matrix) <- var_untidy$mutation_key
+    rownames(y_matrix) <- var_untidy$mutation_key
 
-  mutations <- var_untidy$mutation_det
+    mutations <- var_untidy$mutation_det
 
-  ret$mutations <- mutations
-  ret$y_matrix <- y_matrix
+    ret$mutations <- mutations
+    ret$y_matrix <- y_matrix
 
   }
 
@@ -343,7 +341,6 @@ import_any = function(variants = NA, patientID = NA, studyGenes = NA, minQual=20
   # ret$y_matrix =  ret$y_matrix[matrixStats::rowMaxs(ret$y_matrix) > 0.15,,drop=F]
 
 }
-
 
 
 
