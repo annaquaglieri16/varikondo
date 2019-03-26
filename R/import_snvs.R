@@ -26,7 +26,7 @@
 #' rownames(mutationSummary[[1]]) <- mutationSummary[[1]]$call
 #' names(mutationSummary) <- "D1"
 #'
-
+#' @export
 
 import_snvs = function(mutationSummary = NA, patientID = NA, tidy = TRUE,
                                     time_order = c("Screen","Cyc1","Cyc2","Cyc3","Cyc4","Cyc9"),
