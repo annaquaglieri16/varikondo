@@ -8,6 +8,12 @@
 
 #' @export
 
+
+# vcf_path <- "../../../cbf_aml_agrf/variant_calling/vardict/regions_deDupl_both_cohorts/annotated_variants/10.R1.B2.M13ADE05RV.BM.Rem_germline_annotated.vcf"
+# sample_name = "10.R1.B2.M13ADE05RV.BM.Rem"
+# caller = "vardict"
+# vep = TRUE
+
 parse_vcf_output <- function(vcf_path, sample_name, caller, vep = TRUE) {
 
   vcf <- VariantAnnotation::readVcf(vcf_path)
@@ -106,10 +112,10 @@ parse_vcf_output <- function(vcf_path, sample_name, caller, vep = TRUE) {
         tidyr::separate(alleles,into=c("ref","alt"),sep="/") %>%
         tidyr::separate(REFBIAS,into=c("ref_forw","ref_rev"),sep=":") %>%
         tidyr::separate(VARBIAS,into=c("alt_forw","alt_rev"),sep=":") %>%
-        dplyr::mutate(ref_depth = DP - VD) %>%
-        dplyr::rename(tot_depth = DP,
-                      alt_depth = VD,
+        dplyr::mutate(ref_depth = DP - VD,
                       SampleName = sample_name) %>%
+        dplyr::rename(tot_depth = DP,
+                      alt_depth = VD) %>%
         dplyr::select(-start) %>%
         dplyr::mutate(caller="vardict",
                       Location = gsub(":","_",Location))
