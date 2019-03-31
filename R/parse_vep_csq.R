@@ -4,6 +4,11 @@
 
 #' @export
 
+#vcf_path <- "../../../cbf_aml_agrf/variant_calling/vardict/regions_deDupl_both_cohorts/annotated_variants/10.R1.B2.M13ADE05RV.BM.Rem_germline_annotated.vcf"
+# sample_name = "10.R1.B2.M13ADE05RV.BM.Rem"
+# caller = "vardict"
+# vep = TRUE
+
 parse_vep_csq <- function(vcf_path,vcf_df){
 
   # Read VCF file
@@ -24,7 +29,7 @@ parse_vep_csq <- function(vcf_path,vcf_df){
 
     # Duplicate rows of dataframe to allow VEP annotation
     nrepl <- sapply(VariantAnnotation::info(vcf)$CSQ,length)
-    df_repl <- vcf_df %>% dplyr::slice(rep(1:dplyr::n(), times = nrepl))
+    df_repl <- vcf_df %>% dplyr::slice(base::rep(1:dplyr::n(), times = nrepl))
     vcf_df <- df_repl %>% dplyr::mutate(INFO_VEP = unlist(VariantAnnotation::info(vcf)$CSQ)) %>%
       tidyr::separate(INFO_VEP,into = des_vep_names,sep="[|]")
 

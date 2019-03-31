@@ -1,7 +1,7 @@
 Package: lineplots
 Type: Package
 Title: Making lineplots
-Version: 0.2.14
+Version: 0.2.15
 Author: Anna Quaglieri & Christoffer Flensburg
 Maintainer: Anna Quaglieri <quaglieri.a@wehi.edu.au>
 Description: The package was developed to standardise the variant calling output from several callers for a cohort of patients. The aim is to visualise shifts in mutations over time.

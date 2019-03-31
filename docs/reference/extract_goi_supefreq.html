@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Parse a VCF file and return a data frame with standardised fields across callers to use for caller comparison. — parse_vcf_output • lineplots</title>
+<title>Extract SNVs, CNVs and clones on genes of interest from superFreq output — extract_goi_supefreq • lineplots</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -31,9 +31,9 @@
 
 
 
-<meta property="og:title" content="Parse a VCF file and return a data frame with standardised fields across callers to use for caller comparison. — parse_vcf_output" />
+<meta property="og:title" content="Extract SNVs, CNVs and clones on genes of interest from superFreq output — extract_goi_supefreq" />
 
-<meta property="og:description" content="It only works woth germline calls and for VCF from the following callers: GATK3 MuTect2, VarScan2 and VarDict." />
+<meta property="og:description" content="This function imports superFreq's SNVs, CNAs and clones for one patient and outputs them into a tidy format where every row is a variant." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -95,37 +95,52 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Parse a VCF file and return a data frame with standardised fields across callers to use for caller comparison.</h1>
+    <h1>Extract SNVs, CNVs and clones on genes of interest from superFreq output</h1>
     
-    <div class="hidden name"><code>parse_vcf_output.Rd</code></div>
+    <div class="hidden name"><code>extract_goi_supefreq.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>It only works woth germline calls and for VCF from the following callers: GATK3 MuTect2, VarScan2 and VarDict.</p>
+    <p>This function imports superFreq's SNVs, CNAs and clones for one patient and outputs them into a tidy format where every row is a variant.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>parse_vcf_output</span>(<span class='no'>vcf_path</span>, <span class='no'>sample_name</span>, <span class='no'>caller</span>, <span class='kw'>vep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>extract_goi_supefreq</span>(<span class='kw'>superFreq_R_path</span> <span class='kw'>=</span> <span class='no'>superFreq_R_path</span>,
+  <span class='kw'>superFreq_meta_path</span> <span class='kw'>=</span> <span class='no'>superFreq_meta_path</span>, <span class='no'>studyGenes</span>,
+  <span class='kw'>patientID</span> <span class='kw'>=</span> <span class='st'>"D1"</span>, <span class='kw'>ref_genome</span> <span class='kw'>=</span> <span class='st'>"hg38"</span>, <span class='kw'>VAFcut</span> <span class='kw'>=</span> <span class='fl'>0.15</span>,
+  <span class='kw'>time_order</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"Screen"</span>, <span class='st'>"Cyc1"</span>, <span class='st'>"Cyc2"</span>, <span class='st'>"Cyc3"</span>, <span class='st'>"Cyc4"</span>, <span class='st'>"Cyc9"</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>vcf_path</th>
-      <td><p>path to where the `.vcf` file for one sample is saved.</p></td>
+      <th>superFreq_R_path</th>
+      <td><p>Path to superFreq R folder.</p></td>
     </tr>
     <tr>
-      <th>sample_name</th>
-      <td><p>character. Sample name of the current `vcf` file.</p></td>
+      <th>superFreq_meta_path</th>
+      <td><p>Path to superFreq run cohort metadata (file ending with .tsv). If the sample names in the NAME field of the metadata file start with a number, you need to add an "X" before the name with paste0() since this is done by default by superFReq.</p></td>
     </tr>
     <tr>
-      <th>caller</th>
-      <td><p>character. One of `mutect`, `vardict` or `varscan`.</p></td>
+      <th>studyGenes</th>
+      <td><p>character vector containing genes of interest.</p></td>
     </tr>
     <tr>
-      <th>vep</th>
-      <td><p>logical. If TRUE, the annotation fields added by the Variant Effect Predictor will be parsed.</p></td>
+      <th>patientID</th>
+      <td><p>a character vector specifying the patient/s id/s for which variants have to be imported.</p></td>
+    </tr>
+    <tr>
+      <th>ref_genome</th>
+      <td><p>character vector for the reference genome used in the analysis ('hg38' or 'hg19')</p></td>
+    </tr>
+    <tr>
+      <th>VAFcut</th>
+      <td><p>Minimum VAF for a variant found in a patient.</p></td>
+    </tr>
+    <tr>
+      <th>time_order</th>
+      <td><p>vector specifying the order of time points, e.g. the levels of the `Time` variable as specified in the TIMEPOINT field in superFReq metadata.</p></td>
     </tr>
     </table>
     

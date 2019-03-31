@@ -1,0 +1,15 @@
+template:
+  params:
+  bootswatch: journal
+
+authors:
+  Stuart Lee:
+  href: https://github.com/annaquaglieri16
+Christoffer Flensburg:
+  href: https://github.com/ChristofferFlensburg
+
+reference:
+  - title: lineplots
+contents:
+  - lineplots-package
+

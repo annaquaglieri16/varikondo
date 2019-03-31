@@ -49,7 +49,8 @@ parse_vcf_output <- function(vcf_path, sample_name, caller, vep = TRUE) {
                       SampleName = sample_name) %>%
         dplyr::mutate(VAF = parse_vaf_varscan(freq),
                       qual = (ref_base_quality + alt_base_quality)/2) %>%  # mean of alt/ref base qualitites
-        dplyr::select(-freq)
+        dplyr::select(-freq) %>%
+        as_tibble()
 
     }
 
@@ -89,7 +90,8 @@ parse_vcf_output <- function(vcf_path, sample_name, caller, vep = TRUE) {
         tidyr::separate(Location,into=c("chrom","pos"),sep=":",remove=FALSE) %>%
         tidyr::separate(alleles,into=c("ref","alt"),sep="/") %>%
         dplyr::mutate(caller="mutect2",
-                      Location = gsub(":","_",Location))
+                      Location = gsub(":","_",Location)) %>%
+        as_tibble()
 
     }
 
@@ -118,7 +120,8 @@ parse_vcf_output <- function(vcf_path, sample_name, caller, vep = TRUE) {
                       alt_depth = VD) %>%
         dplyr::select(-start) %>%
         dplyr::mutate(caller="vardict",
-                      Location = gsub(":","_",Location))
+                      Location = gsub(":","_",Location))%>%
+        as_tibble()
 
     }
 
@@ -131,7 +134,8 @@ parse_vcf_output <- function(vcf_path, sample_name, caller, vep = TRUE) {
 
   if(vep){
 
-    parsed_vep <- parse_vep_csq(vcf_path = vcf_path, vcf_df = vcf_df)
+    parsed_vep <- parse_vep_csq(vcf_path = vcf_path, vcf_df = vcf_df) %>%
+      as_tibble()
 
     return(parsed_vep)
 
