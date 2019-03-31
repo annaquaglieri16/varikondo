@@ -82,6 +82,8 @@ import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQ
                       keep_impact = c("HIGH","MODERATE"),
                       variant_type = "indels-vardict") {
 
+  options(warn=-1)
+
   if( is.null(patientID) ){
     stop("patientID is not defined.")
   }
@@ -277,25 +279,22 @@ import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQ
                                  subset(var_leave,mutation_key %in% var_keep$mutation_key))
 
   # Re-add indels
-  options(warn = -1)
   var_saver <- var_saver %>%
     dplyr::mutate(Time = factor(Time,levels = time_order)) %>%
     dplyr::mutate(SampleName = forcats::fct_reorder(SampleName,as.numeric(Time))) %>%
     dplyr::mutate(variant_type = variant_type)
-  options(warn = 0)
+
 
   ###########################
   # Untidy version of the data
   ###########################
 
   if( !tidy ){
-    options(warn=-1)
     var_untidy <- var_saver %>%
       dplyr::mutate(Time = forcats::fct_relevel(Time,time_order)) %>%
       dplyr::mutate(SampleName = forcats::fct_reorder(SampleName,as.numeric(Time))) %>%
       dplyr::select(mutation_det,mutation_key,SYMBOL,Consequence,VAF,SampleName) %>%
       tidyr::spread(key = SampleName, value = VAF, fill = 0)
-    options(warn=0)
 
     ret <- list()
     y_matrix <- var_untidy %>%

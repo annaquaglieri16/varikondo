@@ -36,7 +36,6 @@ import_snvs = function(mutationSummary = NA, patientID = NA, tidy = TRUE,
   if(is.na(mutationSummary)){
     stop("mutationSummary not availble in input.")
   }
-  options(warn=0)
 
   if( is.na(patientID) ){
     stop("patientID is not defined.")
@@ -73,7 +72,6 @@ import_snvs = function(mutationSummary = NA, patientID = NA, tidy = TRUE,
     return(NULL)
   }
 
-  options(warn=-1)
   if(tidy){
 
     tidy_snvs <- data.frame(ret$y_matrix) %>%
@@ -88,7 +86,6 @@ import_snvs = function(mutationSummary = NA, patientID = NA, tidy = TRUE,
 
 
   }
-  options(warn=0)
 
   if(tidy){
     return(tidy_snvs)

@@ -4,8 +4,8 @@
 \alias{import_any}
 \title{General import for variants}
 \usage{
-import_any(variants = NA, patientID = NA, studyGenes = NA,
-  minQual = 20, clinicalData = NA, tidy = TRUE,
+import_any(variants = NULL, patientID = NULL, studyGenes = NULL,
+  minQual = 20, clinicalData = NULL, tidy = TRUE,
   time_order = c("Screen", "Cyc1", "Cyc2", "Cyc3", "Cyc4", "Cyc9"),
   keep_impact = c("HIGH", "MODERATE"), variant_type = "indels-vardict")
 }

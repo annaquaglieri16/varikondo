@@ -13,6 +13,7 @@ import_clones = function(file, patientID = NA, tidy = TRUE,
   #import data and subset on patient
   #file = file.path(stories_dir, patientID, 'stories.Rdata')
 
+  options(warn=-1)
   if( is.na(patientID) ){
     stop("patientID is not defined.")
   }
@@ -40,7 +41,7 @@ import_clones = function(file, patientID = NA, tidy = TRUE,
     return(NULL)
   }
 
-  options(warn=-1)
+
   if(tidy){
 
     tidy_clones <- data.frame(ret$y_matrix) %>%
@@ -52,7 +53,6 @@ import_clones = function(file, patientID = NA, tidy = TRUE,
       dplyr::mutate(SampleName = forcats::fct_reorder(SampleName,as.numeric(Time))) %>%
       dplyr::mutate(variant_type = "clones")
   }
-  options(warn=0)
 
   if(tidy){
     return(tidy_clones)

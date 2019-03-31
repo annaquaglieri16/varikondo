@@ -2,12 +2,13 @@
 #' @param vcf_path path to where the `.vcf` file for one sample is saved.
 #' @param sample_name character. Sample name of the current `vcf` file.
 #' @param caller character. One of `mutect`, `vardict` or `varscan`.
+#' @param vep logical. If TRUE, the annotation fields added by the Variant Effect Predictor will be parsed.
 
 #' @description It only works woth germline calls and for VCF from the following callers: GATK3 MuTect2, VarScan2 and VarDict.
 
 #' @export
 
-parse_vcf_output <- function(vcf_path, sample_name, caller) {
+parse_vcf_output <- function(vcf_path, sample_name, caller, vep = TRUE) {
 
   vcf <- VariantAnnotation::readVcf(vcf_path)
 
@@ -22,8 +23,6 @@ parse_vcf_output <- function(vcf_path, sample_name, caller) {
 
       vcf_df <- data.frame(data.frame(IRanges::ranges(vcf)),
                            genotype= VariantAnnotation::geno(vcf)$GT[,1],
-                           #SampleName = VariantAnnotation::info(vcf)$SAMPLE,
-                           #qual = VariantAnnotation::qual(vcf),
                            filter = VariantAnnotation::filt(vcf),
                            ref_base_quality = VariantAnnotation::geno(vcf)$RBQ[,1],
                            alt_base_quality = VariantAnnotation::geno(vcf)$ABQ[,1],
@@ -68,7 +67,8 @@ parse_vcf_output <- function(vcf_path, sample_name, caller) {
 
         dplyr::mutate(ref_depth =  as.numeric(as.character(ref_depth)),
                       alt_depth = as.numeric(as.character(alt_depth)),
-                      tot_depth = ref_depth + alt_depth) %>%
+                      tot_depth = ref_depth + alt_depth,
+                      SampleName = sample_name) %>%
 
         tidyr::separate(base_quality,into = c("ref_base_quality","alt_base_quality"),sep = ",",remove=TRUE) %>%
         dplyr::mutate(ref_base_quality =  as.numeric(as.character(ref_base_quality)),
@@ -108,7 +108,8 @@ parse_vcf_output <- function(vcf_path, sample_name, caller) {
         tidyr::separate(VARBIAS,into=c("alt_forw","alt_rev"),sep=":") %>%
         dplyr::mutate(ref_depth = DP - VD) %>%
         dplyr::rename(tot_depth = DP,
-                      alt_depth = VD) %>%
+                      alt_depth = VD,
+                      SampleName = sample_name) %>%
         dplyr::select(-start) %>%
         dplyr::mutate(caller="vardict",
                       Location = gsub(":","_",Location))
@@ -122,7 +123,20 @@ parse_vcf_output <- function(vcf_path, sample_name, caller) {
                                      alt_depth,ref_forw,ref_rev,alt_forw,alt_rev,everything())
 
 
-  return(vcf_df)
+  if(vep){
+
+    parsed_vep <- parse_vep_csq(vcf_path = vcf_path, vcf_df = vcf_df)
+
+    return(parsed_vep)
+
+  } else {
+
+    return(vcf_df)
+
+  }
+
+
+
 
 }
 
