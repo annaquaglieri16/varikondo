@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function to plot the lineplots with all clinical and genomic information — plot_mutation_lines • lineplots</title>
+<title>Extract SNVs, CNVs and clones on genes of interest from superFreq output — import_goi_supefreq • lineplots</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -31,9 +31,9 @@
 
 
 
-<meta property="og:title" content="Function to plot the lineplots with all clinical and genomic information — plot_mutation_lines" />
+<meta property="og:title" content="Extract SNVs, CNVs and clones on genes of interest from superFreq output — import_goi_supefreq" />
 
-<meta property="og:description" content="Function to plot the lineplots with all clinical and genomic information" />
+<meta property="og:description" content="This function imports superFreq's SNVs, CNAs and clones for one patient and outputs them into a tidy format where every row is a variant." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -64,7 +64,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">lineplots</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.16</span>
       </span>
     </div>
 
@@ -87,14 +87,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/vignette.html">Vignette Title</a>
+      <a href="../articles/vignette.html">Overview of lineplots</a>
     </li>
   </ul>
 </li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/annaquaglieri16/lineplots">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -107,46 +112,47 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Function to plot the lineplots with all clinical and genomic information</h1>
-    
-    <div class="hidden name"><code>plot_mutation_lines.Rd</code></div>
+    <h1>Extract SNVs, CNVs and clones on genes of interest from superFreq output</h1>
+    <small class="dont-index">Source: <a href='https://github.com/annaquaglieri16/lineplots/blob/master/R/import_goi_superfreq.R'><code>R/import_goi_superfreq.R</code></a></small>
+    <div class="hidden name"><code>import_goi_supefreq.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Function to plot the lineplots with all clinical and genomic information</p>
+    <p>This function imports superFreq's SNVs, CNAs and clones for one patient and outputs them into a tidy format where every row is a variant.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>plot_mutation_lines</span>(<span class='no'>blasts_to_plot</span>, <span class='no'>indels_to_plot</span>, <span class='no'>snvs_to_plot</span>,
-  <span class='no'>cnas_to_plot</span>, <span class='no'>clones_to_plot</span>, <span class='kw'>spread</span> <span class='kw'>=</span> <span class='fl'>0.1</span>)</pre>
+    <pre class="usage"><span class='fu'>import_goi_supefreq</span>(<span class='kw'>superFreq_R_path</span> <span class='kw'>=</span> <span class='no'>superFreq_R_path</span>,
+  <span class='kw'>superFreq_meta_path</span> <span class='kw'>=</span> <span class='no'>superFreq_meta_path</span>, <span class='no'>studyGenes</span>,
+  <span class='kw'>patientID</span> <span class='kw'>=</span> <span class='st'>"D1"</span>, <span class='kw'>ref_genome</span> <span class='kw'>=</span> <span class='st'>"hg38"</span>, <span class='kw'>VAFcut</span> <span class='kw'>=</span> <span class='fl'>0.15</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>blasts_to_plot</th>
-      <td><p>output from `import_blast_for_lineplots()`</p></td>
+      <th>superFreq_R_path</th>
+      <td><p>Path to superFreq R folder.</p></td>
     </tr>
     <tr>
-      <th>indels_to_plot</th>
-      <td><p>output from `import_indels_for_lineplots()`</p></td>
+      <th>superFreq_meta_path</th>
+      <td><p>Path to superFreq run cohort metadata (file ending with .tsv). If the sample names in the NAME field of the metadata file start with a number, you need to add an "X" before the name with paste0() since this is done by default by superFReq.</p></td>
     </tr>
     <tr>
-      <th>snvs_to_plot</th>
-      <td><p>output from `import_snvs_for_lineplots()`</p></td>
+      <th>studyGenes</th>
+      <td><p>character vector containing genes of interest.</p></td>
     </tr>
     <tr>
-      <th>cnas_to_plot</th>
-      <td><p>output from `import_cnas_for_lineplots()`</p></td>
+      <th>patientID</th>
+      <td><p>a character vector specifying the patient/s id/s for which variants have to be imported.</p></td>
     </tr>
     <tr>
-      <th>clones_to_plot</th>
-      <td><p>output from `import_clones_for_lineplots()`</p></td>
+      <th>ref_genome</th>
+      <td><p>character vector for the reference genome used in the analysis ('hg38' or 'hg19')</p></td>
     </tr>
     <tr>
-      <th>spread</th>
-      <td><p>spread</p></td>
+      <th>VAFcut</th>
+      <td><p>Minimum VAF for a variant found in a patient.</p></td>
     </tr>
     </table>
     
@@ -163,7 +169,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Anna Quaglieri.</p>
+  <p>Developed by Anna Quaglieri, Christoffer Flensburg.</p>
 </div>
 
 <div class="pkgdown">

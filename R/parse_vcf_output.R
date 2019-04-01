@@ -8,7 +8,6 @@
 
 #' @export
 
-
 # vcf_path <- "../../../cbf_aml_agrf/variant_calling/vardict/regions_deDupl_both_cohorts/annotated_variants/10.R1.B2.M13ADE05RV.BM.Rem_germline_annotated.vcf"
 # sample_name = "10.R1.B2.M13ADE05RV.BM.Rem"
 # caller = "vardict"

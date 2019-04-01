@@ -61,7 +61,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">lineplots</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.16</span>
       </span>
     </div>
 
@@ -84,14 +84,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/vignette.html">Vignette Title</a>
+      <a href="../articles/vignette.html">Overview of lineplots</a>
     </li>
   </ul>
 </li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/annaquaglieri16/lineplots">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -115,20 +120,65 @@
       <col class="title" />
     </colgroup>
 
-    
+    <tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="example_data.html">example_data</a></code> </p>
+        </td>
+        <td><p>Example cohort structure.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="import_any.html">import_any()</a></code> </p>
+        </td>
+        <td><p>General import for variants</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="import_clinical.html">import_clinical()</a></code> </p>
+        </td>
+        <td><p>Import clinical information for a specific patient</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="import_goi_supefreq.html">import_goi_supefreq()</a></code> </p>
+        </td>
+        <td><p>Extract SNVs, CNVs and clones on genes of interest from superFreq output</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="parse_vcf_output.html">parse_vcf_output()</a></code> </p>
+        </td>
+        <td><p>Parse a VCF file and return a data frame with standardised fields across callers to use for caller comparison.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="parse_vep_csq.html">parse_vep_csq()</a></code> </p>
+        </td>
+        <td><p>Parse the CSQ field added to the `VCF` file by the Variant Effect Predictor (VEP)</p></td>
+      </tr>
+    </tbody>
     </table>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#section-all-functions">All functions</a></li>
     </ul>
   </div>
 </div>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Anna Quaglieri.</p>
+  <p>Developed by Anna Quaglieri, Christoffer Flensburg.</p>
 </div>
 
 <div class="pkgdown">

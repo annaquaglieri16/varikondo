@@ -64,7 +64,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">lineplots</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.16</span>
       </span>
     </div>
 
@@ -87,14 +87,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/vignette.html">Vignette Title</a>
+      <a href="../articles/vignette.html">Overview of lineplots</a>
     </li>
   </ul>
 </li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/annaquaglieri16/lineplots">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -108,7 +113,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Import clinical information for a specific patient</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/annaquaglieri16/lineplots/blob/master/R/import_clinical.R'><code>R/import_clinical.R</code></a></small>
     <div class="hidden name"><code>import_clinical.Rd</code></div>
     </div>
 
@@ -119,20 +124,18 @@
     </div>
 
     <pre class="usage"><span class='fu'>import_clinical</span>(<span class='kw'>clinicalData</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>patientID</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>tidy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>extract_column</span> <span class='kw'>=</span> <span class='st'>"Blast"</span>, <span class='kw'>sample_name_parts</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"PID"</span>, <span class='st'>"Time"</span>,
-  <span class='st'>"Status"</span>, <span class='st'>"Repl.Within"</span>, <span class='st'>"Batch"</span>, <span class='st'>"Outcome"</span>), <span class='kw'>time_order</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"Screen"</span>,
-  <span class='st'>"Cyc1"</span>, <span class='st'>"Cyc2"</span>, <span class='st'>"Cyc3"</span>, <span class='st'>"Cyc4"</span>, <span class='st'>"Cyc9"</span>))</pre>
+  <span class='kw'>extract_column</span> <span class='kw'>=</span> <span class='st'>"Blast"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>clinicalData</th>
-      <td><p>data frame containing the clinical information `extract_column` and `SampleName` for the patients in the cohort.</p></td>
+      <td><p>data frame containing the clinical information for a patient. This needs to include a column `SampleName` containing unique names for all the RNA-Seq samples available in the cohort; a `PID` columns for patient ID and a `Time` column that should reflect the time of sample collection.</p></td>
     </tr>
     <tr>
       <th>patientID</th>
-      <td><p>a character vector specifying the patient/s id/s for which stories have to be imported.</p></td>
+      <td><p>a character vector specifying the patient id for which clinical data should be imported.</p></td>
     </tr>
     <tr>
       <th>tidy</th>
@@ -140,34 +143,24 @@
     </tr>
     <tr>
       <th>extract_column</th>
-      <td><p>vector specifying the column to be extracted. Currently only numeric variables wit values between 0 and 1 are allowed to be consistent with plotting together with clonality and VAF estimates.</p></td>
-    </tr>
-    <tr>
-      <th>sample_name_parts</th>
-      <td><p>vector with constitutive parts, separated by a ".", of the `SampleName` column. For example, if the `SampleName` entry for a generic patient looks like: P1.Screening.R1.Responder, `sample_name_parts` will look something like sample_name_parts = c("PID","Time","Replicate","Outcome") and it will be used to create separate columns for the relative information. The components `Time` and `PID` (patient ID) are required. Every sequencing sample needs to have the same `SampleName` structure.</p></td>
-    </tr>
-    <tr>
-      <th>time_order</th>
-      <td><p>vector specifying the order of time points, e.g. the levels of the `Time` variable extracted from the `SampleName` column of the input `variants`.</p></td>
+      <td><p>vector specifying the column to be extracted. Currently only numeric variables with values between 0 and 1 are allowed to be consistent with plotting together with clonality and VAF estimates.</p></td>
     </tr>
     </table>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='no'>patientID</span> <span class='kw'>=</span> <span class='st'>"D1"</span>
 
-<span class='no'>clinicalData</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/data.frame'>data.frame</a></span>(<span class='kw'>SampleName</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"D1.Screen.Diag.R1.B1.Rel"</span>,<span class='st'>"D1.Cyc1.Rem.R1.B1.Rel"</span>,
-                                     <span class='st'>"D1.Cyc2.Rem.R1.B1.Rel"</span>,<span class='st'>"D1.Cyc3.Rel.R1.B1.Rel"</span>),
-                      <span class='kw'>AgeDiagnosis</span> <span class='kw'>=</span> <span class='fl'>65</span>,
-                      <span class='kw'>Sex</span> <span class='kw'>=</span> <span class='st'>"F"</span>,
-<span class='kw'>BlastPerc</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>80</span>,<span class='fl'>5</span>,<span class='fl'>7</span>,<span class='fl'>40</span>)) <span class='kw'>%&gt;%</span>
-    <span class='kw pkg'>tidyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://tidyr.tidyverse.org/reference/separate.html'>separate</a></span>(<span class='no'>SampleName</span>,<span class='kw'>into</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"PID"</span>,<span class='st'>"Time"</span>,<span class='st'>"Status"</span>,<span class='st'>"Repl.within"</span>,<span class='st'>"batch"</span>,<span class='st'>"Outcome"</span>),<span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>"[.]"</span>,<span class='kw'>remove</span><span class='kw'>=</span><span class='fl'>FALSE</span>)
+<span class='no'>clinicalData</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/data.frame'>data.frame</a></span>(<span class='kw'>SampleName</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"D1.Screen.Rel"</span>,<span class='st'>"D1.Cyc1.Rel"</span>,
+                                          <span class='st'>"D1.Cyc2.Rel"</span>,<span class='st'>"D1.Cyc3.Rel"</span>),
+                           <span class='kw'>AgeDiagnosis</span> <span class='kw'>=</span> <span class='fl'>65</span>,
+                           <span class='kw'>Sex</span> <span class='kw'>=</span> <span class='st'>"F"</span>,
+                           <span class='kw'>Blast</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>80</span>,<span class='fl'>5</span>,<span class='fl'>7</span>,<span class='fl'>40</span>)/<span class='fl'>100</span>) <span class='kw'>%&gt;%</span>
+  <span class='kw pkg'>tidyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://tidyr.tidyverse.org/reference/separate.html'>separate</a></span>(<span class='no'>SampleName</span>,<span class='kw'>into</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"PID"</span>,<span class='st'>"Time"</span>,<span class='st'>"Outcome"</span>),<span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>"[.]"</span>,<span class='kw'>remove</span><span class='kw'>=</span><span class='fl'>FALSE</span>)
 
-    <span class='no'>import_indels</span> <span class='kw'>&lt;-</span> <span class='fu'>import_indels_for_lineplot</span>(<span class='no'>variants</span>,
-    <span class='kw'>patientID</span> <span class='kw'>=</span> <span class='st'>"D1"</span>,
-    <span class='kw'>studyGenes</span> <span class='kw'>=</span> <span class='st'>"BCL2"</span>,
-    <span class='kw'>clinicalData</span> <span class='kw'>=</span> <span class='no'>clinicalData</span>)</div><div class='output co'>#&gt; <span class='error'>Error in import_indels_for_lineplot(variants, patientID = "D1", studyGenes = "BCL2",     clinicalData = clinicalData): could not find function "import_indels_for_lineplot"</span></div></pre>
+
+<span class='no'>import_blast</span> <span class='kw'>&lt;-</span> <span class='fu'>import_clinical</span>(<span class='kw'>tidy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,<span class='kw'>extract_column</span> <span class='kw'>=</span> <span class='st'>"Blast"</span>,<span class='kw'>clinicalData</span> <span class='kw'>=</span> <span class='no'>clinicalData</span>,
+                                <span class='kw'>patientID</span> <span class='kw'>=</span> <span class='st'>"D1"</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -182,7 +175,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Anna Quaglieri.</p>
+  <p>Developed by Anna Quaglieri, Christoffer Flensburg.</p>
 </div>
 
 <div class="pkgdown">

@@ -1,21 +1,26 @@
 Package: lineplots
 Type: Package
 Title: Making lineplots
-Version: 0.2.15
-Author: Anna Quaglieri & Christoffer Flensburg
+Version: 0.2.16
+Authors@R: c(
+      person("Anna", "Quaglieri", email = "quaglieri.a@wehi.edu.au", role = c("aut", "cre")),
+      person("Christoffer", "Flensburg", role = c("aut", "ctb"))
+    )
 Maintainer: Anna Quaglieri <quaglieri.a@wehi.edu.au>
-Description: The package was developed to standardise the variant calling output from several callers for a cohort of patients. The aim is to visualise shifts in mutations over time.
+Description: The package was developed to standardise and combine variant calling output from several callers for a cohort of patients.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends: 
   R (>= 3.5),
-  dplyr
+  dplyr,
+  stringr
 Remotes: 
   ChristofferFlensburg/superFreq
 Imports:
   tidyr,
   IRanges,
+  readr,
   readxl,
   matrixStats,
   plyranges
@@ -24,3 +29,5 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+URL: https://github.com/annaquaglieri16/lineplots
+BugReports: https://github.com/annaquaglieri16/lineplots/issues

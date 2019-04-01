@@ -1,6 +1,3 @@
-#' @importFrom tibble tibble
-NULL
-
 #' Example cohort structure.
 #'
 #' Sample dataset summarising a plausible cohort structure for a set of samples available for patients over time, across different batches and

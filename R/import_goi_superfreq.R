@@ -6,11 +6,8 @@
 #' @param patientID a character vector specifying the patient/s id/s for which variants have to be imported.
 #' @param ref_genome character vector for the reference genome used in the analysis ('hg38' or 'hg19')
 #' @param VAFcut Minimum VAF for a variant found in a patient.
-#' @param time_order vector specifying the order of time points, e.g. the levels of the `Time` variable as specified in the TIMEPOINT field in superFReq metadata.
-
 #' @description This function imports superFreq's SNVs, CNAs and clones for one patient and outputs them into a tidy format where every row is a variant.
 #' @export
-
 
 # studyGenes <- read_csv("../../../venetoclax_trial/Recurrent-AML-genes-across-studies.csv")
 # studyGenes <- as.character(studyGenes$Symbol)
@@ -18,7 +15,6 @@
 # patientID <- "D1"
 # VAFcut <- 0.15
 # superFreq_meta_path <- file.path("../../../venetoclax_trial/superFreq/metaData.tsv")
-# time_order = c("Screen","Cyc1","Cyc2","Cyc3","Cyc4","Cyc9")
 # ref_genome = "hg38"
 #
 # genes0 <- read.csv("../../../venetoclax_trial/Recurrent-AML-genes-across-studies.csv")
@@ -31,13 +27,12 @@
 # table(meta$TIMEPOINT)
 # patientID <- "CAN02JAB"
 
-extract_goi_supefreq <- function(superFreq_R_path = superFreq_R_path,
+import_goi_supefreq <- function(superFreq_R_path = superFreq_R_path,
                                  superFreq_meta_path = superFreq_meta_path,
                                  studyGenes,
                                  patientID = "D1",
                                  ref_genome = "hg38",
-                                 VAFcut = 0.15,
-                                 time_order = c("Screen","Cyc1","Cyc2","Cyc3","Cyc4","Cyc9")){
+                                 VAFcut = 0.15){
 
   options(warn = -1)
   if( is.na(patientID) ){
@@ -166,8 +161,6 @@ extract_goi_supefreq <- function(superFreq_R_path = superFreq_R_path,
       dplyr::rename(SampleName = NAME,
                     PID = INDIVIDUAL,
                     Time = TIMEPOINT) %>%
-      #dplyr::mutate(Time = factor(Time,levels = time_order)) %>%
-      #dplyr::mutate(SampleName = forcats::fct_reorder(SampleName,as.numeric(Time))) %>%
       tidyr::separate(mutation_det, into = c("SYMBOL"),sep=" ",remove=FALSE)
 
     # add total read depth. qs[[sample]][SNVoI,]$cov
@@ -233,8 +226,6 @@ extract_goi_supefreq <- function(superFreq_R_path = superFreq_R_path,
       dplyr::rename(SampleName = NAME,
                     PID = INDIVIDUAL,
                     Time = TIMEPOINT) %>%
-      #dplyr::mutate(Time = factor(Time,levels = time_order)) %>%
-      #dplyr::mutate(SampleName = forcats::fct_reorder(SampleName,as.numeric(Time))) %>%
       dplyr::mutate(variant_type = "clones")
 
 

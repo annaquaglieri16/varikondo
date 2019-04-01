@@ -6,11 +6,10 @@
 \usage{
 import_any(variants = NULL, patientID = NULL, studyGenes = NULL,
   minQual = 20, clinicalData = NULL, tidy = TRUE,
-  time_order = c("Screen", "Cyc1", "Cyc2", "Cyc3", "Cyc4", "Cyc9"),
   keep_impact = c("HIGH", "MODERATE"), variant_type = "indels-vardict")
 }
 \arguments{
-\item{variants}{a data frame where every row is a variant for one sample at a specific time point. The variants can derive from any caller but the input should be standardised to have the following columns: 'SampleName','PID','Time','chrom', 'pos', 'alt', 'ref', 'ref_depth','alt_depth' and (gene) 'SYMBOL' (see more information in Details). The columns `Consequence` and `IMPACT` (as annotated by Variant Effect Predictor (VEP) https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html) are filled with default values if not found. The `SampleName` columns is unique for every sequencing sample while `PID` for every patient.}
+\item{variants}{a data frame where every row is a variant for one sample at a specific time point. The variants can derive from any caller but the input should be standardised to have the following columns: 'SampleName','PID','Time','chrom', 'pos', 'alt', 'ref', 'ref_depth','alt_depth' and (gene) 'SYMBOL' (see more information in Details). The columns `Consequence` and `IMPACT` (as annotated by Variant Effect Predictor (VEP) https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html) are filled with default values if not found. If VEP `Consequence` is not available it could populated with any other informations like exon number, INDEL/SNV label etc...  to add details to each mutations (useful for plotting purposes). The `SampleName` columns is unique for every sequencing sample while `PID` for every patient.}
 
 \item{patientID}{a character vector specifying the patient/s id/s for which variants have to be imported.}
 
@@ -22,9 +21,9 @@ import_any(variants = NULL, patientID = NULL, studyGenes = NULL,
 
 \item{tidy}{Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.}
 
-\item{time_order}{vector specifying the order of time points, e.g. the levels of the `Time` variable extracted from the `SampleName` column of the input `variants`.}
-
 \item{keep_impact}{vector specifying the IMPACT values to select variants. Values allowed are HIGH, MODERATE, LOW, MODIFIER ( https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html). IMPACT should be a columns of `variants`. If it is not found all variants are kept.}
+
+\item{variant_type}{Label for the type of variants imported, e.g. vardict-indels.}
 }
 \description{
 This function will take as input a data frame of variants with specific column information and return a filtered set with sample's clinical infrmation and default variants information also for samples without variants.
@@ -33,11 +32,7 @@ This function will take as input a data frame of variants with specific column i
 This function will keep only the variants for `patientID` found on `studyGenes` and with a `minQual`. If a sample has no variants, then only clinical information will be returned with default values for the variant information.
 More details about the `variants` input:
 
-- The `Time` column can be defined in any way and it should reflect the time of sample collection. For example it could be defined as Time0, Time1, Time2 etc... It is important that an ordered vector of `Time` is provided in `time_order` (c("Time0", "Time1", "Time2")) to allow proper ordering of the samples.
-
-- The column `Consequence` is used to add details to each mutations (used for plotting purposes).
-
-- If VEP `Consequence` is not available it could populated with any other informations like exon number, INDEL/SNV label etc...
+- The `Time` column can be defined in any way and it should reflect the time of sample collection. For example it could be defined as Time0, Time1, Time2 etc...
 
 - If the column `IMPACT` is not found it will be filled with NAs and no variants will be filtered. Otherwise, values of the columns are checked and if they are within the expected values (HIGH, MODERATE, LOW or MODIFIER) only variants with `keep_impact` entries are kept. If a mutation appears twice with different `IMPACT` values only the most damaging will be kept.
 
@@ -45,42 +40,34 @@ The variants are then merged with the clinical information of `patientID`. This 
 }
 \examples{
 
-minLength = 2
-patientID = "D1"
-minQual=20
-indels <- data.frame(PID = rep("D1",9), # Patient ID
-                     Repl.within = "R1",
-                     batch = "B1",
-                     Status = c(rep("Diag",3),rep("Rem",3),rep("Rel",3)),
+indels <- data.frame(PID = rep("D1",9),
                      Outcome = "Rel",
+                     SampleName = c("D1.Screen.Rel","D1.Screen.Rel","D1.Screen.Rel",
+                                    "D1.Cyc1.Rel","D1.Cyc1.Rel","D1.Cyc1.Rel",
+                                    "D1.Cyc2.Rel","D1.Cyc2.Rel","D1.Cyc2.Rel"),
                      Time = c(rep("Screen",3),rep("Cyc1",3),rep("Cyc2",3)),
-                     Location = c("chr1_10","chr1_20","chr2_30","chr1_10","chr1_20","chr2_30","chr1_10","chr1_20","chr2_30"),
+                     chrom = c("chr1","chr1","chr2","chr2","chr1","chr1","chr2","chr1","chr2"),
+                     pos = c(10,20,30,10,20,30,10,20,30),
                      alt = c("ACT","ACGTCG","AGG","ACT","ACGTCG","AGG","ACT","ACGTCG","AGG"),
-                     ref = c("A","G","A","A","G","AGG","A","G","A"),
+                    ref = c("A","G","A","A","G","AGG","A","G","A"),
                      ref_depth = c(12,11,9,9,12,8,13,14,8),
                      alt_depth = c(2,20,10,2,10,15,20,20,100),
-                     Consequence = rep(c("C1","C2","C3"),times=3),
-                     IMPACT = rep(c("MODERATE","HIGH","HIGH"),times=3),
-                     IMPACT_rank = rep(c(3,2,1),times=3),
-                     qual = 49,
-                     SYMBOL = "BCL2") \%>\%
-     dplyr::mutate(tot_depth = ref_depth + alt_depth) \%>\%
-  dplyr::mutate(VAF = alt_depth/tot_depth) \%>\%
-  tidyr::separate(Location,into = c("chrom","pos"),sep = "_") \%>\%
-  tidyr::unite(SampleName,PID,Time,Status,Repl.within,batch,Outcome,sep = ".",remove=FALSE) \%>\%
-  tidyr::separate(SampleName,into = c("PID"),sep = "[.]",remove=FALSE)
+                     SYMBOL = "BCL2",
+                     Consequence = rep(c("exon1","exon1","exon2"),times=3),
+                     qual = 49)
 
-clinicalData <- data.frame(SampleName = c("D1.Screen.Diag.R1.B1.Rel","D1.Cyc1.Rem.R1.B1.Rel",
-                                     "D1.Cyc2.Rem.R1.B1.Rel","D1.Cyc3.Rel.R1.B1.Rel"),
-                      AgeDiagnosis = 65,
-                      Sex = "F",
-                      BlastPerc = c(80,5,7,40)) \%>\%
-    tidyr::separate(SampleName,into=c("PID","Time","Status","Repl.within","batch","Outcome"),sep = "[.]",remove=FALSE)
+clinicalData <- data.frame(SampleName = c("D1.Screen.Rel","D1.Cyc1.Rel",
+                                          "D1.Cyc2.Rel","D1.Cyc3.Rel"),
+                           PID = "D1",
+                           AgeDiagnosis = 65,
+                            Time = c("Screen","Cyc1","Cyc2","Cyc3"),
+                          Sex = "F",
+                           BlastPerc = c(80,5,7,40))
 
-    import_indels <- import_indels_for_lineplot(variants,
-    patientID = "D1",
-    studyGenes = "BCL2",
-    clinicalData = clinicalData,
-    time_order = c("Screen","Cyc1","Cyc2"),
-    keep_impact = c("HIGH","MODERATE"))
+import_indels <- import_any(variants = indels,
+                            patientID = "D1",
+                            studyGenes = "BCL2",
+                            minQual = 20,
+                            tidy=TRUE,
+                            clinicalData = clinicalData)
 }
