@@ -1,6 +1,6 @@
 template:
   params:
-    bootswatch: minty
+    bootswatch: sandstone
 
 reference:
 - title: All functions
@@ -33,6 +33,9 @@ navbar:
     intro:
       text: Get started
       href: articles/vignette.html
+    articles:
+      text: Articles
+      href: articles/standardise-variant-fields.html
     github:
       icon: fab fa-github fa-lg
       href: https://github.com/annaquaglieri16/varikondo

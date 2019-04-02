@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Introduction to varikondo • varikondo</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/minty/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/sandstone/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
@@ -49,17 +49,8 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/vignette.html">Introduction to varikondo</a>
-    </li>
-  </ul>
+  <a href="../articles/standardise-variant-fields.html">Articles</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -111,6 +102,11 @@ devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumen
 <p>It is to be noted that <code>VEP</code> might annotate the same variant multiple times, depending on whether a variants falls on several transcripts. VEP pastes together different annotations on the same line. <code>parse_vcf_output</code> will reshape the input variants and return it in a long format by stacking all the annotations one underneath each other. This has the potential of largely increasing the size of the ouput file and it is suggested to subset variants based on genes of interest, if the input <code>VCF</code> file is too large.</p>
 <p>The <code>parse_vcf_output</code> functions is built on top of the <a href="https://bioconductor.org/packages/release/bioc/html/VariantAnnotation.html"><code>VariantAnnotation</code></a> Bioconductor package <span class="citation">[@Obenchain2014-cd]</span> to quickly read large <code>VCF</code> files into <code>R</code> and extract fields.</p>
 <p>Below is a graphic overview about how to parse a list of <code>VCF</code> files for one sample. The same can be extended for any patient.</p>
+<div class="figure">
+<img src="../man/figures/import-any.png" alt="Overview of the functionality to import and organise your VCF files." width="624"><p class="caption">
+Overview of the functionality to import and organise your VCF files.
+</p>
+</div>
 <p>The example <code>VCF</code> files below were annotated with VEP. Also <code>germline_varscan.vcf</code> and <code>germline_vardict.vcf</code> are available as example.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">annot_vcf_mutect &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"germline_mutect.vcf"</span>, <span class="dt">package =</span> <span class="st">"varikondo"</span>)
 annot_vcf_mutect
@@ -1110,8 +1106,11 @@ annot_vcf_mutect
 <div id="import-combine-and-standardise-superfreq-outputs" class="section level2">
 <h2 class="hasAnchor">
 <a href="#import-combine-and-standardise-superfreq-outputs" class="anchor"></a>Import, combine and standardise <code>superFreq</code> outputs</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/include_graphics">include_graphics</a></span>(<span class="st">"../man/figures/import-superfreq.png"</span>)</code></pre></div>
-<p><img src="../man/figures/import-superfreq.png" width="621"></p>
+<div class="figure">
+<img src="../man/figures/import-superfreq.png" alt="Overview of the functionality to import and organise superFreq outputs." width="621"><p class="caption">
+Overview of the functionality to import and organise superFreq outputs.
+</p>
+</div>
 <p>The <code>import_goi_superfreq()</code> function was specifically build to extract all the outputs produced by the caller which would be otherwise stored in nested lists within each patient’s <code>Rdata</code> file or in <code>.csv</code> file if sometic variants. <code>superFreq</code> produces output from sometic SNVs, CNVs and clone tracking. A <code>superFreq</code> run for a cohort of patients (view <a href="https://github.com/ChristofferFlensburg/superFreq">instructions</a>) will create and <code>R</code> folder with results for each patient, each stored within a folder. <code>import_goi_supefreq</code> will look into this folder to extract all the results. <code>import_goi_supefreq</code> also needs a path to the cohort metadata file in order to match the ouput from each sample with its patient name and time points.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">import_sf &lt;-<span class="st"> </span><span class="kw"><a href="../reference/import_goi_supefreq.html">import_goi_supefreq</a></span>(<span class="dt">superFreq_R_path =</span> superFreq_R_path,
                                  <span class="dt">superFreq_meta_path =</span> superFreq_meta_path,
@@ -1120,51 +1119,6 @@ annot_vcf_mutect
                                  <span class="dt">ref_genome =</span> <span class="st">"hg38"</span>,
                                  <span class="dt">VAFcut =</span> <span class="fl">0.15</span>)</code></pre></div>
 </div>
-</div>
-<div id="st-variants" class="section level1">
-<h1 class="hasAnchor">
-<a href="#st-variants" class="anchor"></a>Standardise VCFs output across callers</h1>
-<p>Following, is the list of fields which are given as output after parsing a VCF file with <code><a href="../reference/parse_vcf_output.html">parse_vcf_output()</a></code>. Here is a description of what information was extracted for every caller to populate each standardised fields:</p>
-<ul>
-<li>
-<em>Location</em>: <code>CHR_POS</code> where <code>CHR</code> and <code>POS</code> are standard <code>VCF</code> fields for every caller.</li>
-<li>
-<em>caller</em>: the caller passed to the <code>caller</code> argument.</li>
-<li>
-<em>chrom</em>: field <code>CHROM</code> in the <code>VCF</code> file.</li>
-<li>
-<em>pos</em>: field <code>POS</code> in the <code>VCF</code> file.</li>
-<li>
-<em>ref</em>: field <code>REF</code> in the <code>VCF</code> file.</li>
-<li>
-<em>alt</em>: field <code>ALT</code> in the <code>VCF</code> file.</li>
-<li>
-<em>qual</em>: This field is not reported consistently from the VCF output of the three callers but I made sure that its meaning is consistent and that it represents the average base quality at that position. Below is a description of how it is extracted from each caller.
-<ul>
-<li>In <code>MuTect2</code> the <code>QSS</code> field in the <code>FORMAT</code> fields reports the sum of the base qualities for the reference and alternative alleles separated by a comma. We used the reference and alternative depths at each position to compute the overall average base quality at that position. This quantity will populate the final <code>qual</code> field.</li>
-<li>In <code>VarScan</code> this field is the average of the <code>RBQ</code> and <code>ABQ</code> fields from the <code>FORMAT</code> fields. They are defined respectively as the average quality of reference and alternative supporting bases in the header of the <code>VCF</code> file.</li>
-<li>In <code>VarDict</code> there are two <code>QUAL</code> fields, one is the standard 6th field of a <code>VCF</code> file and the other one is reported in the <code>INFO</code> fields. We will use the latter to populate the <code>qual</code> field in our analysis since it is the one defined as the average base quality at a variant position in the header of the <code>VCF</code>. <code>VarDict</code> uses a threshold of <code>QUAL &gt;= 25</code> to report a variant.</li>
-</ul>
-</li>
-<li><p><em>filter</em>: standard field <code>FILTER</code> in the <code>VCF</code> file. Each caller populates this field in different ways depending on the characteristics of the algorithm. In general, the entries for this field can be either <code>PASS</code> if that mutation passes all the filters defined by a caller or a description of the reason for filtering. The possible descriptions and their meaning can be found in the header of the VCF file generated by the caller.</p></li>
-<li><p><em>genotype</em>: standard <code>GT</code> field in the <code>FORMAT</code> fields of the <code>VCF</code> file.</p></li>
-<li><p><em>tot_depth</em>: total read depth at each position as estimated by the caller. This information can be reported differently by each caller. <code>VarDict</code> and <code>VarScan</code> record it in the <code>DP</code> field while <code>MuTect2</code> records the reference and alternative depth in the <code>AD</code> columns and their sum was used to define the <code>total_depth</code>.</p></li>
-<li><p><em>VAF</em>: variant allele frequency for the variants recorded at that position. <code>VarScan</code> records it in the <code>FREQ</code> field while <code>MuTect</code> and <code>VarDict</code> in the <code>AF</code> field.</p></li>
-<li><p><em>ADJVAF_ADJ_indels</em>: field <code>ADJAF</code> only reported by <code>VarDict</code> and it represents the adjusted variant allele frequency for indels due to local realignment.</p></li>
-<li>
-<em>ref_depth</em>, <em>alt_depth</em>, <em>ref_forw</em>, <em>ref_rev</em>, <em>alt_forw</em> and <em>alt_rev</em>: these fields represent the breakdown of supporting reference/alternative and forward/reverse reads at each location. Below I described what fields I used from every caller to extract these values. The fields are listed in order:
-<ul>
-<li>
-<code>MuTect2</code>: <em>ref_depth</em> and <em>alt_depth</em> are the comma separated values reported in the field <code>AD</code>; <em>ref_forw</em>, <em>ref_rev</em>, <em>alt_forw</em> and <em>alt_rev</em> are respectively the <code>MuTect2</code> fields <code>REF_F1R2</code>, <code>REF_F2R1</code>, <code>ALT_F1R2</code> and <code>ALT_F2R1</code>.</li>
-<li>
-<code>VarScan2</code>: in order the features listed above are extracted from the the fields <code>RD</code>, <code>AD</code>, <code>RDF</code>, <code>RDR</code>, <code>ADF</code> and <code>ADR</code>.</li>
-<li>
-<code>VarDict</code>: <em>ref_depth</em> and <em>alt_depth</em> are the fields <code>REF</code> and <code>ALT</code> in the VCF file; the field <code>REFBIAS</code> contains comma separated values representing <em>ref_forw</em> and <em>ref_rev</em> and <code>VARBIAS</code> contains comma separated values representing <em>alt_forw</em> and <em>alt_rev</em>.</li>
-</ul>
-</li>
-</ul>
-<p>If the <code>VCF</code> file was also annotated using the Variant Effect Predictor (VEP) <span class="citation">[@McLaren2016-lv]</span><br>
-All the other fields are exactly as generated by <code>VEP</code>: <code>Allele</code>, <code>Consequence</code>, <code>IMPACT</code>, <code>SYMBOL</code>, <code>Gene</code>, <code>Feature_type</code>, <code>Feature</code>, <code>BIOTYPE</code>, <code>EXON</code>, <code>INTRON</code>, <code>HGVSc</code>, <code>HGVSp</code>, <code>cDNA_position</code>, <code>CDS_position</code>, <code>Protein_position</code> <code>Amino_acids</code>, <code>Codons</code>, <code>Existing_variation</code> <code>DISTANCE</code>, <code>STRAND</code>, <code>FLAGS</code>, <code>VARIANT_CLASS</code>, <code>SYMBOL_SOURCE</code>, <code>HGNC_ID</code>, <code>CANONICAL</code>, <code>TSL</code>, <code>APPRIS</code>, <code>CCDS</code>, <code>ENSP</code>, <code>SWISSPROT</code>, <code>TREMBL</code>, <code>UNIPARC</code>, <code>GENE_PHENO</code>, <code>SIFT</code>, <code>PolyPhen</code>, <code>DOMAINS</code>, <code>AF</code>, <code>AFR_AF</code>, <code>AMR_AF</code>, <code>EAS_AF</code>, <code>EUR_AF</code>, <code>SAS_AF</code>, <code>AA_AF</code>, <code>EA_AF</code>, <code>ExAC_AF</code>, <code>ExAC_Adj_AF</code>, <code>ExAC_AFR_AF</code>, <code>ExAC_AMR_AF</code>, <code>ExAC_EAS_AF</code>, <code>ExAC_FIN_AF</code>, <code>ExAC_NFE_AF</code>, <code>ExAC_OTH_AF</code>, <code>ExAC_SAS_AF</code>, <code>MAX_AF</code>, <code>MAX_AF_POPS</code>, <code>CLIN_SIG</code>, <code>SOMATIC</code>, <code>PHENO</code>, <code>PUBMED</code>,<code>MOTIF_NAME</code>, <code>MOTIF_POS</code>, <code>HIGH_INF_POS</code>, <code>MOTIF_SCORE_CHANGE</code> <code>SampleName</code>, <code>IMPACT_rank</code>. Visit the <code>VEP</code> page to find more information <a href="https://asia.ensembl.org/info/docs/tools/vep/index.html" class="uri">https://asia.ensembl.org/info/docs/tools/vep/index.html</a>.</p>
 </div>
 <div id="aknowledgements" class="section level1">
 <h1 class="hasAnchor">
@@ -1184,7 +1138,6 @@ All the other fields are exactly as generated by <code>VEP</code>: <code>Allele<
 <li><a href="#import-combine-and-standardise-superfreq-outputs">Import, combine and standardise <code>superFreq</code> outputs</a></li>
       </ul>
 </li>
-      <li><a href="#st-variants">Standardise VCFs output across callers</a></li>
       <li><a href="#aknowledgements">Aknowledgements</a></li>
       </ul>
 </div>
