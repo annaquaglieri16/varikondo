@@ -1,13 +1,13 @@
-Package: lineplots
+Package: varikondo
 Type: Package
-Title: Making lineplots
+Title: A package to declutter, organise and standardise genomic variant calls. 
 Version: 0.2.16
 Authors@R: c(
       person("Anna", "Quaglieri", email = "quaglieri.a@wehi.edu.au", role = c("aut", "cre")),
       person("Christoffer", "Flensburg", role = c("aut", "ctb"))
     )
 Maintainer: Anna Quaglieri <quaglieri.a@wehi.edu.au>
-Description: The package was developed to standardise and combine variant calling output from several callers for a cohort of patients.
+Description: The package was developed to organise, standardise and combine variant calling output from several callers for a cohort of patients and for genes of interest.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -21,6 +21,8 @@ Imports:
   tidyr,
   IRanges,
   readr,
+  png,
+  grid,
   readxl,
   matrixStats,
   plyranges
@@ -29,5 +31,5 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-URL: https://github.com/annaquaglieri16/lineplots
-BugReports: https://github.com/annaquaglieri16/lineplots/issues
+URL: https://github.com/annaquaglieri16/varikondo
+BugReports: https://github.com/annaquaglieri16/varikondo/issues

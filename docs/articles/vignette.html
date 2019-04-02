@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Overview of lineplots • lineplots</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
+<title>Introduction to of varikondo • varikondo</title>
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/minty/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Overview of lineplots">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Introduction to of varikondo">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -30,7 +30,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">lineplots</a>
+        <a class="navbar-link" href="../index.html">varikondo</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.16</span>
       </span>
     </div>
@@ -39,9 +39,12 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
+</li>
+<li>
+  <a href="../articles/vignette.html">Get started</a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -54,15 +57,15 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/vignette.html">Overview of lineplots</a>
+      <a href="../articles/vignette.html">Introduction to of varikondo</a>
     </li>
   </ul>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/annaquaglieri16/lineplots">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/annaquaglieri16/varikondo">
+    <span class="fa fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -78,51 +81,40 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Overview of lineplots</h1>
+      <h1>Introduction to of varikondo</h1>
                         <h4 class="author">Anna Quaglieri</h4>
             
-            <h4 class="date">2019-04-01</h4>
+            <h4 class="date">2019-04-02</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/annaquaglieri16/lineplots/blob/master/vignettes/vignette.Rmd"><code>vignettes/vignette.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/annaquaglieri16/varikondo/blob/master/vignettes/vignette.Rmd"><code>vignettes/vignette.Rmd</code></a></small>
       <div class="hidden name"><code>vignette.Rmd</code></div>
 
     </div>
 
     
     
-<div id="scope-of-this-package" class="section level1">
-<h1 class="hasAnchor">
-<a href="#scope-of-this-package" class="anchor"></a>Scope of this package</h1>
-<p>The <code>lineplots</code> package was developed to standardise the variant calling output from a cohort of patients for a set of genes of interest to then produce plots over time. It has specific functions built to interact with the output from <code>superFreq</code> (<code>extract_goi_superfreq()</code>) as well as more generic import functions to integrate calls from various callers (<code>import_any</code>) or clinical information (<code>import_clinical</code>). It also provide a parsing function, <code><a href="../reference/parse_vcf_output.html">parse_vcf_output()</a></code> which takes a <code>VCF</code> file as input and outputs a parsed <code>tibble</code> with standardised names for VCF fields. Currently, <code><a href="../reference/parse_vcf_output.html">parse_vcf_output()</a></code> supports ouputs from the following callers run in tumour-only mode: <code>GATK3 MuTect2</code>, <code>VarScan2</code>, <code>VarDict</code>. It can also enable parsing of the annotation field added by the <a href="https://asia.ensembl.org/info/docs/tools/vep/index.html">Variant Effect Predictor</a>. The package was developed with variants from RNA-Seq samples but there would be in principle no difference if variants were called using DNA-Seq. It was developed as part of the work done on an RNA-Seq cohort of Leukemia patients, of relatively small sample size (~30 patients), with multiple samples at different time points, sequenced across different batches and tissues. In these type of studies it is often the case that clinicians or biologists needs to explore the information for each patient, for a particular set of genes of interest. Time-series lineplots over time as well as heatmaps showing the shifts in variant allele frequency (VAF) and tumour content help with exploring the various genetic results generated from sequencing data. A Shiny app, <a href="https://github.com/annaquaglieri16/mutexplore"><code>MuExplore</code></a>, is also under development to allow interactive exploration of the standardised data across all the patients.</p>
-<div id="a-multidude-of-outputs" class="section level2">
-<h2 class="hasAnchor">
-<a href="#a-multidude-of-outputs" class="anchor"></a>A multidude of outputs</h2>
-<p>Calling variants from RNA-Seq samples is increasing in popularity due to the large number of RNA-Seq data produced <strong>[papers]</strong>. Several benchmarking papers have been published comparing the performance of different callers [] and in recent years several new methods have been developed specifically to improve INDEL detection in RNA-Seq samples []. As part of a project done on two Leukemia clinical trials we defined a pipeline to call variants in RNA-Seq (<a href="https://rna-mutation-calls.netlify.com/" class="uri">https://rna-mutation-calls.netlify.com/</a>) and use <a href="https://github.com/ChristofferFlensburg/superFreq">superFreq</a> to analyse clonal tracking and mutational development across treatment. We used combined calls from the <a href="https://github.com/AstraZeneca-NGS/VarDict">VarDict</a> <span class="citation">[@Lai2016-ws]</span> and <a href="https://github.com/iric-soft/km/tree/master/km/tools#output-description-1">km</a> <span class="citation">[@Software-km]</span> algorithms to define INDEL calls.</p>
-<p>After calling SNVs, CNVs and INDELs with different programs, it is often useful to combine all the results in a standardised way. Usually different programs output variants in different ways using slightly different conventions which makes it challenging to easily combine the results. For example, superFreq returns SNVs, CNVs and clone tracking in <code>Rdata</code> files as well as in <code>csv</code> files; <code>VarDict</code> uses the standard <code>VCF</code> output but with different specification of quality measures compared to, for example, <code>MuTect2</code> or <code>VarScan2</code>; <code>km</code> outputs INDELs in tab delimited format. This makes it challenging to both create a comprehensive overview of the results for one sample as well as to compare results across callers. Another challenge comes from calling variants independently at different time points for the same patient. Variants might be present before treatment but absent after treatment and when a patient relapses or vice versa. This required to fill in the missing time points especially for visualisations purposes. While <code>superFreq</code> takes this problem into account by keeping any variants found at different time points, other programs like <code>km</code> or <code>VarDict</code> don’t allow that.</p>
-</div>
-</div>
 <div id="setup" class="section level1">
 <h1 class="hasAnchor">
 <a href="#setup" class="anchor"></a>Setup</h1>
-<p>The <code>lineplots</code> R package comprises several helper and import functions that can be used to convert output from any of the callers mentioned above to a standardised format.</p>
+<p>The <code>varikondo</code> R package comprises several helper and import functions that can be used to convert output from any of the callers mentioned above to a standardised format.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(devtools)
-devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"annaquaglieri16/lineplots"</span>)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(lineplots)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/ls">ls</a></span>(<span class="st">"package:lineplots"</span>)
+devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"annaquaglieri16/varikondo"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(varikondo)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/ls">ls</a></span>(<span class="st">"package:varikondo"</span>)
 <span class="co">#&gt; [1] "example_data"        "import_any"          "import_clinical"    </span>
 <span class="co">#&gt; [4] "import_goi_supefreq" "parse_vcf_output"    "parse_vep_csq"</span></code></pre></div>
 </div>
-<div id="from-vcf-to-tibble-parse_vcf_output" class="section level1">
+<div id="parsing-from-vcf-to-tody-data-frame" class="section level1">
 <h1 class="hasAnchor">
-<a href="#from-vcf-to-tibble-parse_vcf_output" class="anchor"></a>From <code>VCF</code> to <code>tibble</code>: <code><a href="../reference/parse_vcf_output.html">parse_vcf_output()</a></code>
-</h1>
-<p>The function <code><a href="../reference/parse_vcf_output.html">parse_vcf_output()</a></code> allows to convert a <code>.vcf</code> file generated by three different callers <code>GATK3 MuTect2</code>, <code>VarDict</code> or <code>VarScan</code>, to a data frame with standardised fields. This is because different callers annotate the <code>INFO</code> field in the <code>VCF</code> ouput in different ways, using different names for read depth, variant allele frequency etc… The output from <code><a href="../reference/parse_vcf_output.html">parse_vcf_output()</a></code> can then be used for <code>import_any_for_lineplots()</code> to combine variants and clinical information and fill in missing time points. If the variants in the <code>VCF</code> file were also annotated with the Variant Effect Predictor (VEP) <span class="citation">[@McLaren2016-lv]</span>, the one can set <code>vep = TRUE</code> to parse the extra fields.</p>
-<p>It is to be noted that VEP can annotate the same variant multiple times, depending on whether a variants falls on several transcripts. VEP pastes together different annotations on the same line. <code>parse_vcf_output</code> will reshape the input variants and return it in a long format by stacking all the annotations one underneath each other. This has the potential of largely increasing the size of the ouput file and it is suggested to subset variants based on genes of interest, if the input <code>VCF</code> file is too large.</p>
+<a href="#parsing-from-vcf-to-tody-data-frame" class="anchor"></a>Parsing: from <code>VCF</code> to tody data frame</h1>
+<p>The function <code><a href="../reference/parse_vcf_output.html">parse_vcf_output()</a></code> allows to convert a <code>VCF</code> file generated by three different callers <code>GATK3 MuTect2</code>, <code>VarDict</code> or <code>VarScan</code>, to a data frame with standardised fields. This is because different callers annotate the <code>INFO</code> field in the <code>VCF</code> ouput in different ways, using different names for read depth, variant allele frequency etc… The output from <code><a href="../reference/parse_vcf_output.html">parse_vcf_output()</a></code> can then be used as input <code>variants</code> for <code><a href="../reference/import_any.html">import_any()</a></code> to combine variants and clinical information and fill in missing variants at specific time points. If the variants in the <code>VCF</code> file were also annotated with the Variant Effect Predictor (VEP) <span class="citation">[@McLaren2016-lv]</span>, the one can set <code>vep = TRUE</code> to parse the extra fields.</p>
+<p>It is to be noted that <code>VEP</code> might annotate the same variant multiple times, depending on whether a variants falls on several transcripts. VEP pastes together different annotations on the same line. <code>parse_vcf_output</code> will reshape the input variants and return it in a long format by stacking all the annotations one underneath each other. This has the potential of largely increasing the size of the ouput file and it is suggested to subset variants based on genes of interest, if the input <code>VCF</code> file is too large.</p>
 <p>The <code>parse_vcf_output</code> functions is built on top of the <a href="https://bioconductor.org/packages/release/bioc/html/VariantAnnotation.html"><code>VariantAnnotation</code></a> Bioconductor package <span class="citation">[@Obenchain2014-cd]</span> to quickly read large <code>VCF</code> files into <code>R</code> and extract fields.</p>
+<p>Below is a graphic overview about how to parse a list of <code>VCF</code> files for one sample. The same can be extended for any patient.</p>
 <p>The example <code>VCF</code> files below were annotated with VEP. Also <code>germline_varscan.vcf</code> and <code>germline_vardict.vcf</code> are available as example.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">annot_vcf_mutect &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"germline_mutect.vcf"</span>, <span class="dt">package =</span> <span class="st">"lineplots"</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">annot_vcf_mutect &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"germline_mutect.vcf"</span>, <span class="dt">package =</span> <span class="st">"varikondo"</span>)
 annot_vcf_mutect
-<span class="co">#&gt; [1] "/Users/quaglieri.a/Library/R/3.5/library/lineplots/extdata/germline_mutect.vcf"</span></code></pre></div>
+<span class="co">#&gt; [1] "/Users/quaglieri.a/Library/R/3.5/library/varikondo/extdata/germline_mutect.vcf"</span></code></pre></div>
 <p><code>VCF</code> files from <code>VarDict</code> and <code>VarScan</code> can be parsed by specifying <code>caller = "vardict"</code> or <code>caller = "varscan"</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(parsed_vcf_mutect[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,],<span class="dt">caption =</span> <span class="st">"Parsed MuTect2 output, from VCF to data frame."</span>)</code></pre></div>
 <table class="table">
@@ -1113,10 +1105,21 @@ annot_vcf_mutect
 </div>
 <div id="import-functions" class="section level1">
 <h1 class="hasAnchor">
-<a href="#import-functions" class="anchor"></a><code>import</code> functions</h1>
-<p>In general, the import functions can take in input variants called by a caller as well as clinical information for all the patients in the cohort under investigation. Every input function requires a <code>patientID</code> to be provided and a set of <code>studyGenes</code> to restrict the analysis on. <code>studygenes</code> are expected to be a character vector of NCBI gene <code>Symbols</code>. This means that variants need to be annotated with the gene they belong to before <code>lineplots</code> can be used. The clinical data at every time point is needed because if a variant is not detected at one time point for a patient, then the input variants will be extended to include all time points initially available for that patient but with default values for missing fields (e.g. VAF = 0). This is useful for visualisation purposes where one needs to track the development of mutation over time.</p>
-<p>Figure XX is a graphic summary of the input required for every <code>import</code> function.</p>
-<p><strong>add pic with input and output of every function</strong> <strong>Picture of filling gaps strategy</strong></p>
+<a href="#import-functions" class="anchor"></a>Import functions</h1>
+<p>In general, the import functions can take in input variants called by a caller as well as clinical information for all the patients in the cohort under investigation. Every input function requires a <code>patientID</code> to be provided and a set of <code>studyGenes</code> to restrict the analysis on. <code>studygenes</code> are expected to be a character vector of NCBI gene <code>Symbols</code>. This means that variants need to be annotated with the gene they belong to before <code>varikondo</code> can be used. The clinical data at every time point is needed because if a variant is not detected at one time point for a patient, then the input variants will be extended to include all time points initially available for that patient but with default values for missing fields (e.g. VAF = 0). This is useful for visualisation purposes where one needs to track the development of mutation over time.</p>
+<div id="import-combine-and-standardise-superfreq-outputs" class="section level2">
+<h2 class="hasAnchor">
+<a href="#import-combine-and-standardise-superfreq-outputs" class="anchor"></a>Import, combine and standardise <code>superFreq</code> outputs</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/include_graphics">include_graphics</a></span>(<span class="st">"../figures/import-superfreq.png"</span>)</code></pre></div>
+<p><img src="../figures/import-superfreq.png" width="621"></p>
+<p>The <code>import_goi_superfreq()</code> function was specifically build to extract all the outputs produced by the caller which would be otherwise stored in nested lists within each patient’s <code>Rdata</code> file or in <code>.csv</code> file if sometic variants. <code>superFreq</code> produces output from sometic SNVs, CNVs and clone tracking. A <code>superFreq</code> run for a cohort of patients (view <a href="https://github.com/ChristofferFlensburg/superFreq">instructions</a>) will create and <code>R</code> folder with results for each patient, each stored within a folder. <code>import_goi_supefreq</code> will look into this folder to extract all the results. <code>import_goi_supefreq</code> also needs a path to the cohort metadata file in order to match the ouput from each sample with its patient name and time points.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">import_sf &lt;-<span class="st"> </span><span class="kw"><a href="../reference/import_goi_supefreq.html">import_goi_supefreq</a></span>(<span class="dt">superFreq_R_path =</span> superFreq_R_path,
+                                 <span class="dt">superFreq_meta_path =</span> superFreq_meta_path,
+                                 studyGenes,
+                                 <span class="dt">patientID =</span> <span class="st">"D1"</span>,
+                                 <span class="dt">ref_genome =</span> <span class="st">"hg38"</span>,
+                                 <span class="dt">VAFcut =</span> <span class="fl">0.15</span>)</code></pre></div>
+</div>
 </div>
 <div id="st-variants" class="section level1">
 <h1 class="hasAnchor">
@@ -1163,6 +1166,10 @@ annot_vcf_mutect
 <p>If the <code>VCF</code> file was also annotated using the Variant Effect Predictor (VEP) <span class="citation">[@McLaren2016-lv]</span><br>
 All the other fields are exactly as generated by <code>VEP</code>: <code>Allele</code>, <code>Consequence</code>, <code>IMPACT</code>, <code>SYMBOL</code>, <code>Gene</code>, <code>Feature_type</code>, <code>Feature</code>, <code>BIOTYPE</code>, <code>EXON</code>, <code>INTRON</code>, <code>HGVSc</code>, <code>HGVSp</code>, <code>cDNA_position</code>, <code>CDS_position</code>, <code>Protein_position</code> <code>Amino_acids</code>, <code>Codons</code>, <code>Existing_variation</code> <code>DISTANCE</code>, <code>STRAND</code>, <code>FLAGS</code>, <code>VARIANT_CLASS</code>, <code>SYMBOL_SOURCE</code>, <code>HGNC_ID</code>, <code>CANONICAL</code>, <code>TSL</code>, <code>APPRIS</code>, <code>CCDS</code>, <code>ENSP</code>, <code>SWISSPROT</code>, <code>TREMBL</code>, <code>UNIPARC</code>, <code>GENE_PHENO</code>, <code>SIFT</code>, <code>PolyPhen</code>, <code>DOMAINS</code>, <code>AF</code>, <code>AFR_AF</code>, <code>AMR_AF</code>, <code>EAS_AF</code>, <code>EUR_AF</code>, <code>SAS_AF</code>, <code>AA_AF</code>, <code>EA_AF</code>, <code>ExAC_AF</code>, <code>ExAC_Adj_AF</code>, <code>ExAC_AFR_AF</code>, <code>ExAC_AMR_AF</code>, <code>ExAC_EAS_AF</code>, <code>ExAC_FIN_AF</code>, <code>ExAC_NFE_AF</code>, <code>ExAC_OTH_AF</code>, <code>ExAC_SAS_AF</code>, <code>MAX_AF</code>, <code>MAX_AF_POPS</code>, <code>CLIN_SIG</code>, <code>SOMATIC</code>, <code>PHENO</code>, <code>PUBMED</code>,<code>MOTIF_NAME</code>, <code>MOTIF_POS</code>, <code>HIGH_INF_POS</code>, <code>MOTIF_SCORE_CHANGE</code> <code>SampleName</code>, <code>IMPACT_rank</code>. Visit the <code>VEP</code> page to find more information <a href="https://asia.ensembl.org/info/docs/tools/vep/index.html" class="uri">https://asia.ensembl.org/info/docs/tools/vep/index.html</a>.</p>
 </div>
+<div id="aknowledgements" class="section level1">
+<h1 class="hasAnchor">
+<a href="#aknowledgements" class="anchor"></a>Aknowledgements</h1>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -1170,15 +1177,15 @@ All the other fields are exactly as generated by <code>VEP</code>: <code>Allele<
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li>
-<a href="#scope-of-this-package">Scope of this package</a><ul class="nav nav-pills nav-stacked">
-<li><a href="#a-multidude-of-outputs">A multidude of outputs</a></li>
+<li><a href="#setup">Setup</a></li>
+      <li><a href="#parsing-from-vcf-to-tody-data-frame">Parsing: from <code>VCF</code> to tody data frame</a></li>
+      <li>
+<a href="#import-functions">Import functions</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#import-combine-and-standardise-superfreq-outputs">Import, combine and standardise <code>superFreq</code> outputs</a></li>
       </ul>
 </li>
-      <li><a href="#setup">Setup</a></li>
-      <li><a href="#from-vcf-to-tibble-parse_vcf_output">From <code>VCF</code> to <code>tibble</code>: <code><a href="--/reference/parse_vcf_output-html">parse_vcf_output()</a></code></a></li>
-      <li><a href="#import-functions"><code>import</code> functions</a></li>
       <li><a href="#st-variants">Standardise VCFs output across callers</a></li>
+      <li><a href="#aknowledgements">Aknowledgements</a></li>
       </ul>
 </div>
       </div>
