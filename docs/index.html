@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -57,7 +57,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/vignette.html">Introduction to of varikondo</a>
+      <a href="articles/vignette.html">Introduction to varikondo</a>
     </li>
   </ul>
 </li>
@@ -65,7 +65,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/annaquaglieri16/varikondo">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -92,7 +92,7 @@
 <h2 class="hasAnchor">
 <a href="#variant-calling-a-multidude-of-output-types" class="anchor"></a>Variant calling: a multidude of output types</h2>
 <p>Calling variants from RNA-Seq samples is increasing in popularity due to the large number of RNA-Seq data produced and benchmarking papers have been published comparing the performance of different callers <span class="citation">(Quinn et al. 2013; Coudray et al. 2018; Lavallée et al. 2016)</span>. In the past year several new methods have been developed specifically to improve INDEL detection in RNA-Seq samples <span class="citation">(Audemard et al. 2018; Kohei Hagiwara, Liang Ding, Michael N. Edmonson, Stephen V. Rice, Scott Newman, Soheil Meshinchi, Rhonda E. Ries, Michael Rusch, Jinghui Zhang 2019; Mose, Perou, and Parker 2019)</span>. As part of a project done on two Leukemia clinical trials we defined a pipeline to call variants in RNA-Seq (<a href="https://rna-mutation-calls.netlify.com/" class="uri">https://rna-mutation-calls.netlify.com/</a>) and use <a href="https://github.com/ChristofferFlensburg/superFreq">superFreq</a> to analyse clonal tracking and mutational development across the course of the treatment. We used combined calls from the <a href="https://github.com/AstraZeneca-NGS/VarDict">VarDict</a> <span class="citation">(Lai et al. 2016)</span> and <a href="https://github.com/iric-soft/km/tree/master/km/tools#output-description-1">km</a> <span class="citation">(<span class="citeproc-not-found" data-reference-id="Software-km"><strong>???</strong></span>)</span> algorithms to define INDEL calls. Below is an overview of the variant calling pipeline and the steps where the <code>varikondo</code> package comes in!</p>
-<p><img src="../figures/general-overview.png"><!-- --></p>
+<p><img src="reference/figures/general-overview.png"><!-- --></p>
 <p>After calling SNVs, CNVs and INDELs with different programs, it is often useful to combine all the results in a standardised way. Usually different programs output variants in different ways using slightly different conventions which makes it challenging to easily combine the results. For example, superFreq returns SNVs, CNVs and clone tracking in <code>Rdata</code> files as well as in <code>csv</code> files; <code>VarDict</code> uses the standard <code>VCF</code> output but with different specification of quality measures compared to, for example, <code>MuTect2</code> or <code>VarScan2</code>; <code>km</code> outputs INDELs in tab delimited format. This makes it challenging to both create a comprehensive overview of the results for one sample as well as to compare results across callers. Another challenge comes from calling variants independently at different time points for the same patient. Variants might be present before treatment but absent after treatment and when a patient relapses or vice versa. This required to fill in the missing time points especially for visualisations purposes. While <code>superFreq</code> takes this problem into account by keeping any variants found at different time points, other programs like <code>km</code> or <code>VarDict</code> don’t allow that. <code>varikondo</code> takes care of these two problems for the output produced by the callers used in the pipeline.</p>
 </div>
 </div>

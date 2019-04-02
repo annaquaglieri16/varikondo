@@ -1,5 +1,5 @@
 ---
-title: "Introduction to of varikondo"
+title: "Introduction to varikondo"
 author: "Anna Quaglieri"
 date: "`r Sys.Date()`"
 output:
@@ -50,7 +50,7 @@ The `parse_vcf_output` functions is built on top of the [`VariantAnnotation`](ht
 Below is a graphic overview about how to parse a list of `VCF` files for one sample. The same can be extended for any patient. 
 
 ```{r echo=FALSE,eval=FALSE, fig.cap="Overview of function to import and parce VCF files."}
-knitr::include_graphics("../figures/import-any.png")
+knitr::include_graphics("../man/figures/import-any.png")
 ```
 
 
@@ -81,7 +81,7 @@ In general, the import functions can take in input variants called by a caller a
 
 
 ```{r eval=TRUE}
-knitr::include_graphics("../figures/import-superfreq.png")
+knitr::include_graphics("../man/figures/import-superfreq.png")
 ```
 
 The `import_goi_superfreq()` function was specifically build to extract all the outputs produced by the caller which would be otherwise stored in nested lists within each patient's `Rdata` file or in `.csv` file if sometic variants. `superFreq` produces output from sometic SNVs, CNVs and clone tracking. A `superFreq` run for a cohort of patients (view [instructions](https://github.com/ChristofferFlensburg/superFreq)) will create and `R` folder with results for each patient, each stored within a folder. `import_goi_supefreq` will look into this folder to extract all the results. `import_goi_supefreq` also needs a path to the cohort metadata file in order to match the ouput from each sample with its patient name and time points.  

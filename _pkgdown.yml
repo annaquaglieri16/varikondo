@@ -2,6 +2,17 @@ template:
   params:
     bootswatch: minty
 
+reference:
+- title: All functions
+  desc: ~
+  contents:
+  - starts_with('parse')
+  - starts_with('import')
+- title: All datasets
+  desc: ~
+  contents:
+  - starts_with('example')
+
 navbar:
   structure:
     left:
@@ -14,14 +25,14 @@ navbar:
     right: github
   components:
     home:
-      icon: fa-home fa-lg
+      icon: fas fa-home fa-lg
       href: index.html
-    intro:
-      text: Get started
-      href: articles/vignette.html
     reference:
       text: Reference
       href: reference/index.html
+    intro:
+      text: Get started
+      href: articles/vignette.html
     github:
-      icon: fa-github fa-lg
+      icon: fab fa-github fa-lg
       href: https://github.com/annaquaglieri16/varikondo
