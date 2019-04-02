@@ -112,6 +112,10 @@ Overview of the functionality to import and organise your VCF files.
 annot_vcf_mutect
 <span class="co">#&gt; [1] "/Users/quaglieri.a/Library/R/3.5/library/varikondo/extdata/germline_mutect.vcf"</span></code></pre></div>
 <p><code>VCF</code> files from <code>VarDict</code> and <code>VarScan</code> can be parsed by specifying <code>caller = "vardict"</code> or <code>caller = "varscan"</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">parsed_vcf_mutect &lt;-<span class="st"> </span>varikondo<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/varikondo/topics/parse_vcf_output">parse_vcf_output</a></span>(annot_vcf_mutect, 
+                                                 <span class="dt">caller =</span> <span class="st">"mutect"</span>,
+                                                 <span class="dt">sample_name =</span> <span class="st">"Sample1"</span>,
+                                                 <span class="dt">vep =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/knitr/topics/kable">kable</a></span>(parsed_vcf_mutect[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,],<span class="dt">caption =</span> <span class="st">"Parsed MuTect2 output, from VCF to data frame."</span>)</code></pre></div>
 <table class="table">
 <caption>Parsed MuTect2 output, from VCF to data frame.</caption>
@@ -1097,7 +1101,7 @@ annot_vcf_mutect
 </tr>
 </tbody>
 </table>
-<p>You can find in <a href="#st-variants">Standardise VCFs output across callers</a> more details about the exact fields that I extract from a caller’s <code>VCF</code> file to populate the standardised fields given in ouput.</p>
+<p>In the article <a href="file:///Volumes/AML_RNA/quaglieri.a/R_packages/varikondo/docs/articles/standardise-variant-fields.html">Standardise VCFs output across callers</a> you can find more details about the exact fields that I extract from a caller’s <code>VCF</code> file to populate the joyful standardised fields given in ouput.</p>
 </div>
 <div id="import-functions" class="section level1">
 <h1 class="hasAnchor">

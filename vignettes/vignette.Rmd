@@ -64,7 +64,7 @@ annot_vcf_mutect
 
 `VCF` files from `VarDict` and `VarScan` can be parsed by specifying `caller = "vardict"` or `caller = "varscan"`.
 
-```{r include=FALSE,echo=TRUE}
+```{r include=TRUE,echo=TRUE,eval=TRUE}
 parsed_vcf_mutect <- varikondo::parse_vcf_output(annot_vcf_mutect, 
                                                  caller = "mutect",
                                                  sample_name = "Sample1",
@@ -75,11 +75,12 @@ parsed_vcf_mutect <- varikondo::parse_vcf_output(annot_vcf_mutect,
 knitr::kable(parsed_vcf_mutect[1:10,],caption = "Parsed MuTect2 output, from VCF to data frame.")
 ```
 
-You can find in [Standardise VCFs output across callers](#st-variants) more details about the exact fields that I extract from a caller's `VCF` file to populate the standardised fields given in ouput.
+In the article [Standardise VCFs output across callers](file:///Volumes/AML_RNA/quaglieri.a/R_packages/varikondo/docs/articles/standardise-variant-fields.html) you can find more details about the exact fields that I extract from a caller's `VCF` file to populate the joyful standardised fields given in ouput.
 
 # Import functions
 
 In general, the import functions can take in input variants called by a caller as well as clinical information for all the patients in the cohort under investigation. Every input function requires a `patientID` to be provided and a set of `studyGenes` to restrict the analysis on. `studygenes` are expected to be a character vector of NCBI gene `Symbols`. This means that variants need to be annotated with the gene they belong to before `varikondo` can be used. The clinical data at every time point is needed because if a variant is not detected at one time point for a patient, then the input variants will be extended to include all time points initially available for that patient but with default values for missing fields (e.g. VAF = 0). This is useful for visualisation purposes where one needs to track the development of mutation over time.
+
 
 ## Import, combine and standardise `superFreq` outputs
 
