@@ -4,14 +4,15 @@
 #' @param caller character. One of `mutect`, `vardict` or `varscan`.
 #' @param vep logical. If TRUE, the annotation fields added by the Variant Effect Predictor will be parsed.
 
-#' @description It only works woth germline calls and for VCF from the following callers: GATK3 MuTect2, VarScan2 and VarDict.
+#' @description Currently, it doesn't work for somatic calls and for VCF from the following callers: GATK3 MuTect2, VarScan2 and VarDict. It used the Bioconductor package `VariantAnnotation` to read `VCF` files into `R`.
 
 #' @export
-
-# vcf_path <- "../../../cbf_aml_agrf/variant_calling/vardict/regions_deDupl_both_cohorts/annotated_variants/10.R1.B2.M13ADE05RV.BM.Rem_germline_annotated.vcf"
-# sample_name = "10.R1.B2.M13ADE05RV.BM.Rem"
-# caller = "vardict"
-# vep = TRUE
+#' @example
+#' vcf_path <- system.file("extdata", "germline_mutect.vcf", package = "varikondo")
+#' parsed_vcf_mutect <- varikondo::parse_vcf_output(annot_vcf_mutect,
+#' caller = "mutect",
+#' sample_name = "Sample1",
+#' vep = TRUE)
 
 parse_vcf_output <- function(vcf_path, sample_name, caller, vep = TRUE) {
 
@@ -53,46 +54,111 @@ parse_vcf_output <- function(vcf_path, sample_name, caller, vep = TRUE) {
 
     }
 
+
     if(caller == "mutect"){
 
-      # each row contains depth for the ref and alt allele, in order
-      allele_depths <- do.call(rbind,VariantAnnotation::geno(vcf)$AD[,1])
-      base_quality = do.call(rbind,VariantAnnotation::geno(vcf)$QSS[,1])
+      # Tmp fix to be updated once variantannotation is upadted
+      # base_quality = do.call(rbind,VariantAnnotation::geno(vcf)$QSS[,1])
+     # read_qss <- read.table(vcf_path,stringsAsFactors = FALSE) %>%
+      #  as_tibble() %>%
+      #  dplyr::mutate(names = paste0(V1,":",V2,"_",V4,"/",V5))
 
-      vcf_df <- data.frame(data.frame(IRanges::ranges(vcf)),
-                           genotype= VariantAnnotation::geno(vcf)$GT[,1],
-                           filter = VariantAnnotation::filt(vcf),
-                           base_quality = base_quality[,1],
-                           ref_depth = allele_depths[,1],
-                           alt_depth = allele_depths[,2],
-                           VAF = VariantAnnotation::geno(vcf)$AF[,1],
-                           alt_forw = VariantAnnotation::geno(vcf)$ALT_F1R2[,1],
-                           alt_rev = VariantAnnotation::geno(vcf)$ALT_F2R1[,1],
-                           ref_forw = VariantAnnotation::geno(vcf)$REF_F1R2[,1],
-                           ref_rev = VariantAnnotation::geno(vcf)$REF_F2R1[,1]) %>%
+  #  ranges <- data.frame(IRanges::ranges(vcf))
 
-        dplyr::mutate(ref_depth =  as.numeric(as.character(ref_depth)),
-                      alt_depth = as.numeric(as.character(alt_depth)),
-                      tot_depth = ref_depth + alt_depth,
-                      SampleName = sample_name) %>%
+   #   if(sum(read_qss$names != ranges$names) > 0){
 
-        tidyr::separate(base_quality,into = c("ref_base_quality","alt_base_quality"),sep = ",",remove=TRUE) %>%
-        dplyr::mutate(ref_base_quality =  as.numeric(as.character(ref_base_quality)),
-                      alt_base_quality = as.numeric(as.character(alt_base_quality))) %>%
-        dplyr::mutate(qual_ref = ifelse(ref_depth == 0,0,ref_base_quality/ref_depth),
-                      qual_alt= ifelse(alt_depth == 0,0,alt_base_quality/alt_depth)) %>%
+        warning("This is a tmp fix. MuTect2 VCF will be parsed only with ref base quality.")
 
-        dplyr::mutate(qual = qual_ref + qual_alt/2) %>%
-        dplyr::select(-qual_ref,-qual_alt) %>%
+        # each row contains depth for the ref and alt allele, in order
+        allele_depths <- do.call(rbind,VariantAnnotation::geno(vcf)$AD[,1])
+        base_qualities <- do.call(rbind,VariantAnnotation::geno(vcf)$QSS[,1])
 
-        tidyr::separate(names,into=c("Location","alleles"),sep="_") %>%
-        tidyr::separate(Location,into=c("chrom","pos"),sep=":",remove=FALSE) %>%
-        tidyr::separate(alleles,into=c("ref","alt"),sep="/") %>%
-        dplyr::mutate(caller="mutect2",
-                      Location = gsub(":","_",Location)) %>%
-        as_tibble()
+        vcf_df <- data.frame(IRanges::ranges(vcf)) %>%
+          dplyr::mutate(genotype= VariantAnnotation::geno(vcf)$GT[,1],
+                        filter = VariantAnnotation::filt(vcf),
+                        ref_depth = allele_depths[,1],
+                        alt_depth = allele_depths[,2],
+                        base_qualities = base_qualities,
+                        VAF = VariantAnnotation::geno(vcf)$AF[,1],
+                        alt_forw = VariantAnnotation::geno(vcf)$ALT_F1R2[,1],
+                        alt_rev = VariantAnnotation::geno(vcf)$ALT_F2R1[,1],
+                        ref_forw = VariantAnnotation::geno(vcf)$REF_F1R2[,1],
+                        ref_rev = VariantAnnotation::geno(vcf)$REF_F2R1[,1]) %>%
+
+          dplyr::mutate(ref_depth =  as.numeric(as.character(ref_depth)),
+                        alt_depth = as.numeric(as.character(alt_depth)),
+                        tot_depth = ref_depth + alt_depth,
+                        SampleName = sample_name,
+                        base_qualities = as.numeric(as.character(base_qualities))) %>%
+
+          dplyr::mutate(qual = ifelse(ref_depth == 0,0,base_qualities/ref_depth)) %>% # tmp fix
+          dplyr::select(-base_qualities) %>%
+
+          tidyr::separate(names,into=c("Location","alleles"),sep="_") %>%
+          tidyr::separate(Location,into=c("chrom","pos"),sep=":",remove=FALSE) %>%
+          tidyr::separate(alleles,into=c("ref","alt"),sep="/") %>%
+          dplyr::mutate(caller="mutect2",
+                        Location = gsub(":","_",Location)) %>%
+          as_tibble()
+
 
     }
+
+      # else {
+      #
+      #   # each row contains depth for the ref and alt allele, in order
+      #   allele_depths <- do.call(rbind,VariantAnnotation::geno(vcf)$AD[,1])
+      #   base_qualities <- do.call(rbind,VariantAnnotation::geno(vcf)$QSS[,1])
+      #
+      #   #names_fields <- read_qss$V9
+      #   #names_fields <- strsplit(as.character(names_fields),split=":")[[1]]
+      #   #read_qss <- read_qss %>%
+      #   #  tidyr::separate(V10, into = names_fields,sep="[:]",remove=FALSE) %>%
+      #   #  dplyr::rename(base_quality = QSS) %>%
+      #   #  dplyr::select(base_quality,names)
+      #
+      #   # Bummer!
+      #   # Some fields have more entries than others
+      #   # [318] "GT:AD:AF:ALT_F1R2:ALT_F2R1:FOXOG:QSS:REF_F1R2:REF_F2R1"
+      #   # [319] "GT:AD:AF:ALT_F1R2:ALT_F2R1:FOXOG:PGT:PID:QSS:REF_F1R2:REF_F2R1"
+      #   # [320] "GT:AD:AF:ALT_F1R2:ALT_F2R1:FOXOG:PGT:PID:QSS:REF_F1R2:REF_F2R1"
+      #
+      #   vcf_df <- data.frame(IRanges::ranges(vcf)) %>%
+      #   dplyr::mutate(genotype= VariantAnnotation::geno(vcf)$GT[,1],
+      #                 filter = VariantAnnotation::filt(vcf),
+      #                 ref_depth = allele_depths[,1],
+      #                 alt_depth = allele_depths[,2],
+      #                 #base_qualities = base_qualities,
+      #                 qual = base_qualities,
+      #                 VAF = VariantAnnotation::geno(vcf)$AF[,1],
+      #                 alt_forw = VariantAnnotation::geno(vcf)$ALT_F1R2[,1],
+      #                 alt_rev = VariantAnnotation::geno(vcf)$ALT_F2R1[,1],
+      #                 ref_forw = VariantAnnotation::geno(vcf)$REF_F1R2[,1],
+      #                 ref_rev = VariantAnnotation::geno(vcf)$REF_F2R1[,1]) %>%
+      #
+      #   dplyr::mutate(ref_depth =  as.numeric(as.character(ref_depth)),
+      #                   alt_depth = as.numeric(as.character(alt_depth)),
+      #                   tot_depth = ref_depth + alt_depth,
+      #                   SampleName = sample_name) %>%
+      #
+      #  # tidyr::separate(base_quality,into = c("ref_base_quality","alt_base_quality"),sep = ",",remove=TRUE) %>%
+      # #  dplyr::mutate(ref_base_quality =  as.numeric(as.character(ref_base_quality)),
+      # #                  alt_base_quality = as.numeric(as.character(alt_base_quality))) %>%
+      # #  dplyr::mutate(qual_ref = ifelse(ref_depth == 0,0,ref_base_quality/ref_depth),
+      # #                  qual_alt= ifelse(alt_depth == 0,0,alt_base_quality/alt_depth)) %>%
+      #
+      #   #  dplyr::mutate(qual = qual_ref + qual_alt/2) %>%
+      #   #  dplyr::select(-qual_ref,-qual_alt) %>%
+      #
+      #     tidyr::separate(names,into=c("Location","alleles"),sep="_") %>%
+      #     tidyr::separate(Location,into=c("chrom","pos"),sep=":",remove=FALSE) %>%
+      #     tidyr::separate(alleles,into=c("ref","alt"),sep="/") %>%
+      #     dplyr::mutate(caller="mutect2",
+      #                   Location = gsub(":","_",Location)) %>%
+      #     as_tibble()
+
+    #}
+
 
     if(caller == "vardict"){
 

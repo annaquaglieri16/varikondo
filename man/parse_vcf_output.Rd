@@ -16,5 +16,5 @@ parse_vcf_output(vcf_path, sample_name, caller, vep = TRUE)
 \item{vep}{logical. If TRUE, the annotation fields added by the Variant Effect Predictor will be parsed.}
 }
 \description{
-It only works woth germline calls and for VCF from the following callers: GATK3 MuTect2, VarScan2 and VarDict.
+Currently, it doesn't work for somatic calls and for VCF from the following callers: GATK3 MuTect2, VarScan2 and VarDict. It used the Bioconductor package `VariantAnnotation` to read `VCF` files into `R`.
 }
