@@ -18,3 +18,10 @@ parse_vcf_output(vcf_path, sample_name, caller, vep = TRUE)
 \description{
 Currently, it doesn't work for somatic calls and for VCF from the following callers: GATK3 MuTect2, VarScan2 and VarDict. It used the Bioconductor package `VariantAnnotation` to read `VCF` files into `R`.
 }
+\examples{
+vcf_path <- system.file("extdata", "germline_mutect.vcf", package = "varikondo")
+parsed_vcf_mutect <- varikondo::parse_vcf_output(annot_vcf_mutect,
+caller = "mutect",
+sample_name = "Sample1",
+vep = TRUE)
+}
