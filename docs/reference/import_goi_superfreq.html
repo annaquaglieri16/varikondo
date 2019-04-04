@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • varikondo</title>
+<title>Extract SNVs, CNVs and clones on genes of interest from superFreq output — import_goi_superfreq • varikondo</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -31,7 +31,10 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Extract SNVs, CNVs and clones on genes of interest from superFreq output — import_goi_superfreq" />
+
+<meta property="og:description" content="This function imports superFreq's SNVs, CNAs and clones for one patient and outputs them into a tidy format where every row is a variant." />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -48,7 +51,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -101,81 +104,60 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Extract SNVs, CNVs and clones on genes of interest from superFreq output</h1>
+    <small class="dont-index">Source: <a href='https://github.com/annaquaglieri16/varikondo/blob/master/R/import_goi_superfreq.R'><code>R/import_goi_superfreq.R</code></a></small>
+    <div class="hidden name"><code>import_goi_superfreq.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    
+    <p>This function imports superFreq's SNVs, CNAs and clones for one patient and outputs them into a tidy format where every row is a variant.</p>
+    
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
-
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="parse_vcf_output.html">parse_vcf_output()</a></code> </p>
-        </td>
-        <td><p>Parse a VCF file and return a data frame with standardised fields across callers to use for caller comparison.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="parse_vep_csq.html">parse_vep_csq()</a></code> </p>
-        </td>
-        <td><p>Parse the CSQ field added to the `VCF` file by the Variant Effect Predictor (VEP)</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="import_any.html">import_any()</a></code> </p>
-        </td>
-        <td><p>General import for variants</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="import_clinical.html">import_clinical()</a></code> </p>
-        </td>
-        <td><p>Import clinical information for a specific patient</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="import_goi_superfreq.html">import_goi_superfreq()</a></code> </p>
-        </td>
-        <td><p>Extract SNVs, CNVs and clones on genes of interest from superFreq output</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-datasets" class="hasAnchor"><a href="#section-all-datasets" class="anchor"></a>All datasets</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="example_data.html">example_data</a></code> </p>
-        </td>
-        <td><p>Example cohort structure.</p></td>
-      </tr>
-    </tbody>
+    <pre class="usage"><span class='fu'>import_goi_superfreq</span>(<span class='kw'>superFreq_R_path</span> <span class='kw'>=</span> <span class='no'>superFreq_R_path</span>,
+  <span class='kw'>superFreq_meta_path</span> <span class='kw'>=</span> <span class='no'>superFreq_meta_path</span>, <span class='no'>studyGenes</span>,
+  <span class='kw'>patientID</span> <span class='kw'>=</span> <span class='st'>"D1"</span>, <span class='kw'>ref_genome</span> <span class='kw'>=</span> <span class='st'>"hg38"</span>, <span class='kw'>VAFcut</span> <span class='kw'>=</span> <span class='fl'>0.15</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>superFreq_R_path</th>
+      <td><p>Path to superFreq R folder.</p></td>
+    </tr>
+    <tr>
+      <th>superFreq_meta_path</th>
+      <td><p>Path to superFreq run cohort metadata (file ending with .tsv). If the sample names in the NAME field of the metadata file start with a number, you need to add an "X" before the name with paste0() since this is done by default by superFReq.</p></td>
+    </tr>
+    <tr>
+      <th>studyGenes</th>
+      <td><p>character vector containing genes of interest.</p></td>
+    </tr>
+    <tr>
+      <th>patientID</th>
+      <td><p>a character vector specifying the patient/s id/s for which variants have to be imported.</p></td>
+    </tr>
+    <tr>
+      <th>ref_genome</th>
+      <td><p>character vector for the reference genome used in the analysis ('hg38' or 'hg19')</p></td>
+    </tr>
+    <tr>
+      <th>VAFcut</th>
+      <td><p>Minimum VAF for a variant found in a patient.</p></td>
+    </tr>
     </table>
-  </div>
+    
 
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
-      <li><a href="#section-all-datasets">All datasets</a></li>
-    </ul>
+      <li><a href="#arguments">Arguments</a></li>
+                </ul>
+
   </div>
 </div>
 

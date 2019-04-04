@@ -92,7 +92,7 @@ knitr::include_graphics("../man/figures/import-superfreq.png")
 The `import_goi_superfreq()` function was specifically build to extract all the outputs produced by the caller which would be otherwise stored in nested lists within each patient's `Rdata` file or in `.csv` file if sometic variants. `superFreq` produces output from sometic SNVs, CNVs and clone tracking. A `superFreq` run for a cohort of patients (view [instructions](https://github.com/ChristofferFlensburg/superFreq)) will create and `R` folder with results for each patient, each stored within a folder. `import_goi_supefreq` will look into this folder to extract all the results. `import_goi_supefreq` also needs a path to the cohort metadata file in order to match the ouput from each sample with its patient name and time points.  
 
 ```{r eval=FALSE}
-import_sf <- import_goi_supefreq(superFreq_R_path = superFreq_R_path,
+import_sf <- lineplots::import_goi_superfreq(superFreq_R_path = superFreq_R_path,
                                  superFreq_meta_path = superFreq_meta_path,
                                  studyGenes,
                                  patientID = "D1",

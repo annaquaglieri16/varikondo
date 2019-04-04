@@ -2,6 +2,6 @@
 
 export(import_any)
 export(import_clinical)
-export(import_goi_supefreq)
+export(import_goi_superfreq)
 export(parse_vcf_output)
 export(parse_vep_csq)

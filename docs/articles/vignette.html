@@ -75,7 +75,7 @@
       <h1>Introduction to varikondo</h1>
                         <h4 class="author">Anna Quaglieri</h4>
             
-            <h4 class="date">2019-04-04</h4>
+            <h4 class="date">2019-04-05</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/annaquaglieri16/varikondo/blob/master/vignettes/vignette.Rmd"><code>vignettes/vignette.Rmd</code></a></small>
       <div class="hidden name"><code>vignette.Rmd</code></div>
@@ -92,8 +92,8 @@
 devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"annaquaglieri16/varikondo"</span>)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(varikondo)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/ls">ls</a></span>(<span class="st">"package:varikondo"</span>)
-<span class="co">#&gt; [1] "example_data"        "import_any"          "import_clinical"    </span>
-<span class="co">#&gt; [4] "import_goi_supefreq" "parse_vcf_output"    "parse_vep_csq"</span></code></pre></div>
+<span class="co">#&gt; [1] "example_data"         "import_any"           "import_clinical"     </span>
+<span class="co">#&gt; [4] "import_goi_superfreq" "parse_vcf_output"     "parse_vep_csq"</span></code></pre></div>
 </div>
 <div id="parsing-from-vcf-to-tidy-data-frame" class="section level1">
 <h1 class="hasAnchor">
@@ -1092,8 +1092,8 @@ annot_vcf_mutect
 Overview of the functionality to import and organise superFreq outputs.
 </p>
 </div>
-<p>The <code>import_goi_superfreq()</code> function was specifically build to extract all the outputs produced by the caller which would be otherwise stored in nested lists within each patient’s <code>Rdata</code> file or in <code>.csv</code> file if sometic variants. <code>superFreq</code> produces output from sometic SNVs, CNVs and clone tracking. A <code>superFreq</code> run for a cohort of patients (view <a href="https://github.com/ChristofferFlensburg/superFreq">instructions</a>) will create and <code>R</code> folder with results for each patient, each stored within a folder. <code>import_goi_supefreq</code> will look into this folder to extract all the results. <code>import_goi_supefreq</code> also needs a path to the cohort metadata file in order to match the ouput from each sample with its patient name and time points.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">import_sf &lt;-<span class="st"> </span><span class="kw"><a href="../reference/import_goi_supefreq.html">import_goi_supefreq</a></span>(<span class="dt">superFreq_R_path =</span> superFreq_R_path,
+<p>The <code><a href="../reference/import_goi_superfreq.html">import_goi_superfreq()</a></code> function was specifically build to extract all the outputs produced by the caller which would be otherwise stored in nested lists within each patient’s <code>Rdata</code> file or in <code>.csv</code> file if sometic variants. <code>superFreq</code> produces output from sometic SNVs, CNVs and clone tracking. A <code>superFreq</code> run for a cohort of patients (view <a href="https://github.com/ChristofferFlensburg/superFreq">instructions</a>) will create and <code>R</code> folder with results for each patient, each stored within a folder. <code>import_goi_supefreq</code> will look into this folder to extract all the results. <code>import_goi_supefreq</code> also needs a path to the cohort metadata file in order to match the ouput from each sample with its patient name and time points.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">import_sf &lt;-<span class="st"> </span>lineplots<span class="op">::</span><span class="kw">import_goi_superfreq</span>(<span class="dt">superFreq_R_path =</span> superFreq_R_path,
                                  <span class="dt">superFreq_meta_path =</span> superFreq_meta_path,
                                  studyGenes,
                                  <span class="dt">patientID =</span> <span class="st">"D1"</span>,

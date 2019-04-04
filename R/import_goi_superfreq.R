@@ -27,7 +27,7 @@
 # table(meta$TIMEPOINT)
 # patientID <- "CAN02JAB"
 
-import_goi_supefreq <- function(superFreq_R_path = superFreq_R_path,
+import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
                                  superFreq_meta_path = superFreq_meta_path,
                                  studyGenes,
                                  patientID = "D1",
