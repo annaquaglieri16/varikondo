@@ -102,7 +102,7 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
     qs[[which(sapply(qs, function(q) q[snv,]$somaticP > 0))[1]]][snv,]
   }))
 
-  # DEfine what are the SNVs of interest - at this stage the dataframe includes only VAF
+  # DEfine what are the SNVs of interest - at this stage the dataframe includes only VAF as variant information
   if(length(SNVoInames) == 0) {
     message(paste0("No SNVs available for patient ",patientID))
     SNVoI <- NULL
@@ -138,15 +138,18 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
     MoI$start = superFreq:::xToPos(MoI$x1, genome=ref_genome)
     MoI$end = superFreq:::xToPos(MoI$x2, genome=ref_genome)
 
+
     # Convert to long format SNVs
     MoI_stories <- data.frame(MoI$stories)
     MoI <- data.frame(pos = MoI$start,end = MoI$end,
                       chrom = paste0("chr",MoI$chr),
-                      SYMBOL = MoI$SYMBOL,
-                      call = MoI$call,
-                      variant_type = MoI$variant_type,
-                      label = MoI$label,
+                      SYMBOL = as.character(MoI$SYMBOL),
+                      call = as.character(MoI$call),
+                      variant_type = as.character(MoI$variant_type),
+                      label = as.character(MoI$label),
                       MoI_stories)
+
+    # Converting to long format to merge with metadata file
     MoI_long <- MoI %>%
       tidyr::gather(key = NAME, value = VAF, samples) %>%
       dplyr::left_join(metadata[,c("NAME","TIMEPOINT","INDIVIDUAL")])
@@ -165,6 +168,7 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
 
     # add total read depth. qs[[sample]][SNVoI,]$cov
 
+    # At this stahe I need to recover the variant information for the SNVs found. This includes  tot_depth, ref_depth ect..
     if(length(SNVoInames) > 0){
 
       recover_infos <- lapply(samples,
@@ -173,40 +177,37 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
                                                          ref_depth = qs[[sample]][SNVoInames,]$ref,
                                                          ref = qs[[sample]][SNVoInames,]$reference,
                                                          alt = qs[[sample]][SNVoInames,]$variant,
-                                                         SampleName = sample) %>%
+                                                         SampleName = sample,
+                                                         mutation_key = SNVoInames,
+                                                         SYMBOL = qs[[sample]][SNVoInames,]$inGene) %>%
                                   dplyr::mutate(alt_depth = tot_depth - ref_depth)
                                 return(sample_rec)
                               })
 
       recover_infos <-  bind_rows(recover_infos) %>%
-        dplyr::left_join(tidy_superfreq)
+        dplyr::right_join(tidy_superfreq) # Mrge by SampleName, Symbol and mutation key
 
     } else {
 
-      recover_infos <- lapply(samples,
-                              function(sample) {
-                                sample_rec <- data.frame(tot_depth = NA,
-                                                         ref_depth = NA,
-                                                         ref = NA,
-                                                         alt = NA,
-                                                         alt_depth = NA,
-                                                         SampleName = sample)
-                                return(sample_rec)
-                              })
-
-        recover_infos <- bind_rows(recover_infos) %>%
-        dplyr::left_join(tidy_superfreq)
+      recover_infos <- tidy_superfreq
 
     }
 
-    # Extract clones - to be added to extract genes in clones
+    # Extract clones
+    # - to be added to extract genes in clones
     #labels = superFreq:::storyToLabel(MoI, stories$variants, genome=ref_genome, mergeCNAs=F)[as.character(seq(along.with=MoI$x1)),]
 
+    # contains mutation_det for every mutation in the clone
+    # stories$stories[[1]]$consistentClusters$storyList
+    # I should add this as an extra list
+
+    # Extract clones
     storyMx = stories$stories[[1]]$consistentClusters$cloneStories$stories
     anchors = c(rownames(stories$stories[[1]]$anchorStories$anchorSNVs),
                 rownames(stories$stories[[1]]$anchorStories$anchorCNAs))
     Nmut = sapply(stories$stories[[1]]$consistentClusters$storyList, function(muts) sum(muts %in% anchors))
 
+    # Only keep somatic clone
     use = names(Nmut) != 'germline'
 
     ret = list(mutations=paste0('clone (', Nmut[use], ' anchors)'), y_matrix=storyMx[use,,drop=F])
@@ -218,6 +219,7 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
       return(NULL)
     }
 
+    # Convert to long format and join to metadata
     tidy_clones <- data.frame(ret$y_matrix) %>%
       dplyr::mutate(mutation_key = rownames(ret$y_matrix)) %>%
       dplyr::mutate(mutation_det = ret$mutations) %>%
