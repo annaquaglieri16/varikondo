@@ -134,9 +134,9 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
     labels = superFreq:::storyToLabel(MoI, stories$variants, genome=ref_genome, mergeCNAs=F)[as.character(seq(along.with=MoI$x1)),]
     MoI$label = labels$label
     MoI$severity = labels$severity
-    MoI$chr = superFreq:::xToChr(MoI$x1)
-    MoI$start = superFreq:::xToPos(MoI$x1)
-    MoI$end = superFreq:::xToPos(MoI$x2)
+    MoI$chr = superFreq:::xToChr(MoI$x1, genome=ref_genome)
+    MoI$start = superFreq:::xToPos(MoI$x1, genome=ref_genome)
+    MoI$end = superFreq:::xToPos(MoI$x2, genome=ref_genome)
 
     # Convert to long format SNVs
     MoI_stories <- data.frame(MoI$stories)
