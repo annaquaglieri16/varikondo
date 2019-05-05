@@ -1,13 +1,13 @@
-#' General import for variants
+#' General import for patient's variants
 #'
 #' @param variants a data frame where every row is a variant for one sample at a specific time point. The variants can derive from any caller but the input should be standardised to have the following columns: 'SampleName','PID','Time','chrom', 'pos', 'alt', 'ref', 'ref_depth','alt_depth' and (gene) 'SYMBOL' (see more information in Details). The columns `Consequence` and `IMPACT` (as annotated by Variant Effect Predictor (VEP) https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html) are filled with default values if not found. If VEP `Consequence` is not available it could populated with any other informations like exon number, INDEL/SNV label etc...  to add details to each mutations (useful for plotting purposes). The `SampleName` columns is unique for every sequencing sample while `PID` for every patient.
 #' @param patientID a character vector specifying the patient/s id/s for which variants have to be imported.
-#' @param studyGenes genes of interest.
+#' @param studyGenes genes of interest. If none provided all genes will be used.
 #' @param minQual minimum quality for a variant to be kept.
 #' @param clinicalData clinical data about the patients in the cohort. It has to contain the a column `SampleName`.
-#' @param tidy Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.
 #' @param keep_impact vector specifying the IMPACT values to select variants. Values allowed are HIGH, MODERATE, LOW, MODIFIER ( https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html). IMPACT should be a columns of `variants`. If it is not found all variants are kept.
 #' @param variant_type Label for the type of variants imported, e.g. vardict-indels.
+#' @param min_vaf numeric. Minimum variant allele frequency (VAF) for a variant to be kept at one time point.
 #'
 #' @description   This function will take as input a data frame of variants with specific column information and return a filtered set with sample's clinical infrmation and default variants information also for samples without variants.
 
@@ -19,7 +19,7 @@
 #'
 #' - If the column `IMPACT` is not found it will be filled with NAs and no variants will be filtered. Otherwise, values of the columns are checked and if they are within the expected values (HIGH, MODERATE, LOW or MODIFIER) only variants with `keep_impact` entries are kept. If a mutation appears twice with different `IMPACT` values only the most damaging will be kept.
 #'
-#' The variants are then merged with the clinical information of `patientID`. This step is needed so that if no variants are returned for one time point for one `patientID`, default entries for Variant Allele Frequency (VAF), reference and alterative depths will be created. The default value is 0 for all of the above. A variant is reported for a patient only if at any time point its VAF >= 0.15 and the total depth is >= 10. The function can return the variants in a tidy (long format) or untidy (wide, matrix and list) format. If `tidy = FALSE` the function will return a matrix where the rows are all the unique variants found for `patientID` across time and the columns are the samples of `patientID` across time.
+#' The variants are then merged with the clinical information of `patientID`. This step is needed so that if no variants are returned for one time point for one `patientID`, default entries for Variant Allele Frequency (VAF), reference and alterative depths will be created. The default value is 0 for all of the above. A variant is reported for a patient only if at any time point its VAF >= min_VAF and the total depth is >= 10.
 
 #' @export
 
@@ -53,13 +53,17 @@
 #'                             patientID = "D1",
 #'                             studyGenes = "BCL2",
 #'                             minQual = 20,
-#'                             tidy=TRUE,
 #'                             clinicalData = clinicalData)
 
 
+#' @import dplyr
+#' @importFrom pryr where
+#' @import stringr
+#' @import tidyr
+
 
 import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQual=20,
-                      clinicalData = NULL, tidy = TRUE,
+                      clinicalData = NULL, min_vaf = 0.15,
                       keep_impact = c("HIGH","MODERATE"),
                       variant_type = "indels-vardict") {
 
@@ -84,7 +88,7 @@ import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQ
 
   # Check variants existence and column requirements
   impact <- TRUE
-  search_env <- pryr::where("tidy")
+  search_env <- pryr::where("min_vaf")
 
   # Variants existence
   # if(!exists("variants",where = search_env)){
@@ -187,8 +191,10 @@ import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQ
   var <- variants %>%
     dplyr::filter(PID %in% patientID) %>% # restrict analysis to OurPID
     tidyr::unite(Location, chrom, pos ,sep="_",remove=FALSE) %>% # create columns that will be useful later: do I need this?
-    tidyr::unite(mutation_key, chrom, pos, ref, alt ,sep="_",remove=FALSE) %>% #  - unique IDs for a mutation
     dplyr::filter(SYMBOL %in% studyGenes) %>% # restrict analysis to specific genes
+    dplyr::mutate(ref = toupper(as.character(ref)),
+                  alt = toupper(as.character(alt))) %>%
+    tidyr::unite(mutation_key, chrom, pos, ref, alt ,sep="-",remove=FALSE) %>% #  - unique IDs for a mutation
     dplyr::filter(qual >= minQual) %>% # only keep good quality indels
     dplyr::mutate(tot_depth = alt_depth + ref_depth) %>%
     dplyr::mutate(VAF = alt_depth/tot_depth)
@@ -216,8 +222,8 @@ import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQ
     tidyr::unite(mutation_det, SYMBOL, Consequence , sep = " ",remove = FALSE) %>%
     dplyr::filter(order(IMPACT_rank) == order(IMPACT_rank)[which.min(order(IMPACT_rank))]) %>%
     dplyr::filter(!stringr::str_detect(Consequence,c("splice_donor"))) %>%
-    dplyr::filter(!stringr::str_detect(Consequence,c("splice_acceptor"))) %>%
-    dplyr::mutate(mutation_det = stringr::str_replace(mutation_det,"&.+",""))
+    dplyr::filter(!stringr::str_detect(Consequence,c("splice_acceptor")))
+    # dplyr::mutate(mutation_det = stringr::str_replace(mutation_det,"&.+",""))
 
   ################################################
   # Get all the clinical information for patientID
@@ -247,10 +253,10 @@ import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQ
                   tot_depth = ifelse(is.na(tot_depth),0,tot_depth))
 
   # 4. Filter based on minimal required ref_depth threshold and re-add lost mutations later
-  var_keep <- clinical_var_fill %>% dplyr::filter(tot_depth >= 10 & VAF >= 0.15)
+  var_keep <- clinical_var_fill %>% dplyr::filter(tot_depth >= 10 & VAF >= min_vaf)
 
   # var_leave contains some indels not found and some that do not meet the filters
-  var_leave <- clinical_var_fill %>% dplyr::filter(tot_depth < 10 | VAF < 0.15)
+  var_leave <- clinical_var_fill %>% dplyr::filter(tot_depth < 10 | VAF < min_vaf)
 
 
   if(nrow(var_keep) == 0){
@@ -268,57 +274,8 @@ import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQ
     dplyr::mutate(variant_type = variant_type)
 
 
-  ###########################
-  # Untidy version of the data
-  ###########################
+  return(var_saver)
 
-  if( !tidy ){
-    var_untidy <- var_saver %>%
-      dplyr::select(mutation_det,mutation_key,SYMBOL,Consequence,VAF,SampleName) %>%
-      tidyr::spread(key = SampleName, value = VAF, fill = 0)
-
-    ret <- list()
-    y_matrix <- var_untidy %>%
-      dplyr::select(-mutation_det,-mutation_key,-SYMBOL,-Consequence) %>%
-      as.matrix()
-
-    rownames(y_matrix) <- var_untidy$mutation_key
-
-    mutations <- var_untidy$mutation_det
-
-    ret$mutations <- mutations
-    ret$y_matrix <- y_matrix
-
-  }
-
-  if (tidy) {
-    return(var_saver)
-  } else {
-    return(ret)
-  }
-
-  # # Untidy version of the data
-  # #make a matrix of y-values for the plot, in this case VAFs
-  # #indelsAll$Mutation = paste0(indelsAll$Location, "_", indelsAll$ref, "_", indelsAll$alt)
-  # indels$Mutation = paste0(indels$Location, "_", indels$ref, "_", indels$alt)
-  # uniqueMutations = !duplicated(indels$Mutation)
-  # mutations = indels$Mutation[uniqueMutations]
-  # labels = paste0(indels$SYMBOL, ' ', gsub('&.+', '', indels$Consequence))[uniqueMutations]
-  # samples = unique(clinicalData$SampleName)
-  # vafs =
-  #   sapply(samples, function(sample) # for each sample - a patient at a specific time
-  #     sapply(mutations, function(mut) { # for each of the unique mutations detected
-  #       ret = with(indels, pmin(1, 2*VAF[Mutation == mut & SampleName == sample])) # take the minimum between 1 and the 2*VAF of this mutation for this sample
-  #       if ( length(ret) == 0 ) return(0) #return 0 if not found
-  #       return(ret)
-  #     })
-  #   )
-  # y_matrix = matrix(vafs, ncol=length(samples), dimnames=list(mutations, samples))
-  #
-  # # return the y matrix only if the max VAF in one row is > 0.15 and meta data for the mutations
-  # ret = list(mutations=labels, y_matrix=y_matrix)
-  # ret$mutations =  ret$mutations[matrixStats::rowMaxs(ret$y_matrix) > 0.15]
-  # ret$y_matrix =  ret$y_matrix[matrixStats::rowMaxs(ret$y_matrix) > 0.15,,drop=F]
 
 }
 

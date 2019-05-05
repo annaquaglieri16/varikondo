@@ -64,7 +64,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">varikondo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.13</span>
       </span>
     </div>
 
@@ -118,8 +118,8 @@
     </div>
 
     <pre class="usage"><span class='fu'>import_goi_superfreq</span>(<span class='kw'>superFreq_R_path</span> <span class='kw'>=</span> <span class='no'>superFreq_R_path</span>,
-  <span class='kw'>superFreq_meta_path</span> <span class='kw'>=</span> <span class='no'>superFreq_meta_path</span>, <span class='no'>studyGenes</span>,
-  <span class='kw'>patientID</span> <span class='kw'>=</span> <span class='st'>"D1"</span>, <span class='kw'>ref_genome</span> <span class='kw'>=</span> <span class='st'>"hg38"</span>, <span class='kw'>VAFcut</span> <span class='kw'>=</span> <span class='fl'>0.15</span>)</pre>
+  <span class='kw'>superFreq_meta_path</span> <span class='kw'>=</span> <span class='no'>superFreq_meta_path</span>, <span class='kw'>studyGenes</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>patientID</span> <span class='kw'>=</span> <span class='st'>"D1"</span>, <span class='kw'>ref_genome</span> <span class='kw'>=</span> <span class='st'>"hg38"</span>, <span class='kw'>min_vaf</span> <span class='kw'>=</span> <span class='fl'>0.15</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -134,7 +134,7 @@
     </tr>
     <tr>
       <th>studyGenes</th>
-      <td><p>character vector containing genes of interest.</p></td>
+      <td><p>character vector containing genes of interest. If none provided all genes will be used.</p></td>
     </tr>
     <tr>
       <th>patientID</th>
@@ -145,8 +145,8 @@
       <td><p>character vector for the reference genome used in the analysis ('hg38' or 'hg19')</p></td>
     </tr>
     <tr>
-      <th>VAFcut</th>
-      <td><p>Minimum VAF for a variant found in a patient.</p></td>
+      <th>min_vaf</th>
+      <td><p>numeric. Minimum variant allele frequency (VAF) for a variant to be kept at one time point.</p></td>
     </tr>
     </table>
     

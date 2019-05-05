@@ -9,6 +9,14 @@
 # caller = "vardict"
 # vep = TRUE
 
+#' @importFrom VariantAnnotation readVcf
+#' @importFrom VariantAnnotation header
+#' @importFrom VariantAnnotation info
+#' @import dplyr
+#' @importFrom tidyselect everything
+
+
+
 parse_vep_csq <- function(vcf_path,vcf_df){
 
   # Read VCF file

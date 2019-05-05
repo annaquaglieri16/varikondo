@@ -2,10 +2,10 @@
 % Please edit documentation in R/import_any.R
 \name{import_any}
 \alias{import_any}
-\title{General import for variants}
+\title{General import for patient's variants}
 \usage{
 import_any(variants = NULL, patientID = NULL, studyGenes = NULL,
-  minQual = 20, clinicalData = NULL, tidy = TRUE,
+  minQual = 20, clinicalData = NULL, min_vaf = 0.15,
   keep_impact = c("HIGH", "MODERATE"), variant_type = "indels-vardict")
 }
 \arguments{
@@ -13,13 +13,13 @@ import_any(variants = NULL, patientID = NULL, studyGenes = NULL,
 
 \item{patientID}{a character vector specifying the patient/s id/s for which variants have to be imported.}
 
-\item{studyGenes}{genes of interest.}
+\item{studyGenes}{genes of interest. If none provided all genes will be used.}
 
 \item{minQual}{minimum quality for a variant to be kept.}
 
 \item{clinicalData}{clinical data about the patients in the cohort. It has to contain the a column `SampleName`.}
 
-\item{tidy}{Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.}
+\item{min_vaf}{numeric. Minimum variant allele frequency (VAF) for a variant to be kept at one time point.}
 
 \item{keep_impact}{vector specifying the IMPACT values to select variants. Values allowed are HIGH, MODERATE, LOW, MODIFIER ( https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html). IMPACT should be a columns of `variants`. If it is not found all variants are kept.}
 
@@ -36,7 +36,7 @@ More details about the `variants` input:
 
 - If the column `IMPACT` is not found it will be filled with NAs and no variants will be filtered. Otherwise, values of the columns are checked and if they are within the expected values (HIGH, MODERATE, LOW or MODIFIER) only variants with `keep_impact` entries are kept. If a mutation appears twice with different `IMPACT` values only the most damaging will be kept.
 
-The variants are then merged with the clinical information of `patientID`. This step is needed so that if no variants are returned for one time point for one `patientID`, default entries for Variant Allele Frequency (VAF), reference and alterative depths will be created. The default value is 0 for all of the above. A variant is reported for a patient only if at any time point its VAF >= 0.15 and the total depth is >= 10. The function can return the variants in a tidy (long format) or untidy (wide, matrix and list) format. If `tidy = FALSE` the function will return a matrix where the rows are all the unique variants found for `patientID` across time and the columns are the samples of `patientID` across time.
+The variants are then merged with the clinical information of `patientID`. This step is needed so that if no variants are returned for one time point for one `patientID`, default entries for Variant Allele Frequency (VAF), reference and alterative depths will be created. The default value is 0 for all of the above. A variant is reported for a patient only if at any time point its VAF >= min_VAF and the total depth is >= 10.
 }
 \examples{
 
@@ -68,6 +68,5 @@ import_indels <- import_any(variants = indels,
                             patientID = "D1",
                             studyGenes = "BCL2",
                             minQual = 20,
-                            tidy=TRUE,
                             clinicalData = clinicalData)
 }

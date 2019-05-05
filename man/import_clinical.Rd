@@ -2,9 +2,9 @@
 % Please edit documentation in R/import_clinical.R
 \name{import_clinical}
 \alias{import_clinical}
-\title{Import clinical information for a specific patient}
+\title{Import clinical information for a patient}
 \usage{
-import_clinical(clinicalData = NA, patientID = NA, tidy = TRUE,
+import_clinical(clinicalData = NA, patientID = NA,
   extract_column = "Blast")
 }
 \arguments{
@@ -12,25 +12,25 @@ import_clinical(clinicalData = NA, patientID = NA, tidy = TRUE,
 
 \item{patientID}{a character vector specifying the patient id for which clinical data should be imported.}
 
-\item{tidy}{Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.}
-
 \item{extract_column}{vector specifying the column to be extracted. Currently only numeric variables with values between 0 and 1 are allowed to be consistent with plotting together with clonality and VAF estimates.}
 }
 \description{
-Import clinical information for a specific patient
+Import clinical information for a patient
 }
 \examples{
 
 
 clinicalData <- data.frame(SampleName = c("D1.Screen.Rel","D1.Cyc1.Rel",
                                           "D1.Cyc2.Rel","D1.Cyc3.Rel"),
+                           PID = "D1",
+                           Time = c("Screen", "Cyc1","Cyc2","Cyc3"),
+                           Outcome = "Rel",
                            AgeDiagnosis = 65,
                            Sex = "F",
-                           Blast = c(80,5,7,40)/100) \%>\%
-  tidyr::separate(SampleName,into=c("PID","Time","Outcome"),sep = "[.]",remove=FALSE)
+                           Blast = c(80,5,7,40)/100)
 
-
-import_blast <- import_clinical(tidy = TRUE,extract_column = "Blast",clinicalData = clinicalData,
-                                patientID = "D1")
+import_blast <- import_clinical(clinicalData = clinicalData,
+extract_column = "Blast",
+patientID = "D1")
 
 }

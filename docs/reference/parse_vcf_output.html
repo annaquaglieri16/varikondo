@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Parse a VCF file and return a data frame with standardised fields across callers to use for caller comparison. — parse_vcf_output • varikondo</title>
+<title>Parse a VCF file and return a data frame with standardised fields across callers — parse_vcf_output • varikondo</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -31,9 +31,9 @@
 
 
 
-<meta property="og:title" content="Parse a VCF file and return a data frame with standardised fields across callers to use for caller comparison. — parse_vcf_output" />
+<meta property="og:title" content="Parse a VCF file and return a data frame with standardised fields across callers — parse_vcf_output" />
 
-<meta property="og:description" content="Currently, it doesn't work for somatic calls and for VCF from the following callers: GATK3 MuTect2, VarScan2 and VarDict. It used the Bioconductor package `VariantAnnotation` to read `VCF` files into `R`." />
+<meta property="og:description" content="Currently, it only works with VCF files containing germline calls from the following callers: GATK3 MuTect2, VarScan2, VarDict and freebayes. It uses the Bioconductor package `VariantAnnotation` to read `VCF` files into `R`." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -64,7 +64,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">varikondo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.13</span>
       </span>
     </div>
 
@@ -106,14 +106,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Parse a VCF file and return a data frame with standardised fields across callers to use for caller comparison.</h1>
+    <h1>Parse a VCF file and return a data frame with standardised fields across callers</h1>
     <small class="dont-index">Source: <a href='https://github.com/annaquaglieri16/varikondo/blob/master/R/parse_vcf_output.R'><code>R/parse_vcf_output.R</code></a></small>
     <div class="hidden name"><code>parse_vcf_output.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Currently, it doesn't work for somatic calls and for VCF from the following callers: GATK3 MuTect2, VarScan2 and VarDict. It used the Bioconductor package `VariantAnnotation` to read `VCF` files into `R`.</p>
+    <p>Currently, it only works with VCF files containing germline calls from the following callers: GATK3 MuTect2, VarScan2, VarDict and freebayes. It uses the Bioconductor package `VariantAnnotation` to read `VCF` files into `R`.</p>
     
     </div>
 
@@ -132,7 +132,7 @@
     </tr>
     <tr>
       <th>caller</th>
-      <td><p>character. One of `mutect`, `vardict` or `varscan`.</p></td>
+      <td><p>character. One of `mutect`, `vardict`, `varscan`, or `freebayes`.</p></td>
     </tr>
     <tr>
       <th>vep</th>
@@ -140,19 +140,31 @@
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Freebayes can report more than one alternative allele in output. This means that there will be depths and quality information for every alternative allele. Currently, `parse_vcf_output` uses the `VariantAnnotation` package to read `VCF` fields into `R` but, if multiple entries are reported in one field (alt allele, quality, depth etc..), it only reports the first of them. This should be fixed soon within the `VariantAnnotation` package but in the meantime `parse_vcf_output` parses these fields separately and adds them to the final output. Since, not many variants have a second or thirs alternative allele, the `qual` column reported by `parse_vcf_output` is the sum of the reference base qualities and the first (most common) alternative base qualities divided by the sum of reference and alternative depth for the first allele. The same applies for the variant allele frequency (VAF).</p>
+    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>vcf_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"germline_mutect.vcf"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"varikondo"</span>)
-<span class='no'>parsed_vcf_mutect</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>varikondo</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/varikondo/topics/parse_vcf_output'>parse_vcf_output</a></span>(<span class='no'>annot_vcf_mutect</span>,
+<span class='no'>parsed_vcf_mutect</span> <span class='kw'>&lt;-</span> <span class='fu'>parse_vcf_output</span>(<span class='no'>vcf_path</span>,
 <span class='kw'>caller</span> <span class='kw'>=</span> <span class='st'>"mutect"</span>,
 <span class='kw'>sample_name</span> <span class='kw'>=</span> <span class='st'>"Sample1"</span>,
-<span class='kw'>vep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='error'>Error in VariantAnnotation::readVcf(vcf_path): object 'annot_vcf_mutect' not found</span></div></pre>
+<span class='kw'>vep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+<span class='no'>vcf_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"germline_freebayes.vcf"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"varikondo"</span>)
+<span class='no'>parsed_vcf_freebayes</span> <span class='kw'>&lt;-</span> <span class='fu'>parse_vcf_output</span>(<span class='no'>vcf_path</span>,
+<span class='kw'>caller</span> <span class='kw'>=</span> <span class='st'>"freebayes"</span>,
+<span class='kw'>sample_name</span> <span class='kw'>=</span> <span class='st'>"Sample1"</span>,
+<span class='kw'>vep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-            
+      
+      <li><a href="#details">Details</a></li>
+      
       <li><a href="#examples">Examples</a></li>
     </ul>
 

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>General import for variants — import_any • varikondo</title>
+<title>General import for patient's variants — import_any • varikondo</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -31,7 +31,7 @@
 
 
 
-<meta property="og:title" content="General import for variants — import_any" />
+<meta property="og:title" content="General import for patient's variants — import_any" />
 
 <meta property="og:description" content="This function will take as input a data frame of variants with specific column information and return a filtered set with sample's clinical infrmation and default variants information also for samples without variants." />
 <meta name="twitter:card" content="summary" />
@@ -64,7 +64,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">varikondo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.13</span>
       </span>
     </div>
 
@@ -106,7 +106,7 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>General import for variants</h1>
+    <h1>General import for patient's variants</h1>
     <small class="dont-index">Source: <a href='https://github.com/annaquaglieri16/varikondo/blob/master/R/import_any.R'><code>R/import_any.R</code></a></small>
     <div class="hidden name"><code>import_any.Rd</code></div>
     </div>
@@ -118,7 +118,7 @@
     </div>
 
     <pre class="usage"><span class='fu'>import_any</span>(<span class='kw'>variants</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>patientID</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>studyGenes</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>minQual</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>clinicalData</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tidy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>minQual</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>clinicalData</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>min_vaf</span> <span class='kw'>=</span> <span class='fl'>0.15</span>,
   <span class='kw'>keep_impact</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"HIGH"</span>, <span class='st'>"MODERATE"</span>), <span class='kw'>variant_type</span> <span class='kw'>=</span> <span class='st'>"indels-vardict"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -134,7 +134,7 @@
     </tr>
     <tr>
       <th>studyGenes</th>
-      <td><p>genes of interest.</p></td>
+      <td><p>genes of interest. If none provided all genes will be used.</p></td>
     </tr>
     <tr>
       <th>minQual</th>
@@ -145,8 +145,8 @@
       <td><p>clinical data about the patients in the cohort. It has to contain the a column `SampleName`.</p></td>
     </tr>
     <tr>
-      <th>tidy</th>
-      <td><p>Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.</p></td>
+      <th>min_vaf</th>
+      <td><p>numeric. Minimum variant allele frequency (VAF) for a variant to be kept at one time point.</p></td>
     </tr>
     <tr>
       <th>keep_impact</th>
@@ -164,7 +164,7 @@
 More details about the `variants` input:</p>
 <p>- The `Time` column can be defined in any way and it should reflect the time of sample collection. For example it could be defined as Time0, Time1, Time2 etc...</p>
 <p>- If the column `IMPACT` is not found it will be filled with NAs and no variants will be filtered. Otherwise, values of the columns are checked and if they are within the expected values (HIGH, MODERATE, LOW or MODIFIER) only variants with `keep_impact` entries are kept. If a mutation appears twice with different `IMPACT` values only the most damaging will be kept.</p>
-<p>The variants are then merged with the clinical information of `patientID`. This step is needed so that if no variants are returned for one time point for one `patientID`, default entries for Variant Allele Frequency (VAF), reference and alterative depths will be created. The default value is 0 for all of the above. A variant is reported for a patient only if at any time point its VAF &gt;= 0.15 and the total depth is &gt;= 10. The function can return the variants in a tidy (long format) or untidy (wide, matrix and list) format. If `tidy = FALSE` the function will return a matrix where the rows are all the unique variants found for `patientID` across time and the columns are the samples of `patientID` across time.</p>
+<p>The variants are then merged with the clinical information of `patientID`. This step is needed so that if no variants are returned for one time point for one `patientID`, default entries for Variant Allele Frequency (VAF), reference and alterative depths will be created. The default value is 0 for all of the above. A variant is reported for a patient only if at any time point its VAF &gt;= min_VAF and the total depth is &gt;= 10.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -197,7 +197,6 @@ More details about the `variants` input:</p>
                             <span class='kw'>patientID</span> <span class='kw'>=</span> <span class='st'>"D1"</span>,
                             <span class='kw'>studyGenes</span> <span class='kw'>=</span> <span class='st'>"BCL2"</span>,
                             <span class='kw'>minQual</span> <span class='kw'>=</span> <span class='fl'>20</span>,
-                            <span class='kw'>tidy</span><span class='kw'>=</span><span class='fl'>TRUE</span>,
                             <span class='kw'>clinicalData</span> <span class='kw'>=</span> <span class='no'>clinicalData</span>)</div><div class='output co'>#&gt; IMPACT is missing and will be filled with NAs.</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

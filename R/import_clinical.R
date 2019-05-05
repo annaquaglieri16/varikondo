@@ -1,6 +1,5 @@
-#' Import clinical information for a specific patient
+#' Import clinical information for a patient
 #' @param clinicalData data frame containing the clinical information for a patient. This needs to include a column `SampleName` containing unique names for all the RNA-Seq samples available in the cohort; a `PID` columns for patient ID and a `Time` column that should reflect the time of sample collection.
-#' @param tidy Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.
 #' @param patientID a character vector specifying the patient id for which clinical data should be imported.
 #' @param extract_column vector specifying the column to be extracted. Currently only numeric variables with values between 0 and 1 are allowed to be consistent with plotting together with clonality and VAF estimates.
 #'
@@ -9,18 +8,24 @@
 #'
 #' clinicalData <- data.frame(SampleName = c("D1.Screen.Rel","D1.Cyc1.Rel",
 #'                                           "D1.Cyc2.Rel","D1.Cyc3.Rel"),
+#'                            PID = "D1",
+#'                            Time = c("Screen", "Cyc1","Cyc2","Cyc3"),
+#'                            Outcome = "Rel",
 #'                            AgeDiagnosis = 65,
 #'                            Sex = "F",
-#'                            Blast = c(80,5,7,40)/100) %>%
-#'   tidyr::separate(SampleName,into=c("PID","Time","Outcome"),sep = "[.]",remove=FALSE)
+#'                            Blast = c(80,5,7,40)/100)
 #'
-#'
-#' import_blast <- import_clinical(tidy = TRUE,extract_column = "Blast",clinicalData = clinicalData,
-#'                                 patientID = "D1")
+#' import_blast <- import_clinical(clinicalData = clinicalData,
+#' extract_column = "Blast",
+#' patientID = "D1")
 #'
 #' @export
 
-import_clinical = function(clinicalData = NA, patientID = NA, tidy = TRUE,
+#' @import dplyr
+#' @import tidyr
+
+
+import_clinical = function(clinicalData = NA, patientID = NA,
                                      extract_column = "Blast") {
 
   options(warn=-1)
@@ -71,22 +76,14 @@ import_clinical = function(clinicalData = NA, patientID = NA, tidy = TRUE,
 
   ret = list(mutations=extract_column, y_matrix=y_matrix)
 
-  options(warn=-1)
-
-  if(tidy){
-
-    tidy_blast <- data.frame(ret$y_matrix) %>%
+  # Create tidy format
+  tidy_blast <- data.frame(ret$y_matrix) %>%
       dplyr::mutate(mutation_key = rownames(ret$y_matrix)) %>%
       dplyr::mutate(mutation_det = ret$mutations) %>%
       tidyr::gather(SampleName,VAF, 1:ncol(ret$y_matrix)) %>%
       dplyr::mutate(variant_type = extract_column)
-  }
-  options(warn=0)
 
-  if(tidy){
-    return(tidy_blast)
-  }else{
-    return(ret)
-  }
+
+  return(tidy_blast)
 
 }

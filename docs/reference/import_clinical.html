@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Import clinical information for a specific patient — import_clinical • varikondo</title>
+<title>Import clinical information for a patient — import_clinical • varikondo</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -31,9 +31,9 @@
 
 
 
-<meta property="og:title" content="Import clinical information for a specific patient — import_clinical" />
+<meta property="og:title" content="Import clinical information for a patient — import_clinical" />
 
-<meta property="og:description" content="Import clinical information for a specific patient" />
+<meta property="og:description" content="Import clinical information for a patient" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -64,7 +64,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">varikondo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.13</span>
       </span>
     </div>
 
@@ -106,18 +106,18 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Import clinical information for a specific patient</h1>
+    <h1>Import clinical information for a patient</h1>
     <small class="dont-index">Source: <a href='https://github.com/annaquaglieri16/varikondo/blob/master/R/import_clinical.R'><code>R/import_clinical.R</code></a></small>
     <div class="hidden name"><code>import_clinical.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Import clinical information for a specific patient</p>
+    <p>Import clinical information for a patient</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>import_clinical</span>(<span class='kw'>clinicalData</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>patientID</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>tidy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+    <pre class="usage"><span class='fu'>import_clinical</span>(<span class='kw'>clinicalData</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>patientID</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>extract_column</span> <span class='kw'>=</span> <span class='st'>"Blast"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -132,10 +132,6 @@
       <td><p>a character vector specifying the patient id for which clinical data should be imported.</p></td>
     </tr>
     <tr>
-      <th>tidy</th>
-      <td><p>Logical. Should the ouput be in a tidy or untidy (list of matrices) format? Default is `tidy = TRUE`.</p></td>
-    </tr>
-    <tr>
       <th>extract_column</th>
       <td><p>vector specifying the column to be extracted. Currently only numeric variables with values between 0 and 1 are allowed to be consistent with plotting together with clonality and VAF estimates.</p></td>
     </tr>
@@ -147,14 +143,16 @@
 
 <span class='no'>clinicalData</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/data.frame'>data.frame</a></span>(<span class='kw'>SampleName</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"D1.Screen.Rel"</span>,<span class='st'>"D1.Cyc1.Rel"</span>,
                                           <span class='st'>"D1.Cyc2.Rel"</span>,<span class='st'>"D1.Cyc3.Rel"</span>),
+                           <span class='kw'>PID</span> <span class='kw'>=</span> <span class='st'>"D1"</span>,
+                           <span class='kw'>Time</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"Screen"</span>, <span class='st'>"Cyc1"</span>,<span class='st'>"Cyc2"</span>,<span class='st'>"Cyc3"</span>),
+                           <span class='kw'>Outcome</span> <span class='kw'>=</span> <span class='st'>"Rel"</span>,
                            <span class='kw'>AgeDiagnosis</span> <span class='kw'>=</span> <span class='fl'>65</span>,
                            <span class='kw'>Sex</span> <span class='kw'>=</span> <span class='st'>"F"</span>,
-                           <span class='kw'>Blast</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>80</span>,<span class='fl'>5</span>,<span class='fl'>7</span>,<span class='fl'>40</span>)/<span class='fl'>100</span>) <span class='kw'>%&gt;%</span>
-  <span class='kw pkg'>tidyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://tidyr.tidyverse.org/reference/separate.html'>separate</a></span>(<span class='no'>SampleName</span>,<span class='kw'>into</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"PID"</span>,<span class='st'>"Time"</span>,<span class='st'>"Outcome"</span>),<span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>"[.]"</span>,<span class='kw'>remove</span><span class='kw'>=</span><span class='fl'>FALSE</span>)
+                           <span class='kw'>Blast</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>80</span>,<span class='fl'>5</span>,<span class='fl'>7</span>,<span class='fl'>40</span>)/<span class='fl'>100</span>)
 
-
-<span class='no'>import_blast</span> <span class='kw'>&lt;-</span> <span class='fu'>import_clinical</span>(<span class='kw'>tidy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,<span class='kw'>extract_column</span> <span class='kw'>=</span> <span class='st'>"Blast"</span>,<span class='kw'>clinicalData</span> <span class='kw'>=</span> <span class='no'>clinicalData</span>,
-                                <span class='kw'>patientID</span> <span class='kw'>=</span> <span class='st'>"D1"</span>)</div></pre>
+<span class='no'>import_blast</span> <span class='kw'>&lt;-</span> <span class='fu'>import_clinical</span>(<span class='kw'>clinicalData</span> <span class='kw'>=</span> <span class='no'>clinicalData</span>,
+<span class='kw'>extract_column</span> <span class='kw'>=</span> <span class='st'>"Blast"</span>,
+<span class='kw'>patientID</span> <span class='kw'>=</span> <span class='st'>"D1"</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

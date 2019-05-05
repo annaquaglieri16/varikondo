@@ -2,37 +2,42 @@
 #'
 #' @param superFreq_R_path Path to superFreq R folder.
 #' @param superFreq_meta_path Path to superFreq run cohort metadata (file ending with .tsv). If the sample names in the NAME field of the metadata file start with a number, you need to add an "X" before the name with paste0() since this is done by default by superFReq.
-#' @param studyGenes character vector containing genes of interest.
+#' @param studyGenes character vector containing genes of interest. If none provided all genes will be used.
 #' @param patientID a character vector specifying the patient/s id/s for which variants have to be imported.
 #' @param ref_genome character vector for the reference genome used in the analysis ('hg38' or 'hg19')
-#' @param VAFcut Minimum VAF for a variant found in a patient.
+#' @param min_vaf numeric. Minimum variant allele frequency (VAF) for a variant to be kept at one time point.
 #' @description This function imports superFreq's SNVs, CNAs and clones for one patient and outputs them into a tidy format where every row is a variant.
 #' @export
 
 # studyGenes <- read_csv("../../../venetoclax_trial/Recurrent-AML-genes-across-studies.csv")
-# studyGenes <- as.character(studyGenes$Symbol)
+# studyGenes <- "KIT"
 # superFreq_R_path <- "../../../venetoclax_trial/superFreq/R"
 # patientID <- "D1"
-# VAFcut <- 0.15
+# min_vaf <- 0.15
 # superFreq_meta_path <- file.path("../../../venetoclax_trial/superFreq/metaData.tsv")
 # ref_genome = "hg38"
 #
 # genes0 <- read.csv("../../../venetoclax_trial/Recurrent-AML-genes-across-studies.csv")
-# studyGenes <- as.character(genes0$Symbol[genes0$CBF_AML])
+# studyGenes <- "KIT"
 # superFreq_R_path = "../../../cbf_aml_agrf/superFreq/R_full_cohort/"
 # superFreq_meta_path = "../../../cbf_aml_agrf/superFreq/runFullCohort/metadata_varscan.tsv"
-# meta <- read_delim("../../../cbf_aml_agrf/superFreq/runFullCohort/metadata_varscan.tsv",delim = "\t")
 # patients <- unique(meta$INDIVIDUAL)
-# time_order = c("Dia","Rem","Rel")
 # table(meta$TIMEPOINT)
-# patientID <- "CAN02JAB"
+# patientID <- "RMH07PW"
+# ref_genome = "hg38"
+# min_vaf = 0.15
+
+
+#' @import dplyr
+#' @importFrom readr read_delim
+#' @import tidyr
 
 import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
                                  superFreq_meta_path = superFreq_meta_path,
-                                 studyGenes,
+                                 studyGenes = NULL,
                                  patientID = "D1",
                                  ref_genome = "hg38",
-                                 VAFcut = 0.15){
+                                 min_vaf = 0.15){
 
   options(warn = -1)
   if( is.na(patientID) ){
@@ -63,7 +68,9 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
   # Load files if they exist
   load(storyFiles) # should load a `stories` object
   load(clusterFiles)
-  metadata <- read_delim(superFreq_meta_path,delim = "\t",progress = FALSE)
+  metadata <- readr::read_delim(superFreq_meta_path,delim = "\t",progress = FALSE) %>%
+    dplyr::mutate(NAME = make.names(NAME))
+
 
   # This list contains one data frame per sample - contains all the variants/somatic/germline/noise called in the VCF
   qs = stories$variants$variants
@@ -79,6 +86,16 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
 
   # Only somatic SNvs are annotated
   # Keep only unique names SNVs that satisfies certain filters across samples of this patient - add filter on VAF here
+
+  # Use all genes for this patient if no studyGenes provided
+  bind_qs <- dplyr::bind_rows(qs)
+  all_genes <- as.character(unique(bind_qs$inGene))
+  if(is.null(studyGenes)){
+    cat("All genes are used...")
+    studyGenes <- all_genes } else {
+      studyGenes <- studyGenes
+    }
+
   SNVoInames = unique(
     unlist(
       lapply(
@@ -90,7 +107,7 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
             dplyr::filter((somaticP > 0.5) &
                             (!is.na(q$severity) & severity < 12) &
                             inGene %in% studyGenes &
-                            VAF >= VAFcut)
+                            VAF >= min_vaf)
           as.character(q$mut_name)
 
         }
@@ -131,13 +148,12 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
   if(!is.null(SNVoI) | !is.null(CNAoI)){
 
     MoI = rbind(SNVoI, CNAoI)
-    labels = superFreq:::storyToLabel(MoI, stories$variants, genome=ref_genome, mergeCNAs=F)[as.character(seq(along.with=MoI$x1)),]
+    labels = storyToLabel(MoI, stories$variants, genome=ref_genome, mergeCNAs=F)[as.character(seq(along.with=MoI$x1)),]
     MoI$label = labels$label
     MoI$severity = labels$severity
-    MoI$chr = superFreq:::xToChr(MoI$x1, genome=ref_genome)
-    MoI$start = superFreq:::xToPos(MoI$x1, genome=ref_genome)
-    MoI$end = superFreq:::xToPos(MoI$x2, genome=ref_genome)
-
+    MoI$chr = xToChr(MoI$x1, genome=ref_genome)
+    MoI$start = xToPos(MoI$x1, genome=ref_genome)
+    MoI$end = xToPos(MoI$x2, genome=ref_genome)
 
     # Convert to long format SNVs
     MoI_stories <- data.frame(MoI$stories)
@@ -154,19 +170,18 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
       tidyr::gather(key = NAME, value = VAF, samples) %>%
       dplyr::left_join(metadata[,c("NAME","TIMEPOINT","INDIVIDUAL")])
 
-
-    #remove chromosome from the label
+    # Reshape CNA to long
+    # remove chromosome from the label
     MoI_long$label = gsub('( ?)\\(.*\\)', '', MoI_long$label)
+    MoI_long$call <- as.character(MoI_long$call)
 
     tidy_superfreq <- MoI_long %>%
-      dplyr::mutate(mutation_key = MoI_long$call) %>%
-      dplyr::mutate(mutation_det = MoI_long$label) %>%
+      dplyr::mutate(mutation_det = label) %>%
       dplyr::rename(SampleName = NAME,
                     PID = INDIVIDUAL,
-                    Time = TIMEPOINT) %>%
-      tidyr::separate(mutation_det, into = c("SYMBOL"),sep=" ",remove=FALSE)
+                    Time = TIMEPOINT)
 
-    # add total read depth. qs[[sample]][SNVoI,]$cov
+    #
 
     # At this stahe I need to recover the variant information for the SNVs found. This includes  tot_depth, ref_depth ect..
     if(length(SNVoInames) > 0){
@@ -178,7 +193,7 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
                                                          ref = qs[[sample]][SNVoInames,]$reference,
                                                          alt = qs[[sample]][SNVoInames,]$variant,
                                                          SampleName = sample,
-                                                         mutation_key = SNVoInames,
+                                                         call = SNVoInames,
                                                          SYMBOL = qs[[sample]][SNVoInames,]$inGene) %>%
                                   dplyr::mutate(alt_depth = tot_depth - ref_depth)
                                 return(sample_rec)
@@ -192,6 +207,22 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
       recover_infos <- tidy_superfreq
 
     }
+
+    # Add mutation key
+    recover_infos$SYMBOL <- as.character(recover_infos$SYMBOL)
+    recover_infos$variant_type <- as.character(recover_infos$variant_type)
+    recover_infos$mutation_key <- ifelse(recover_infos$variant_type %in% "SNV",
+                                         paste(recover_infos$SYMBOL, recover_infos$pos,
+                                               recover_infos$ref, recover_infos$alt, sep = "-"),NA)
+
+    recover_infos$mutation_key <- ifelse(recover_infos$variant_type %in% "CNA",
+                                         paste(recover_infos$SYMBOL, recover_infos$call,sep = "-"),recover_infos$mutation_key)
+
+    recover_infos$mutation_det <- ifelse(recover_infos$variant_type %in% "CNA",
+                                         paste(recover_infos$SYMBOL, recover_infos$mutation_det,sep = " "),recover_infos$mutation_det)
+
+    recover_infos <- recover_infos %>%
+      dplyr::select(-call,-label)
 
     # Extract clones
     # - to be added to extract genes in clones
@@ -211,8 +242,8 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
     use = names(Nmut) != 'germline'
 
     ret = list(mutations=paste0('clone (', Nmut[use], ' anchors)'), y_matrix=storyMx[use,,drop=F])
-    ret$mutations =  ret$mutations[matrixStats::rowMaxs(ret$y_matrix) > VAFcut]
-    ret$y_matrix =  ret$y_matrix[matrixStats::rowMaxs(ret$y_matrix) > VAFcut,,drop=F]
+    ret$mutations =  ret$mutations[matrixStats::rowMaxs(ret$y_matrix) > min_vaf]
+    ret$y_matrix =  ret$y_matrix[matrixStats::rowMaxs(ret$y_matrix) > min_vaf,,drop=F]
 
     if ( length(ret$mutations) == 0 ) {
       message(paste0("No clones found in patient ",patientID))

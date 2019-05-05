@@ -1,7 +1,7 @@
 Package: varikondo
 Type: Package
-Title: A package to declutter, organise and standardise genomic variant calls. 
-Version: 0.3.2
+Title: A package to declutter, organise and standardise genomic variant calls
+Version: 0.4.13
 Authors@R: c(
       person("Anna", "Quaglieri", email = "quaglieri.a@wehi.edu.au", role = c("aut", "cre")),
       person("Christoffer", "Flensburg", role = c("aut", "ctb"))
@@ -11,25 +11,29 @@ Description: The package was developed to organise, standardise and combine vari
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+biocViews:
 Depends: 
   R (>= 3.5),
-  dplyr,
-  stringr
-Remotes: 
-  ChristofferFlensburg/superFreq
+  dplyr (>= 0.8.0)
 Imports:
-  tidyr,
-  IRanges,
-  readr,
-  png,
-  grid,
-  readxl,
-  matrixStats,
-  plyranges
+  DelayedArray (>= 0.8.0),
+  data.table (>= 1.12.0),
+  VariantAnnotation (>= 1.28.13),
+  IRanges (>= 2.16.0),
+  matrixStats (>= 0.54.0),
+  plyranges (>= 1.2.0),
+  tidyr, 
+  stringr,
+  pryr,
+  tidyselect,
+  readr
 RoxygenNote: 6.1.1
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    png,
+    grid,
+    readxl
 VignetteBuilder: knitr
 URL: https://github.com/annaquaglieri16/varikondo
 BugReports: https://github.com/annaquaglieri16/varikondo/issues

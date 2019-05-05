@@ -5,21 +5,21 @@
 \title{Extract SNVs, CNVs and clones on genes of interest from superFreq output}
 \usage{
 import_goi_superfreq(superFreq_R_path = superFreq_R_path,
-  superFreq_meta_path = superFreq_meta_path, studyGenes,
-  patientID = "D1", ref_genome = "hg38", VAFcut = 0.15)
+  superFreq_meta_path = superFreq_meta_path, studyGenes = NULL,
+  patientID = "D1", ref_genome = "hg38", min_vaf = 0.15)
 }
 \arguments{
 \item{superFreq_R_path}{Path to superFreq R folder.}
 
 \item{superFreq_meta_path}{Path to superFreq run cohort metadata (file ending with .tsv). If the sample names in the NAME field of the metadata file start with a number, you need to add an "X" before the name with paste0() since this is done by default by superFReq.}
 
-\item{studyGenes}{character vector containing genes of interest.}
+\item{studyGenes}{character vector containing genes of interest. If none provided all genes will be used.}
 
 \item{patientID}{a character vector specifying the patient/s id/s for which variants have to be imported.}
 
 \item{ref_genome}{character vector for the reference genome used in the analysis ('hg38' or 'hg19')}
 
-\item{VAFcut}{Minimum VAF for a variant found in a patient.}
+\item{min_vaf}{numeric. Minimum variant allele frequency (VAF) for a variant to be kept at one time point.}
 }
 \description{
 This function imports superFreq's SNVs, CNAs and clones for one patient and outputs them into a tidy format where every row is a variant.
