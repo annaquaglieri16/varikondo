@@ -257,6 +257,7 @@ humanAllChrLengths <- function(){
 }
 
 #' @keywords internal
+#'
 chrLengths <- function (genome = "hg19"){
   if (genome == "hg19")
     return(humanChrLengths())
@@ -268,7 +269,8 @@ chrLengths <- function (genome = "hg19"){
             "\n")
 }
 
-
+#' @keywords internal
+#'
 mouseChrLengths <- function(){
   lengths = c(195471971, 182113224, 160039680, 156508116, 151834684,
               149736546, 145441459, 129401213, 124595110, 130694993,
@@ -281,7 +283,8 @@ mouseChrLengths <- function(){
   return(lengths)
 }
 
-
+#' @keywords internal
+#'
 hg38ChrLengths <- function(){
   lengths = c(248956422, 242193529, 198295559, 190214555, 181538259,
               170805979, 159345973, 145138636, 138394717, 133797422,
@@ -294,8 +297,106 @@ hg38ChrLengths <- function(){
   return(lengths)
 }
 
-xToChr <- function(x, genome = "hg19"){
+
+#' @keywords internal
+#'
+xToPos <- function(x, genome = "hg19"){
   chr = xToChr(x, genome)
   pos = x - cumsum(chrLengths(genome))[chr] + chrLengths(genome)[chr]
   return(pos)
+}
+
+#' @keywords internal
+#'
+xToChr <- function(x, genome = "hg19"){
+  chrL = chrLengths(genome)
+  ret = rep("", length(x))
+  for (chr in names(chrL)) {
+    ret[x > 0 & x < chrL[chr]] = chr
+    x = x - chrL[chr]
+  }
+  return(ret)
+}
+
+
+#' @keywords internal
+#'
+VAseverityToConsequence <- function(severity){
+  consequence = c(`2` = "spliceSite", `4` = "nonsense", `5` = "frameshift",
+                  `10` = "nonsynonymous", `16` = "synonymous", `19` = "promoter",
+                  `20` = "threeUTR", `21` = "fiveUTR", `22` = "intron",
+                  `30` = "intergenic", `100` = "unknown")
+  ret = consequence[as.character(severity)]
+  ret[is.na(ret)] = "unknown"
+  return(ret)
+}
+
+#' @keywords internal
+#'
+mcri <- function(col = "deafult", al = 1){
+  if (length(col) == 0 | length(al) == 0)
+    return(character(0))
+  if (length(col) == 1 && col[1] == "deafult") {
+    cat("Use: mcri('colour'), returning an official MCRI colour.\nAvailable MCRI colours are:\n\ndarkblue\nblue\nlightblue\nazure\ngreen\norange\nviolet\ncyan\nred\ndarkred\nmagenta (aka rose).\n\nReturning default blue.\n")
+    return(mcri("blue"))
+  }
+  if (length(col) > 1 & length(al) == 1)
+    return(sapply(col, function(c) mcri(c, al)))
+  else if (length(col) > 1 & length(al) == length(col))
+    return(sapply(1:length(col), function(i) mcri(col[i],
+                                                  al[i])))
+  else if (length(col) > 1) {
+    warning("length of col and al mismatch in mcri()")
+    return(sapply(col, function(c) mcri(c, al[1])))
+  }
+  if (length(col) == 1 & length(al) > 1)
+    return(sapply(al, function(alpha) mcri(col, alpha)))
+  if (is.numeric(col)) {
+    col = (col%%9) + 1
+    if (col == 1)
+      col = "blue"
+    else if (col == 2)
+      col = "red"
+    else if (col == 3)
+      col = "green"
+    else if (col == 4)
+      col = "magenta"
+    else if (col == 5)
+      col = "cyan"
+    else if (col == 6)
+      col = "orange"
+    else if (col == 7)
+      col = "violet"
+    else if (col == 8)
+      col = "darkblue"
+    else if (col == 9)
+      col = "darkred"
+    else col = "black"
+  }
+  ret = 0
+  if (col == "darkblue")
+    ret = rgb(9/255, 47/255, 94/255, al)
+  if (col == "blue")
+    ret = rgb(0, 83/255, 161/255, al)
+  if (col == "lightblue")
+    ret = rgb(0, 165/255, 210/255, al)
+  if (col == "azure")
+    ret = rgb(0, 173/255, 239/255, al)
+  if (col == "green")
+    ret = rgb(141/255, 198/255, 63/255, al)
+  if (col == "orange")
+    ret = rgb(244/255, 121/255, 32/255, al)
+  if (col == "violet")
+    ret = rgb(122/255, 82/255, 199/255, al)
+  if (col == "cyan")
+    ret = rgb(0/255, 183/255, 198/255, al)
+  if (col == "red")
+    ret = rgb(192/255, 80/255, 77/255, al)
+  if (col == "darkred")
+    ret = rgb(96/255, 40/255, 38/255, al)
+  if (col == "magenta" | col == "rose")
+    ret = rgb(236/255, 0/255, 140/255, al)
+  if (ret == 0)
+    ret = do.call(rgb, as.list(c(col2rgb(col)/255, al)))
+  return(ret)
 }
