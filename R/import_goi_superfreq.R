@@ -6,6 +6,7 @@
 #' @param patientID a character vector specifying the patient/s id/s for which variants have to be imported.
 #' @param ref_genome character vector for the reference genome used in the analysis ('hg38' or 'hg19')
 #' @param min_vaf numeric. Minimum variant allele frequency (VAF) for a variant to be kept at one time point.
+#' @param min_alt numeric. Minimum number of reads supporting the alt allele at one time points for a patient.
 #' @description This function imports superFreq's SNVs, CNAs and clones for one patient and outputs them into a tidy format where every row is a variant.
 #' @export
 
@@ -37,7 +38,8 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
                                  studyGenes = NULL,
                                  patientID = "D1",
                                  ref_genome = "hg38",
-                                 min_vaf = 0.15){
+                                 min_vaf = 0.15,
+                                 min_alt = 2){
 
   options(warn = -1)
   if( is.na(patientID) ){
@@ -107,7 +109,8 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
             dplyr::filter((somaticP > 0.5) &
                             (!is.na(q$severity) & severity < 12) &
                             inGene %in% studyGenes &
-                            VAF >= min_vaf)
+                            VAF >= min_vaf &
+                            (cov - ref) >= min_alt)
           as.character(q$mut_name)
 
         }
