@@ -188,14 +188,18 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
 
       recover_infos <- lapply(samples,
                               function(sample) {
-                                sample_rec <- data.frame(tot_depth = qs[[sample]][SNVoInames,]$cov,
-                                                         ref_depth = qs[[sample]][SNVoInames,]$ref,
-                                                         ref = qs[[sample]][SNVoInames,]$reference,
-                                                         alt = qs[[sample]][SNVoInames,]$variant,
-                                                         SampleName = sample,
-                                                         call = SNVoInames,
-                                                         SYMBOL = qs[[sample]][SNVoInames,]$inGene) %>%
-                                  dplyr::mutate(alt_depth = tot_depth - ref_depth)
+
+                                sample_rec <- qs[[sample]][SNVoInames,] %>%
+                                  dplyr::rename(tot_depth = cov,
+                                                ref_depth = ref,
+                                                ref = reference,
+                                                alt = variant,
+                                                SYMBOL = inGene) %>%
+                                  dplyr::mutate(alt_depth = tot_depth - ref_depth,
+                                                call = SNVoInames,
+                                                SampleName = sample) %>%
+                                  dplyr::select(-x)
+
                                 return(sample_rec)
                               })
 
