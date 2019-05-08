@@ -253,10 +253,11 @@ import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQ
                   tot_depth = ifelse(is.na(tot_depth),0,tot_depth))
 
   # 4. Filter based on minimal required ref_depth threshold and re-add lost mutations later
-  var_keep <- clinical_var_fill %>% dplyr::filter(tot_depth >= 10 & VAF >= min_vaf)
+  var_keep <- clinical_var_fill %>%
+    dplyr::filter(tot_depth >= 15 & VAF >= min_vaf & alt_depth > 2)
 
   # var_leave contains some indels not found and some that do not meet the filters
-  var_leave <- clinical_var_fill %>% dplyr::filter(tot_depth < 10 | VAF < min_vaf)
+  var_leave <- clinical_var_fill %>% dplyr::filter(tot_depth < 15 | VAF < min_vaf | alt_depth <= 2)
 
 
   if(nrow(var_keep) == 0){
