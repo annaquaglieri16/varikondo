@@ -109,10 +109,10 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
             dplyr::mutate(VAF = var/cov,
                           mut_name = rownames(q)) %>%
             dplyr::filter((somaticP > 0.5) &
-                            (!is.na(q$severity) & severity < severity) &
+                            (!is.na(q$severity) & severity < sev) &
                             inGene %in% studyGenes &
                             VAF >= min_vaf &
-                            (cov - ref) >= min_alt)
+                            var >= min_alt)
           as.character(q$mut_name)
 
         }
