@@ -232,8 +232,7 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
 
     recover_infos <- recover_infos %>%
       dplyr::select(-call,-label) %>%
-      dplyr::mutate(VAF = case_when(variant_type %in% "SNV" ~ alt_depth/tot_depth,
-                                    TRUE ~ VAF))
+      dplyr::mutate(VAF = ifelse(variant_type %in% "SNV",alt_depth/tot_depth,VAF))
 
     # Extract clones
     # - to be added to extract genes in clones
