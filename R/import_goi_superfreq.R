@@ -7,7 +7,7 @@
 #' @param ref_genome character vector for the reference genome used in the analysis ('hg38' or 'hg19')
 #' @param min_vaf numeric. Minimum variant allele frequency (VAF) for a variant to be kept at one time point.
 #' @param min_alt numeric. Minimum number of reads supporting the alt allele at one time points for a patient.
-#' @param severity numeric. Only variants with severity value < severity are kept.
+#' @param sev numeric. Only variants with severity value < sev are kept.
 #' @description This function imports superFreq's SNVs, CNAs and clones for one patient and outputs them into a tidy format where every row is a variant.
 #' @export
 
@@ -41,7 +41,7 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
                                  ref_genome = "hg38",
                                  min_vaf = 0.15,
                                  min_alt = 2,
-                                 severity = 12){
+                                 sev = 12){
 
   options(warn = -1)
   if( is.na(patientID) ){
