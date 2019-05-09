@@ -231,7 +231,9 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
                                          paste(recover_infos$SYMBOL, recover_infos$mutation_det,sep = " "),recover_infos$mutation_det)
 
     recover_infos <- recover_infos %>%
-      dplyr::select(-call,-label)
+      dplyr::select(-call,-label) %>%
+      dplyr::mutate(VAF = case_when(variant_type %in% "SNV" ~ alt_depth/tot_depth,
+                                    TRUE ~ VAF))
 
     # Extract clones
     # - to be added to extract genes in clones
