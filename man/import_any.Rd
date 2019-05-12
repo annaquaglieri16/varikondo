@@ -5,7 +5,7 @@
 \title{General import for patient's variants}
 \usage{
 import_any(variants = NULL, patientID = NULL, studyGenes = NULL,
-  minQual = 20, clinicalData = NULL, min_vaf = 0.15,
+  minQual = 20, clinicalData = NULL, min_vaf = 0.15, min_alt = 2,
   keep_impact = c("HIGH", "MODERATE"), variant_type = "indels-vardict")
 }
 \arguments{
@@ -20,6 +20,8 @@ import_any(variants = NULL, patientID = NULL, studyGenes = NULL,
 \item{clinicalData}{clinical data about the patients in the cohort. It has to contain the a column `SampleName`.}
 
 \item{min_vaf}{numeric. Minimum variant allele frequency (VAF) for a variant to be kept at one time point.}
+
+\item{min_alt}{numeric. Minimum number of reads supporting the alt allele at one time points for a patient.}
 
 \item{keep_impact}{vector specifying the IMPACT values to select variants. Values allowed are HIGH, MODERATE, LOW, MODIFIER ( https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html). IMPACT should be a columns of `variants`. If it is not found all variants are kept.}
 

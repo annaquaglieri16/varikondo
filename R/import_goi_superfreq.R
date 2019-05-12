@@ -11,13 +11,16 @@
 #' @description This function imports superFreq's SNVs, CNAs and clones for one patient and outputs them into a tidy format where every row is a variant.
 #' @export
 
-# studyGenes <- read_csv("../../../venetoclax_trial/Recurrent-AML-genes-across-studies.csv")
-# studyGenes <- "KIT"
-# superFreq_R_path <- "../../../venetoclax_trial/superFreq/R"
-# patientID <- "D1"
-# min_vaf <- 0.15
-# superFreq_meta_path <- file.path("../../../venetoclax_trial/superFreq/metaData.tsv")
-# ref_genome = "hg38"
+#studyGenes <- read_csv("/Volumes/AML_RNA/venetoclax_trial/Recurrent-AML-genes-across-studies.csv")
+#studyGenes <- "KIT"
+#superFreq_R_path <- "/Volumes/AML_RNA/cbf_aml_agrf/superFreq/R_full_cohort"
+#patientID <- "RMH07PW"
+#min_vaf <- 0.15
+#superFreq_meta_path <- file.path("/Volumes/AML_RNA/cbf_aml_agrf/superFreq/runFullCohort/metadata_varscan.tsv")
+#ref_genome = "hg38"
+#min_vaf = 0.15
+#sev = 12
+#min_alt = 2
 #
 # genes0 <- read.csv("../../../venetoclax_trial/Recurrent-AML-genes-across-studies.csv")
 # studyGenes <- "KIT"
@@ -153,12 +156,12 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
   if(!is.null(SNVoI) | !is.null(CNAoI)){
 
     MoI = rbind(SNVoI, CNAoI)
-    labels = storyToLabel(MoI, stories$variants, genome=ref_genome, mergeCNAs=F)[as.character(seq(along.with=MoI$x1)),]
+    labels = varikondo:::storyToLabel(MoI, stories$variants, genome=ref_genome, mergeCNAs=F)[as.character(seq(along.with=MoI$x1)),]
     MoI$label = labels$label
     MoI$severity = labels$severity
-    MoI$chr = xToChr(MoI$x1, genome=ref_genome)
-    MoI$start = xToPos(MoI$x1, genome=ref_genome)
-    MoI$end = xToPos(MoI$x2, genome=ref_genome)
+    MoI$chr = varikondo:::xToChr(MoI$x1, genome=ref_genome)
+    MoI$start = varikondo:::xToPos(MoI$x1, genome=ref_genome)
+    MoI$end = varikondo:::xToPos(MoI$x2, genome=ref_genome)
 
     # Convert to long format SNVs
     MoI_stories <- data.frame(MoI$stories)

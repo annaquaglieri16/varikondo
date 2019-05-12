@@ -8,6 +8,7 @@
 #' @param keep_impact vector specifying the IMPACT values to select variants. Values allowed are HIGH, MODERATE, LOW, MODIFIER ( https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html). IMPACT should be a columns of `variants`. If it is not found all variants are kept.
 #' @param variant_type Label for the type of variants imported, e.g. vardict-indels.
 #' @param min_vaf numeric. Minimum variant allele frequency (VAF) for a variant to be kept at one time point.
+#' @param min_alt numeric. Minimum number of reads supporting the alt allele at one time points for a patient.
 #'
 #' @description   This function will take as input a data frame of variants with specific column information and return a filtered set with sample's clinical infrmation and default variants information also for samples without variants.
 
@@ -63,7 +64,7 @@
 
 
 import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQual=20,
-                      clinicalData = NULL, min_vaf = 0.15,
+                      clinicalData = NULL, min_vaf = 0.15,min_alt = 2,
                       keep_impact = c("HIGH","MODERATE"),
                       variant_type = "indels-vardict") {
 
@@ -254,14 +255,14 @@ import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQ
 
   # 4. Filter based on minimal required ref_depth threshold and re-add lost mutations later
   var_keep <- clinical_var_fill %>%
-    dplyr::filter(tot_depth >= 15 & VAF >= min_vaf & alt_depth > 2)
+    dplyr::filter(tot_depth >= 15 & VAF >= min_vaf & alt_depth > min_alt)
 
   # var_leave contains some indels not found and some that do not meet the filters
-  var_leave <- clinical_var_fill %>% dplyr::filter(tot_depth < 15 | VAF < min_vaf | alt_depth <= 2)
+  var_leave <- clinical_var_fill %>% dplyr::filter(tot_depth < 15 | VAF < min_vaf | alt_depth <= min_alt)
 
 
   if(nrow(var_keep) == 0){
-    message(paste0("No INDELs found in patient ",patientID))
+    message(paste0("No mutations found in patient ",patientID))
     return(NULL)
   }
 
