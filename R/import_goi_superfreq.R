@@ -11,16 +11,16 @@
 #' @description This function imports superFreq's SNVs, CNAs and clones for one patient and outputs them into a tidy format where every row is a variant.
 #' @export
 
-#studyGenes <- read_csv("/Volumes/AML_RNA/venetoclax_trial/Recurrent-AML-genes-across-studies.csv")
-#studyGenes <- "KIT"
-#superFreq_R_path <- "/Volumes/AML_RNA/cbf_aml_agrf/superFreq/R_full_cohort"
-#patientID <- "RMH07PW"
-#min_vaf <- 0.15
-#superFreq_meta_path <- file.path("/Volumes/AML_RNA/cbf_aml_agrf/superFreq/runFullCohort/metadata_varscan.tsv")
-#ref_genome = "hg38"
-#min_vaf = 0.15
-#sev = 12
-#min_alt = 2
+# genes0 <- read.csv("/Volumes/AML_RNA/venetoclax_trial/Recurrent-AML-genes-across-studies.csv")
+# genes_cbf <- c(as.character(genes0$Symbol[genes0$CBF_AML | genes0$Myeloid_panel],c("MN1","MCL1")))
+# superFreq_R_path <- "/Volumes/AML_RNA/cbf_aml_agrf/superFreq/R_full_cohort"
+# patientID <- "PMC02CAI"
+# min_vaf <- 0.05
+# superFreq_meta_path <- file.path("/Volumes/AML_RNA/cbf_aml_agrf/superFreq/runFullCohort/metadata_varscan.tsv")
+# ref_genome = "hg38"
+# sev = 12
+# min_alt = 3
+
 #
 # genes0 <- read.csv("../../../venetoclax_trial/Recurrent-AML-genes-across-studies.csv")
 # studyGenes <- "KIT"
@@ -233,9 +233,17 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
     recover_infos$mutation_det <- ifelse(recover_infos$variant_type %in% "CNA",
                                          paste(recover_infos$SYMBOL, recover_infos$mutation_det,sep = " "),recover_infos$mutation_det)
 
+    # Remove unused columns
     recover_infos <- recover_infos %>%
-      dplyr::select(-call,-label) %>%
-      dplyr::mutate(VAF = ifelse(variant_type %in% "SNV" & tot_depth != 0,alt_depth/tot_depth,VAF))
+      dplyr::select(-call,-label)
+
+    # Convert SNVs clonality to VAF
+    if(sum(recover_infos$variant_type %in% "SNV") > 0) {
+
+      recover_infos <- recover_infos %>%
+        dplyr::mutate(VAF = ifelse(variant_type %in% "SNV" & tot_depth != 0,alt_depth/tot_depth,VAF))
+
+    }
 
     # Extract clones
     # - to be added to extract genes in clones
