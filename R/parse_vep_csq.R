@@ -2,7 +2,6 @@
 #' @param vcf_path path to where the `.vcf` file for one sample is saved.
 #' @param vcf_df `R` object returned by `parse_vcf_output()` after parsing relevant fields from the `VCF` file.
 
-#' @export
 
 #vcf_path <- "../../../cbf_aml_agrf/variant_calling/vardict/regions_deDupl_both_cohorts/annotated_variants/10.R1.B2.M13ADE05RV.BM.Rem_germline_annotated.vcf"
 # sample_name = "10.R1.B2.M13ADE05RV.BM.Rem"

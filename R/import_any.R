@@ -112,19 +112,13 @@ import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQ
   ### Check column requirements for variants
   ##########################################
 
-  facultative_columns <- c("Consequence","IMPACT","qual")
+  facultative_columns <- c("IMPACT","qual")
   check_columns <- sum(!(facultative_columns %in% colnames(variants)))
 
   # Check for facultative columns
   if(check_columns > 0){
 
     missing <- facultative_columns[!(facultative_columns %in% colnames(variants))]
-    #cat(paste0("The following column names are missing in the variants set: ",paste0(missing,collapse=","),".\n"))
-
-    if(sum(missing %in% "Consequence") > 0){
-      variants$Consequence <- ""
-      cat(paste0("Consequence is missing and will be filled with '.'\n"))
-    }
 
     if(sum(missing %in% "IMPACT") > 0){
 
@@ -221,10 +215,7 @@ import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQ
     dplyr::filter(is.na(IMPACT) | IMPACT %in% keep_impact) %>% # keep NAs and annotated
     dplyr::group_by(SampleName,Location,ref,alt) %>%
     tidyr::unite(mutation_det, SYMBOL, Consequence , sep = " ",remove = FALSE) %>%
-    dplyr::filter(order(IMPACT_rank) == order(IMPACT_rank)[which.min(order(IMPACT_rank))]) %>%
-    dplyr::filter(!stringr::str_detect(Consequence,c("splice_donor"))) %>%
-    dplyr::filter(!stringr::str_detect(Consequence,c("splice_acceptor")))
-    # dplyr::mutate(mutation_det = stringr::str_replace(mutation_det,"&.+",""))
+    dplyr::filter(order(IMPACT_rank) == order(IMPACT_rank)[which.min(order(IMPACT_rank))])
 
   ################################################
   # Get all the clinical information for patientID

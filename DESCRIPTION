@@ -1,7 +1,7 @@
 Package: varikondo
 Type: Package
 Title: A package to declutter, organise and standardise genomic variant calls
-Version: 0.5.7
+Version: 0.5.9
 Authors@R: c(
       person("Anna", "Quaglieri", email = "quaglieri.a@wehi.edu.au", role = c("aut", "cre")),
       person("Christoffer", "Flensburg", role = c("aut", "ctb"))
@@ -20,8 +20,6 @@ Imports:
   data.table (>= 1.12.0),
   VariantAnnotation (>= 1.28.13),
   IRanges (>= 2.16.0),
-  matrixStats (>= 0.54.0),
-  plyranges (>= 1.2.0),
   tidyr, 
   stringr,
   pryr,
