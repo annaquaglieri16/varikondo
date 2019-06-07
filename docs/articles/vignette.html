@@ -31,7 +31,11 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">varikondo</a>
+<<<<<<< HEAD
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.9</span>
+=======
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.7</span>
+>>>>>>> 7fde2f310738ee566b8f0b696008112b37225605
       </span>
     </div>
 
@@ -75,7 +79,11 @@
       <h1>Introduction to varikondo</h1>
                         <h4 class="author">Anna Quaglieri</h4>
             
+<<<<<<< HEAD
             <h4 class="date">2019-06-06</h4>
+=======
+            <h4 class="date">2019-05-14</h4>
+>>>>>>> 7fde2f310738ee566b8f0b696008112b37225605
       
       <small class="dont-index">Source: <a href="https://github.com/annaquaglieri16/varikondo/blob/master/vignettes/vignette.Rmd"><code>vignettes/vignette.Rmd</code></a></small>
       <div class="hidden name"><code>vignette.Rmd</code></div>
@@ -92,7 +100,11 @@
 <a class="sourceLine" id="cb1-2" data-line-number="2">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"annaquaglieri16/varikondo"</span>)</a></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(varikondo)</a>
 <a class="sourceLine" id="cb2-2" data-line-number="2">utils<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/packageDescription">packageVersion</a></span>(<span class="st">"varikondo"</span>)</a>
+<<<<<<< HEAD
 <a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co">#&gt; [1] '0.5.9'</span></a></code></pre></div>
+=======
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co">#&gt; [1] '0.5.7'</span></a></code></pre></div>
+>>>>>>> 7fde2f310738ee566b8f0b696008112b37225605
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/ls">ls</a></span>(<span class="st">"package:varikondo"</span>)</a>
 <a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co">#&gt; [1] "example_data"         "import_any"           "import_clinical"     </span></a>
 <a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co">#&gt; [4] "import_goi_superfreq" "parse_vcf_output"     "parse_vep_csq"</span></a></code></pre></div>
@@ -1117,6 +1129,7 @@ Overview of the functionality to import and organise superFreq outputs.
 </p>
 </div>
 <p>The <code><a href="../reference/import_goi_superfreq.html">import_goi_superfreq()</a></code> function was specifically build to extract all the outputs produced by the caller which would be otherwise stored in nested lists within each patient’s <code>Rdata</code> file or in <code>.csv</code> file if sometic variants. <code>superFreq</code> produces output from sometic SNVs, CNVs and clone tracking. A <code>superFreq</code> run for a cohort of patients (view <a href="https://github.com/ChristofferFlensburg/superFreq">instructions</a>) will create and <code>R</code> folder with results for each patient, each stored within a folder. <code>import_goi_supefreq</code> will look into this folder to extract all the results. <code>import_goi_supefreq</code> also needs a path to the cohort metadata file in order to match the ouput from each sample with its patient name and time points.</p>
+<<<<<<< HEAD
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">import_sf &lt;-<span class="st"> </span>varikondo<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/varikondo/topics/import_goi_superfreq">import_goi_superfreq</a></span>(<span class="dt">superFreq_R_path =</span> superFreq_R_path,</a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">   <span class="dt">superFreq_meta_path =</span> superFreq_meta_path,</a>
 <a class="sourceLine" id="cb7-3" data-line-number="3">  <span class="dt">patientID =</span> patientID,</a>
@@ -1124,6 +1137,14 @@ Overview of the functionality to import and organise superFreq outputs.
 <a class="sourceLine" id="cb7-5" data-line-number="5">  <span class="dt">ref_genome =</span> <span class="st">"hg38"</span>,</a>
 <a class="sourceLine" id="cb7-6" data-line-number="6">  <span class="dt">min_vaf =</span> <span class="fl">0.05</span>,</a>
 <a class="sourceLine" id="cb7-7" data-line-number="7">  <span class="dt">min_alt =</span> <span class="dv">3</span>)</a></code></pre></div>
+=======
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">import_sf &lt;-<span class="st"> </span>lineplots<span class="op">::</span><span class="kw">import_goi_superfreq</span>(<span class="dt">superFreq_R_path =</span> superFreq_R_path,</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">                                 <span class="dt">superFreq_meta_path =</span> superFreq_meta_path,</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">                                 studyGenes,</a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">                                 <span class="dt">patientID =</span> <span class="st">"D1"</span>,</a>
+<a class="sourceLine" id="cb7-5" data-line-number="5">                                 <span class="dt">ref_genome =</span> <span class="st">"hg38"</span>,</a>
+<a class="sourceLine" id="cb7-6" data-line-number="6">                                 <span class="dt">VAFcut =</span> <span class="fl">0.15</span>)</a></code></pre></div>
+>>>>>>> 7fde2f310738ee566b8f0b696008112b37225605
 <div id="how-different-types-of-variants-are-provided-in-output" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-different-types-of-variants-are-provided-in-output" class="anchor"></a>How different types of variants are provided in output</h3>
