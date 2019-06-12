@@ -11,13 +11,13 @@
 
 #' @export
 #' @examples
-#' vcf_path <- system.file("extdata", "germline_mutect.vcf", package = "varikondo")
+#' vcf_path <- system.file("extdata", "chr20_mutect.vcf", package = "varikondo")
 #' parsed_vcf_mutect <- parse_vcf_output(vcf_path,
 #' caller = "mutect",
 #' sample_name = "Sample1",
 #' vep = TRUE)
 #'
-#' vcf_path <- system.file("extdata", "germline_freebayes.vcf", package = "varikondo")
+#' vcf_path <- system.file("extdata", "chr20_freebayes.vcf", package = "varikondo")
 #' parsed_vcf_freebayes <- parse_vcf_output(vcf_path,
 #' caller = "freebayes",
 #' sample_name = "Sample1",
@@ -34,9 +34,12 @@
 #' @importFrom DelayedArray rowRanges
 #' @importFrom tidyselect everything
 
-parse_vcf_output <- function(vcf_path, sample_name, caller, vep = TRUE) {
+vcf_path <- system.file("extdata", "chr20_freebayes.vcf", package = "varikondo")
+vcf <- VariantAnnotation::readVcf(vcf_path)
 
-  vcf <- VariantAnnotation::readVcf(vcf_path)
+parse_vcf_output <- function(vcf_path, sample_name, caller, vep = TRUE, param) {
+
+  vcf <- VariantAnnotation::readVcf(vcf_path,param)
 
   # Check if is comes from somatic calls
   if(ncol(VariantAnnotation::geno(vcf)$GT) > 1){
