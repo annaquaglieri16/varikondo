@@ -64,11 +64,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">varikondo</a>
-<<<<<<< HEAD
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.9</span>
-=======
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.7</span>
->>>>>>> 7fde2f310738ee566b8f0b696008112b37225605
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.16</span>
       </span>
     </div>
 
@@ -121,7 +117,8 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>parse_vcf_output</span>(<span class='no'>vcf_path</span>, <span class='no'>sample_name</span>, <span class='no'>caller</span>, <span class='kw'>vep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>parse_vcf_output</span>(<span class='no'>vcf_path</span>, <span class='kw'>sample_name</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/basename'>basename</a></span>(<span class='no'>vcf_path</span>), <span class='no'>caller</span>,
+  <span class='kw'>vep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>param</span> <span class='kw'>=</span> <span class='kw pkg'>VariantAnnotation</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/VariantAnnotation/topics/ScanVcfParam-class'>ScanVcfParam</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -142,6 +139,10 @@
       <th>vep</th>
       <td><p>logical. If TRUE, the annotation fields added by the Variant Effect Predictor will be parsed.</p></td>
     </tr>
+    <tr>
+      <th>param</th>
+      <td><p>same as `param` in `VariantAnnotation::readVcf` to subset the VCF file by genomic coordinate and only import specific regions. An instance of ScanVcfParam or GRanges.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -150,13 +151,13 @@
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>vcf_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"germline_mutect.vcf"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"varikondo"</span>)
+    <pre class="examples"><div class='input'><span class='no'>vcf_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"chr20_mutect.vcf.gz"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"varikondo"</span>)
 <span class='no'>parsed_vcf_mutect</span> <span class='kw'>&lt;-</span> <span class='fu'>parse_vcf_output</span>(<span class='no'>vcf_path</span>,
 <span class='kw'>caller</span> <span class='kw'>=</span> <span class='st'>"mutect"</span>,
 <span class='kw'>sample_name</span> <span class='kw'>=</span> <span class='st'>"Sample1"</span>,
 <span class='kw'>vep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
-<span class='no'>vcf_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"germline_freebayes.vcf"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"varikondo"</span>)
+<span class='no'>vcf_path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"chr20_freebayes.vcf.gz"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"varikondo"</span>)
 <span class='no'>parsed_vcf_freebayes</span> <span class='kw'>&lt;-</span> <span class='fu'>parse_vcf_output</span>(<span class='no'>vcf_path</span>,
 <span class='kw'>caller</span> <span class='kw'>=</span> <span class='st'>"freebayes"</span>,
 <span class='kw'>sample_name</span> <span class='kw'>=</span> <span class='st'>"Sample1"</span>,

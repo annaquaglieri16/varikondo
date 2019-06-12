@@ -4,7 +4,8 @@
 \alias{parse_vcf_output}
 \title{Parse a VCF file and return a data frame with standardised fields across callers}
 \usage{
-parse_vcf_output(vcf_path, sample_name, caller, vep = TRUE)
+parse_vcf_output(vcf_path, sample_name = basename(vcf_path), caller,
+  vep = TRUE, param = VariantAnnotation::ScanVcfParam())
 }
 \arguments{
 \item{vcf_path}{path to where the `.vcf` file for one sample is saved.}
@@ -14,6 +15,8 @@ parse_vcf_output(vcf_path, sample_name, caller, vep = TRUE)
 \item{caller}{character. One of `mutect`, `vardict`, `varscan`, or `freebayes`.}
 
 \item{vep}{logical. If TRUE, the annotation fields added by the Variant Effect Predictor will be parsed.}
+
+\item{param}{same as `param` in `VariantAnnotation::readVcf` to subset the VCF file by genomic coordinate and only import specific regions. An instance of ScanVcfParam or GRanges.}
 }
 \description{
 Currently, it only works with VCF files containing germline calls from the following callers: GATK3 MuTect2, VarScan2, VarDict and freebayes. It uses the Bioconductor package `VariantAnnotation` to read `VCF` files into `R`.
@@ -22,13 +25,13 @@ Currently, it only works with VCF files containing germline calls from the follo
 Freebayes can report more than one alternative allele in output. This means that there will be depths and quality information for every alternative allele. Currently, `parse_vcf_output` uses the `VariantAnnotation` package to read `VCF` fields into `R` but, if multiple entries are reported in one field (alt allele, quality, depth etc..), it only reports the first of them. This should be fixed soon within the `VariantAnnotation` package but in the meantime `parse_vcf_output` parses these fields separately and adds them to the final output. Since, not many variants have a second or thirs alternative allele, the `qual` column reported by `parse_vcf_output` is the sum of the reference base qualities and the first (most common) alternative base qualities divided by the sum of reference and alternative depth for the first allele. The same applies for the variant allele frequency (VAF).
 }
 \examples{
-vcf_path <- system.file("extdata", "germline_mutect.vcf", package = "varikondo")
+vcf_path <- system.file("extdata", "chr20_mutect.vcf.gz", package = "varikondo")
 parsed_vcf_mutect <- parse_vcf_output(vcf_path,
 caller = "mutect",
 sample_name = "Sample1",
 vep = TRUE)
 
-vcf_path <- system.file("extdata", "germline_freebayes.vcf", package = "varikondo")
+vcf_path <- system.file("extdata", "chr20_freebayes.vcf.gz", package = "varikondo")
 parsed_vcf_freebayes <- parse_vcf_output(vcf_path,
 caller = "freebayes",
 sample_name = "Sample1",

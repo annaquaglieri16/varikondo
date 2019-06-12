@@ -4,6 +4,7 @@
 #' @param sample_name character. Sample name of the current `vcf` file.
 #' @param caller character. One of `mutect`, `vardict`, `varscan`, or `freebayes`.
 #' @param vep logical. If TRUE, the annotation fields added by the Variant Effect Predictor will be parsed.
+#' @param param same as `param` in `VariantAnnotation::readVcf` to subset the VCF file by genomic coordinate and only import specific regions. An instance of ScanVcfParam or GRanges.
 
 #' @description Currently, it only works with VCF files containing germline calls from the following callers: GATK3 MuTect2, VarScan2, VarDict and freebayes. It uses the Bioconductor package `VariantAnnotation` to read `VCF` files into `R`.
 #'
@@ -11,13 +12,13 @@
 
 #' @export
 #' @examples
-#' vcf_path <- system.file("extdata", "chr20_mutect.vcf", package = "varikondo")
+#' vcf_path <- system.file("extdata", "chr20_mutect.vcf.gz", package = "varikondo")
 #' parsed_vcf_mutect <- parse_vcf_output(vcf_path,
 #' caller = "mutect",
 #' sample_name = "Sample1",
 #' vep = TRUE)
 #'
-#' vcf_path <- system.file("extdata", "chr20_freebayes.vcf", package = "varikondo")
+#' vcf_path <- system.file("extdata", "chr20_freebayes.vcf.gz", package = "varikondo")
 #' parsed_vcf_freebayes <- parse_vcf_output(vcf_path,
 #' caller = "freebayes",
 #' sample_name = "Sample1",
@@ -34,12 +35,22 @@
 #' @importFrom DelayedArray rowRanges
 #' @importFrom tidyselect everything
 
-vcf_path <- system.file("extdata", "chr20_freebayes.vcf", package = "varikondo")
-vcf <- VariantAnnotation::readVcf(vcf_path)
+parse_vcf_output <- function(vcf_path, sample_name = basename(vcf_path), caller, vep = TRUE, param = VariantAnnotation::ScanVcfParam()) {
 
-parse_vcf_output <- function(vcf_path, sample_name, caller, vep = TRUE, param) {
+  # The VCF file needs to be tabixed
+  if(!str_detect(pattern = ".bgz$|.gz$", string = vcf_path)){
+    vcf_path <- Rsamtools::bgzip(vcf_path,overwrite = TRUE)
+    Rsamtools::indexTabix(vcf_path,format="vcf")
+    message("The VCF is compressed (Rsamtools::bgzip) and indexed (Rsamtools::indexTabix)")
+  } else {
+    if(!file.exists(paste0(vcf_path,".tbi"))) {
+      Rsamtools::indexTabix(vcf_path,format="vcf")
+      message("The VCF is indexed (Rsamtools::indexTabix)")
+    }
+  }
 
-  vcf <- VariantAnnotation::readVcf(vcf_path,param)
+  # Read VCF in
+  vcf <- VariantAnnotation::readVcf(vcf_path, param = param)
 
   # Check if is comes from somatic calls
   if(ncol(VariantAnnotation::geno(vcf)$GT) > 1){

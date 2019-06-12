@@ -16,5 +16,5 @@ install:
 pkgdown0:
 	Rscript -e "pkgdown::clean_site(); pkgdown::build_site()"
 
-pkgdown:
-	Rscript -e "pkgdown::build_site()"
+#pkgdown:
+#	Rscript -e "pkgdown::build_site()"

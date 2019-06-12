@@ -156,12 +156,12 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
   if(!is.null(SNVoI) | !is.null(CNAoI)){
 
     MoI = rbind(SNVoI, CNAoI)
-    labels = varikondo:::storyToLabel(MoI, stories$variants, genome=ref_genome, mergeCNAs=F)[as.character(seq(along.with=MoI$x1)),]
+    labels = storyToLabel(MoI, stories$variants, genome=ref_genome, mergeCNAs=F)[as.character(seq(along.with=MoI$x1)),]
     MoI$label = labels$label
     MoI$severity = labels$severity
-    MoI$chr = varikondo:::xToChr(MoI$x1, genome=ref_genome)
-    MoI$start = varikondo:::xToPos(MoI$x1, genome=ref_genome)
-    MoI$end = varikondo:::xToPos(MoI$x2, genome=ref_genome)
+    MoI$chr = xToChr(MoI$x1, genome=ref_genome)
+    MoI$start = xToPos(MoI$x1, genome=ref_genome)
+    MoI$end = xToPos(MoI$x2, genome=ref_genome)
 
     # Convert to long format SNVs
     MoI_stories <- data.frame(MoI$stories)
