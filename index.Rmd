@@ -26,30 +26,34 @@ knitr::opts_chunk$set(echo = TRUE,
 # Find the spark joy in your variants!
 
 Bioinformatics can be very overwhelming at times, with all its different file formats, fields specifications and many ways of storing the same things! That's how the `varikondo` package came to life. 
-It was developed by the need to re-organise, standardise and combine variant calling outputs from several callers. It has specific functions that help with:
+It was developed by the need to **re-organise**, **standardise** and **combine** variant calling outputs from several callers. It has specific functions which help with:
 
-2. Importing into R and parsing into a tidy format the output from several callers. The functions include:
+1. Variant import in R and parse into a data frame with standardised fields the output from several variant callers (see [how fields are standardaised](https://annaquaglieri16.github.io/varikondo/articles/standardise-variant-fields.html)). The function which achieve this are:
 
-  * `import_goi_superfreq()`: to import the ouput from `superFreq`, a caller that allows clonal tracking of cancer sequencing data;
+  * `import_goi_superfreq()`: to import variants found on genes of interest called by [superFreq](https://github.com/ChristofferFlensburg/superFreq), a caller that allows clonal tracking of cancer sequencing data. Figure \@{fig:superfreq-diagram} sketches how the function works. 
   
-  * `parse_vcf_output()`: which takes a [Variant Call Format (VCF)](http://www.internationalgenome.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-40/) file as input and outputs a parsed data frame with standardised names for the fields in the `VCF` file. Currently, `parse_vcf_output()` supports ouputs from the following callers run in tumour-only mode: `GATK3 MuTect2`, `VarScan2`, `VarDict` and `Freebayes`. It also enables parsing of the annotation field added by the [Variant Effect Predictor](https://asia.ensembl.org/info/docs/tools/vep/index.html). 
+  
+```{r superfreq-diagram,eval=TRUE,echo=FALSE,fig.cap="Overview of the functionality to import and organise superFreq outputs.",fig.asp=0.7}
+knitr::include_graphics("man/figures/import-superfreq.png")
+```
 
-3. `import_any` and `import_clinical`: to combine the variant calls (already imported into `R`) and clinical information for several samples collected for the same patient. Clinical information are structured in a similar way as the variants so that they can be plotted together.    
+  
+  * `parse_vcf_output()`: which takes a [Variant Call Format (VCF)](http://www.internationalgenome.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-40/) file as input and outputs a parsed data frame with standardised names for the fields in the `VCF` file. Currently, `parse_vcf_output()` can parse ouputs from the following callers run in tumour-only mode: `GATK3 MuTect2`, `VarScan2`, `VarDict` and `Freebayes`. It also enables parsing of the annotation field added by the [Variant Effect Predictor](https://asia.ensembl.org/info/docs/tools/vep/index.html). 
 
 
-# Example with calling variants from RNA-Seq
+2. Combine variant calls from different samples within the same patient. 
 
-`varikondo` was developed as part of the work done on an RNA-Seq cohort of Leukemia patients, of relatively small sample size (~30 patients), with multiple samples at different time points, sequenced across different batches and tissues. In these type of studies it is often the case that clinicians or biologists need to explore the information for each patient, for a particular set of genes of interest. Time-series lineplots over time as well as heatmaps showing the shifts in variant allele frequency (VAF) and tumour content over time, help with exploring the various genetic results generated from sequencing data. The Shiny app [`shiny-clone`](https://shiny.wehi.edu.au/quaglieri.a/shiny-clone/) allows exploration of the standardised tidy data frames created with `varikondo`. 
+  * `import_any()` combines and filters the variant calls (already imported into `R`) from several samples collected for the same patient. This functions attempts to mimic in a very simplistic way what is performed within [superFreq](https://github.com/ChristofferFlensburg/superFreq). Instead of filtering each variant callset separately for each sample, variants are filtered jointly by patient. This means that if a variant reaches minimal quality threshold at any time point, then it will be kept for all other time points. If a variant is not detected in some samples it will be filled with default values, e.g. `zero` variant allele frequency. This allows to have complete information for a variant across time for one patient and to plot and evaluate the shift in VAF or depth over time.
+ 
 
-Calling variants from RNA-Seq samples is increasing in popularity due to the large number of RNA-Seq data produced and benchmarking papers have been published comparing the performance of different callers [@Quinn2013-oh; @Coudray2018-yw; @Lavallee2016-sf]. In the past year several new methods have been developed specifically to improve INDEL detection in RNA-Seq samples [@Audemard2018-vh; @Kohei_Hagiwara_Liang_Ding_Michael_N_Edmonson_Stephen_V_Rice_Scott_Newman_Soheil_Meshinchi_Rhonda_E_Ries_Michael_Rusch_Jinghui_Zhang2019-ny; @Mose2019-vh]. As part of a project done on two Leukemia clinical trials we defined a pipeline to call variants in RNA-Seq (https://rna-mutation-calls.netlify.com/) and use [superFreq](https://github.com/ChristofferFlensburg/superFreq) to analyse clonal tracking and mutational development across the course of the treatment. We used combined calls from the [VarDict](https://github.com/AstraZeneca-NGS/VarDict) [@Lai2016-ws] and [km](https://github.com/iric-soft/km/tree/master/km/tools#output-description-1) [@Audemard2018-vh] algorithms to define INDEL calls. Below is an overview of the variant calling pipeline and the steps where the `varikondo` package comes in!
+Below is a graphic overview of how the output of `parse_vcf_output()` and `import_any()` interact. The example is based on files for one patient but the same can be extended to any patient. 
 
-<img src="man/figures/general-verview.png" align="center"/>
-
-```{r general-overview,echo=FALSE,eval=TRUE, fig.cap="**Figure 1**. General overview of the variant calling pipeline for SNVs and INDELs using RNA-Seq data.",fig.asp=0.7}
+```{r echo=FALSE,eval=TRUE, fig.cap="Overview of the functionality to import and organise your VCF files.",fig.asp=0.7}
+knitr::include_graphics("man/figures/import-any.png")
 ```
 
 
-After calling SNVs, CNVs and INDELs with different programs, it is often useful to combine all the results in a standardised way. Usually different programs output variants in different ways using slightly different conventions which makes it challenging to easily combine the results. For example, superFreq returns SNVs, CNVs and clone tracking in `Rdata` files as well as in `csv` files; `VarDict` uses the standard `VCF` output but with different specification of quality measures compared to, for example, `MuTect2` or `VarScan2`; `km` outputs INDELs in tab delimited format. This makes it challenging to both create a comprehensive overview of the results for one sample as well as to compare results across callers. Another challenge comes from calling variants independently at different time points for the same patient. Variants might be present before treatment but absent after treatment and when a patient relapses or vice versa. This required to fill in the missing time points especially for visualisations purposes. While `superFreq` takes this problem into account by keeping any variants found at different time points, other programs like `km` or `VarDict` don’t allow that. `varikondo` takes care of these two problems for the output produced by the callers used in the pipeline. 
+
 
 
 # Bibliography
