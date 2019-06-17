@@ -43,9 +43,10 @@ navbar:
       text: Articles
       menu:
         - text: Standardise VCF fields across callers
-        - href: articles/standardise-variant-fields.html
+          href: articles/standardise-variant-fields.html
         - text: Example - Variant calling in RNA-Seq
-        - href: articles/rna-seq-pipe.html
+          href: articles/rna-seq-pipe.html
     github:
       icon: fab fa-github fa-lg
       href: https://github.com/annaquaglieri16/varikondo
+
