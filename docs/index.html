@@ -78,53 +78,40 @@
 <div id="find-the-spark-joy-in-your-variants" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#find-the-spark-joy-in-your-variants" class="anchor"></a>Find the spark joy in your variants!</h1></div>
-<p>Bioinformatics can be very overwhelming at times, with all its different file formats, fields specifications and many ways of storing the same things! That’s how the <code>varikondo</code> package came to life. It was developed by the need to re-organise, standardise and combine variant calling outputs from several callers. It has specific functions that help with:</p>
-<ol start="2" style="list-style-type: decimal">
-<li>Importing into R and parsing into a tidy format the output from several callers. The functions include:</li>
+<p>Bioinformatics can be very overwhelming at times, with all its different file formats, fields specifications and many ways of storing the same things! That’s how the <code>varikondo</code> package came to life. It was developed by the need to <strong>re-organise</strong>, <strong>standardise</strong> and <strong>combine</strong> variant calling outputs from several callers. It has specific functions which help with:</p>
+<ol style="list-style-type: decimal">
+<li>Variant import in R and parse into a data frame with standardised fields the output from several variant callers (see <a href="https://annaquaglieri16.github.io/varikondo/articles/standardise-variant-fields.html">how fields are standardaised</a>). The function which achieve this are:</li>
 </ol>
 <ul>
-<li><p><code><a href="reference/import_goi_superfreq.html">import_goi_superfreq()</a></code>: to import the ouput from <code>superFreq</code>, a caller that allows clonal tracking of cancer sequencing data;</p></li>
-<li><p><code><a href="reference/parse_vcf_output.html">parse_vcf_output()</a></code>: which takes a <a href="http://www.internationalgenome.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-40/">Variant Call Format (VCF)</a> file as input and outputs a parsed data frame with standardised names for the fields in the <code>VCF</code> file. Currently, <code><a href="reference/parse_vcf_output.html">parse_vcf_output()</a></code> supports ouputs from the following callers run in tumour-only mode: <code>GATK3 MuTect2</code>, <code>VarScan2</code>, <code>VarDict</code> and <code>Freebayes</code>. It also enables parsing of the annotation field added by the <a href="https://asia.ensembl.org/info/docs/tools/vep/index.html">Variant Effect Predictor</a>.</p></li>
-</ul>
-<ol start="3" style="list-style-type: decimal">
 <li>
-<code>import_any</code> and <code>import_clinical</code>: to combine the variant calls (already imported into <code>R</code>) and clinical information for several samples collected for the same patient. Clinical information are structured in a similar way as the variants so that they can be plotted together.</li>
+<code><a href="reference/import_goi_superfreq.html">import_goi_superfreq()</a></code>: to import variants found on genes of interest called by <a href="https://github.com/ChristofferFlensburg/superFreq">superFreq</a>, a caller that allows clonal tracking of cancer sequencing data. Figure @{fig:superfreq-diagram} sketches how the function works.</li>
+</ul>
+<div class="figure">
+<img src="reference/figures/import-superfreq.png" alt="Overview of the functionality to import and organise superFreq outputs." width="621"><p class="caption">
+Overview of the functionality to import and organise superFreq outputs.
+</p>
+</div>
+<ul>
+<li>
+<code><a href="reference/parse_vcf_output.html">parse_vcf_output()</a></code>: which takes a <a href="http://www.internationalgenome.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-40/">Variant Call Format (VCF)</a> file as input and outputs a parsed data frame with standardised names for the fields in the <code>VCF</code> file. Currently, <code><a href="reference/parse_vcf_output.html">parse_vcf_output()</a></code> can parse ouputs from the following callers run in tumour-only mode: <code>GATK3 MuTect2</code>, <code>VarScan2</code>, <code>VarDict</code> and <code>Freebayes</code>. It also enables parsing of the annotation field added by the <a href="https://asia.ensembl.org/info/docs/tools/vep/index.html">Variant Effect Predictor</a>.</li>
+</ul>
+<ol start="2" style="list-style-type: decimal">
+<li>Combine variant calls from different samples within the same patient.</li>
 </ol>
+<ul>
+<li>
+<code><a href="reference/import_any.html">import_any()</a></code> combines and filters the variant calls (already imported into <code>R</code>) from several samples collected for the same patient. This functions attempts to mimic in a very simplistic way what is performed within <a href="https://github.com/ChristofferFlensburg/superFreq">superFreq</a>. Instead of filtering each variant callset separately for each sample, variants are filtered jointly by patient. This means that if a variant reaches minimal quality threshold at any time point, then it will be kept for all other time points. If a variant is not detected in some samples it will be filled with default values, e.g. <code>zero</code> variant allele frequency. This allows to have complete information for a variant across time for one patient and to plot and evaluate the shift in VAF or depth over time.</li>
+</ul>
+<p>Below is a graphic overview of how the output of <code><a href="reference/parse_vcf_output.html">parse_vcf_output()</a></code> and <code><a href="reference/import_any.html">import_any()</a></code> interact. The example is based on files for one patient but the same can be extended to any patient.</p>
+<div class="figure">
+<img src="reference/figures/import-any.png" alt="Overview of the functionality to import and organise your VCF files." width="624"><p class="caption">
+Overview of the functionality to import and organise your VCF files.
+</p>
 </div>
-<div id="example-with-calling-variants-from-rna-seq" class="section level1">
-<h1 class="hasAnchor">
-<a href="#example-with-calling-variants-from-rna-seq" class="anchor"></a>Example with calling variants from RNA-Seq</h1>
-<p><code>varikondo</code> was developed as part of the work done on an RNA-Seq cohort of Leukemia patients, of relatively small sample size (~30 patients), with multiple samples at different time points, sequenced across different batches and tissues. In these type of studies it is often the case that clinicians or biologists need to explore the information for each patient, for a particular set of genes of interest. Time-series lineplots over time as well as heatmaps showing the shifts in variant allele frequency (VAF) and tumour content over time, help with exploring the various genetic results generated from sequencing data. The Shiny app <a href="https://shiny.wehi.edu.au/quaglieri.a/shiny-clone/"><code>shiny-clone</code></a> allows exploration of the standardised tidy data frames created with <code>varikondo</code>.</p>
-<p>Calling variants from RNA-Seq samples is increasing in popularity due to the large number of RNA-Seq data produced and benchmarking papers have been published comparing the performance of different callers <span class="citation">(Quinn et al. 2013; Coudray et al. 2018; Lavallée et al. 2016)</span>. In the past year several new methods have been developed specifically to improve INDEL detection in RNA-Seq samples <span class="citation">(Audemard et al. 2018; Kohei Hagiwara, Liang Ding, Michael N. Edmonson, Stephen V. Rice, Scott Newman, Soheil Meshinchi, Rhonda E. Ries, Michael Rusch, Jinghui Zhang 2019; Mose, Perou, and Parker 2019)</span>. As part of a project done on two Leukemia clinical trials we defined a pipeline to call variants in RNA-Seq (<a href="https://rna-mutation-calls.netlify.com/" class="uri">https://rna-mutation-calls.netlify.com/</a>) and use <a href="https://github.com/ChristofferFlensburg/superFreq">superFreq</a> to analyse clonal tracking and mutational development across the course of the treatment. We used combined calls from the <a href="https://github.com/AstraZeneca-NGS/VarDict">VarDict</a> <span class="citation">(Lai et al. 2016)</span> and <a href="https://github.com/iric-soft/km/tree/master/km/tools#output-description-1">km</a> <span class="citation">(Audemard et al. 2018)</span> algorithms to define INDEL calls. Below is an overview of the variant calling pipeline and the steps where the <code>varikondo</code> package comes in!</p>
-<p><img src="reference/figures/general-verview.png" align="center"></p>
-<p>After calling SNVs, CNVs and INDELs with different programs, it is often useful to combine all the results in a standardised way. Usually different programs output variants in different ways using slightly different conventions which makes it challenging to easily combine the results. For example, superFreq returns SNVs, CNVs and clone tracking in <code>Rdata</code> files as well as in <code>csv</code> files; <code>VarDict</code> uses the standard <code>VCF</code> output but with different specification of quality measures compared to, for example, <code>MuTect2</code> or <code>VarScan2</code>; <code>km</code> outputs INDELs in tab delimited format. This makes it challenging to both create a comprehensive overview of the results for one sample as well as to compare results across callers. Another challenge comes from calling variants independently at different time points for the same patient. Variants might be present before treatment but absent after treatment and when a patient relapses or vice versa. This required to fill in the missing time points especially for visualisations purposes. While <code>superFreq</code> takes this problem into account by keeping any variants found at different time points, other programs like <code>km</code> or <code>VarDict</code> don’t allow that. <code>varikondo</code> takes care of these two problems for the output produced by the callers used in the pipeline.</p>
 </div>
-<div id="bibliography" class="section level1 unnumbered">
+<div id="bibliography" class="section level1">
 <h1 class="hasAnchor">
 <a href="#bibliography" class="anchor"></a>Bibliography</h1>
-<div id="refs" class="references">
-<div id="ref-Audemard2018-vh">
-<p>Audemard, Eric Olivier, Patrick Gendron, Vincent-Philippe Lavallée, Josée Hébert, Guy Sauvageau, and Sébastien Lemieux. 2018. “Targeted Variant Detection in Leukemia Using Unaligned RNA-Seq Reads.” <em>bioRXiv</em>, April.</p>
-</div>
-<div id="ref-Coudray2018-yw">
-<p>Coudray, A, A M Battenhouse, P Bucher, and V R Iyer. 2018. “Detection and Benchmarking of Somatic Mutations in Cancer Genomes Using RNA-seq Data.” <em>bioRxiv</em>. biorxiv.org.</p>
-</div>
-<div id="ref-Kohei_Hagiwara_Liang_Ding_Michael_N_Edmonson_Stephen_V_Rice_Scott_Newman_Soheil_Meshinchi_Rhonda_E_Ries_Michael_Rusch_Jinghui_Zhang2019-ny">
-<p>Kohei Hagiwara, Liang Ding, Michael N. Edmonson, Stephen V. Rice, Scott Newman, Soheil Meshinchi, Rhonda E. Ries, Michael Rusch, Jinghui Zhang. 2019. “RNAIndel: A Machine-Learning Framework for Discovery of Somatic Coding Indels Using Tumor RNA-Seq Data.” <em>biorXiv</em>, January.</p>
-</div>
-<div id="ref-Lai2016-ws">
-<p>Lai, Zhongwu, Aleksandra Markovets, Miika Ahdesmaki, Brad Chapman, Oliver Hofmann, Robert McEwen, Justin Johnson, Brian Dougherty, J Carl Barrett, and Jonathan R Dry. 2016. “VarDict: A Novel and Versatile Variant Caller for Next-Generation Sequencing in Cancer Research.” <em>Nucleic Acids Res.</em> 44 (11): e108.</p>
-</div>
-<div id="ref-Lavallee2016-sf">
-<p>Lavallée, Vincent-Philippe, Sébastien Lemieux, Geneviève Boucher, Patrick Gendron, Isabel Boivin, Richard Neil Armstrong, Guy Sauvageau, and Josée Hébert. 2016. “RNA-sequencing Analysis of Core Binding Factor AML Identifies Recurrent ZBTB7A Mutations and Defines RUNX1-CBFA2T3 Fusion Signature.” <em>Blood</em>, March.</p>
-</div>
-<div id="ref-Mose2019-vh">
-<p>Mose, Lisle E, Charles M Perou, and Joel S Parker. 2019. “Improved Indel Detection in DNA and RNA via Realignment with ABRA2.” <em>Bioinformatics</em>, January.</p>
-</div>
-<div id="ref-Quinn2013-oh">
-<p>Quinn, Emma M, Paul Cormican, Elaine M Kenny, Matthew Hill, Richard Anney, Michael Gill, Aiden P Corvin, and Derek W Morris. 2013. “Development of Strategies for SNP Detection in RNA-seq Data: Application to Lymphoblastoid Cell Lines and Evaluation Using 1000 Genomes Data.” <em>PLoS One</em> 8 (3): e58815.</p>
-</div>
-</div>
 </div>
   </div>
 
