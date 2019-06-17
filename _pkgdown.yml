@@ -2,6 +2,13 @@ template:
   params:
     bootswatch: sandstone
 
+authors:
+  Anna Quaglieri:
+    href: https://github.com/annaquaglieri16
+  Christoffer Flensburg:
+    href: https://github.com/ChristofferFlensburg
+
+
 reference:
 - title: All functions
   desc: ~
@@ -20,7 +27,6 @@ navbar:
     - intro
     - reference
     - articles
-    - tutorials
     - news
     right: github
   components:
@@ -35,7 +41,11 @@ navbar:
       href: articles/vignette.html
     articles:
       text: Articles
-      href: articles/standardise-variant-fields.html
+      menu:
+        - text: Standardise VCF fields across callers
+        - href: articles/standardise-variant-fields.html
+        - text: Example - Variant calling in RNA-Seq
+        - href: articles/rna-seq-pipe.html
     github:
       icon: fab fa-github fa-lg
       href: https://github.com/annaquaglieri16/varikondo

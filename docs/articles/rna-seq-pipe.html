@@ -49,8 +49,22 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li>
-  <a href="../articles/standardise-variant-fields.html">Articles</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li class="dropdown-header">Standardise VCF fields across callers</li>
+    <li>
+      <a href="../articles/standardise-variant-fields.html"></a>
+    </li>
+    <li class="dropdown-header">Example - Variant calling in RNA-Seq</li>
+    <li>
+      <a href="../articles/rna-seq-pipe.html"></a>
+    </li>
+  </ul>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -87,7 +101,7 @@
 <h1 class="hasAnchor">
 <a href="#example-with-calling-variants-from-rna-seq" class="anchor"></a>Example with calling variants from RNA-Seq</h1>
 <p><code>varikondo</code> was developed as part of the work done on an RNA-Seq cohort of Leukemia patients, of relatively small sample size (~30 patients), with multiple samples at different time points, sequenced across different batches and tissues. In these type of studies it is often the case that clinicians or biologists need to explore the information for each patient, for a particular set of genes of interest. Time-series lineplots over time as well as heatmaps showing the shifts in variant allele frequency (VAF) and tumour content over time, help with exploring the various genetic results generated from sequencing data.</p>
-<p>Calling variants from RNA-Seq samples is increasing in popularity due to the large number of RNA-Seq data produced and benchmarking papers have been published comparing the performance of different callers <span class="citation">[@Quinn2013-oh; @Coudray2018-yw; @Lavallee2016-sf]</span>. In the past year several new methods have been developed specifically to improve INDEL detection in RNA-Seq samples <span class="citation">[@Audemard2018-vh; @Kohei_Hagiwara_Liang_Ding_Michael_N_Edmonson_Stephen_V_Rice_Scott_Newman_Soheil_Meshinchi_Rhonda_E_Ries_Michael_Rusch_Jinghui_Zhang2019-ny; @Mose2019-vh]</span>. As part of a project done on two Leukemia clinical trials we defined a <a href="https://rna-mutation-calls.netlify.com/">pipeline to call variants in RNA-Seq</a> and use <a href="https://github.com/ChristofferFlensburg/superFreq">superFreq</a> to analyse clonal tracking and mutational development across the course of the treatment. We used combined calls from the <a href="https://github.com/AstraZeneca-NGS/VarDict">VarDict</a> <span class="citation">[@Lai2016-ws]</span> and <a href="https://github.com/iric-soft/km/tree/master/km/tools#output-description-1">km</a> <span class="citation">[@Audemard2018-vh]</span> algorithms to define INDEL calls. Below is an overview of the variant calling pipeline and the steps where the <code>varikondo</code> package comes in!</p>
+<p>Calling variants from RNA-Seq samples is increasing in popularity due to the large number of RNA-Seq data produced and benchmarking papers have been published comparing the performance of different callers <span class="citation">(Quinn et al. 2013; Coudray et al. 2018; Lavallée et al. 2016)</span>. In the past year several new methods have been developed specifically to improve INDEL detection in RNA-Seq samples <span class="citation">(Audemard et al. 2018; Kohei Hagiwara, Liang Ding, Michael N. Edmonson, Stephen V. Rice, Scott Newman, Soheil Meshinchi, Rhonda E. Ries, Michael Rusch, Jinghui Zhang 2019; Mose, Perou, and Parker 2019)</span>. As part of a project done on two Leukemia clinical trials we defined a <a href="https://rna-mutation-calls.netlify.com/">pipeline to call variants in RNA-Seq</a> and use <a href="https://github.com/ChristofferFlensburg/superFreq">superFreq</a> to analyse clonal tracking and mutational development across the course of the treatment. We used combined calls from the <a href="https://github.com/AstraZeneca-NGS/VarDict">VarDict</a> <span class="citation">(Lai et al. 2016)</span> and <a href="https://github.com/iric-soft/km/tree/master/km/tools#output-description-1">km</a> <span class="citation">(Audemard et al. 2018)</span> algorithms to define INDEL calls. Below is an overview of the variant calling pipeline and the steps where the <code>varikondo</code> package comes in!</p>
 <p><img src="../man/figures/general-verview.png" align="center"></p>
 <p>After calling SNVs, CNVs and INDELs with different programs, it is often useful to combine all the results in a standardised way. Usually different programs output variants in different ways using slightly different conventions which makes it challenging to easily combine the results. For example, superFreq returns SNVs, CNVs and clone tracking in <code>Rdata</code> files as well as in <code>csv</code> files; <code>VarDict</code> uses the standard <code>VCF</code> output but with different specification of quality measures compared to, for example, <code>MuTect2</code> or <code>VarScan2</code>; <code>km</code> outputs INDELs in tab delimited format. This makes it challenging to both create a comprehensive overview of the results for one sample as well as to compare results across callers. Another challenge comes from calling variants independently at different time points for the same patient. Variants might be present before treatment but absent after treatment and when a patient relapses or vice versa. This requires to fill in the missing time points to allow correct visualisations of the changes over time. While <code>superFreq</code> takes this problem into account by keeping any variants found at different time points, other programs like <code>km</code> or <code>VarDict</code> don’t allow that. <code>varikondo</code> takes care of this by allowing joint filtering of variants called from multiple samples within a patient and by imputing defaults values in missing calls at some time points (e.g. 0 if no variants is found).</p>
 </div>
@@ -96,6 +110,33 @@
 <a href="#visualise-and-explore-re-organsied-variants-with-shiny-clone" class="anchor"></a>Visualise and explore re-organsied variants with <code>shiny-clone</code>
 </h1>
 <p>The R Shiny app <a href="https://shiny.wehi.edu.au/quaglieri.a/shiny-clone/"><code>shiny-clone</code></a> allows exploration of the standardised tidy data frames that be created with <code>varikondo</code> or in some other ways, as fare as the input requirements are met.</p>
+</div>
+<div id="bibliography" class="section level1 unnumbered">
+<h1 class="hasAnchor">
+<a href="#bibliography" class="anchor"></a>Bibliography</h1>
+<div id="refs" class="references">
+<div id="ref-Audemard2018-vh">
+<p>Audemard, Eric Olivier, Patrick Gendron, Vincent-Philippe Lavallée, Josée Hébert, Guy Sauvageau, and Sébastien Lemieux. 2018. “Targeted Variant Detection in Leukemia Using Unaligned RNA-Seq Reads.” <em>bioRXiv</em>, April.</p>
+</div>
+<div id="ref-Coudray2018-yw">
+<p>Coudray, A, A M Battenhouse, P Bucher, and V R Iyer. 2018. “Detection and Benchmarking of Somatic Mutations in Cancer Genomes Using RNA-seq Data.” <em>bioRxiv</em>. biorxiv.org.</p>
+</div>
+<div id="ref-Kohei_Hagiwara_Liang_Ding_Michael_N_Edmonson_Stephen_V_Rice_Scott_Newman_Soheil_Meshinchi_Rhonda_E_Ries_Michael_Rusch_Jinghui_Zhang2019-ny">
+<p>Kohei Hagiwara, Liang Ding, Michael N. Edmonson, Stephen V. Rice, Scott Newman, Soheil Meshinchi, Rhonda E. Ries, Michael Rusch, Jinghui Zhang. 2019. “RNAIndel: A Machine-Learning Framework for Discovery of Somatic Coding Indels Using Tumor RNA-Seq Data.” <em>biorXiv</em>, January.</p>
+</div>
+<div id="ref-Lai2016-ws">
+<p>Lai, Zhongwu, Aleksandra Markovets, Miika Ahdesmaki, Brad Chapman, Oliver Hofmann, Robert McEwen, Justin Johnson, Brian Dougherty, J Carl Barrett, and Jonathan R Dry. 2016. “VarDict: A Novel and Versatile Variant Caller for Next-Generation Sequencing in Cancer Research.” <em>Nucleic Acids Res.</em> 44 (11): e108.</p>
+</div>
+<div id="ref-Lavallee2016-sf">
+<p>Lavallée, Vincent-Philippe, Sébastien Lemieux, Geneviève Boucher, Patrick Gendron, Isabel Boivin, Richard Neil Armstrong, Guy Sauvageau, and Josée Hébert. 2016. “RNA-sequencing Analysis of Core Binding Factor AML Identifies Recurrent ZBTB7A Mutations and Defines RUNX1-CBFA2T3 Fusion Signature.” <em>Blood</em>, March.</p>
+</div>
+<div id="ref-Mose2019-vh">
+<p>Mose, Lisle E, Charles M Perou, and Joel S Parker. 2019. “Improved Indel Detection in DNA and RNA via Realignment with ABRA2.” <em>Bioinformatics</em>, January.</p>
+</div>
+<div id="ref-Quinn2013-oh">
+<p>Quinn, Emma M, Paul Cormican, Elaine M Kenny, Matthew Hill, Richard Anney, Michael Gill, Aiden P Corvin, and Derek W Morris. 2013. “Development of Strategies for SNP Detection in RNA-seq Data: Application to Lymphoblastoid Cell Lines and Evaluation Using 1000 Genomes Data.” <em>PLoS One</em> 8 (3): e58815.</p>
+</div>
+</div>
 </div>
   </div>
 
@@ -106,6 +147,7 @@
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#example-with-calling-variants-from-rna-seq">Example with calling variants from RNA-Seq</a></li>
       <li><a href="#visualise-and-explore-re-organsied-variants-with-shiny-clone">Visualise and explore re-organsied variants with <code>shiny-clone</code></a></li>
+      <li><a href="#bibliography">Bibliography</a></li>
       </ul>
 </div>
       </div>

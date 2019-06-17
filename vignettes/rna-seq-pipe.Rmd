@@ -5,6 +5,7 @@ output:
   rmarkdown::html_vignette:
     fig_caption: yes
     toc_float: true
+bibliography: ../biblio.bib
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
@@ -29,3 +30,6 @@ After calling SNVs, CNVs and INDELs with different programs, it is often useful 
 # Visualise and explore re-organsied variants with `shiny-clone`
 
 The R Shiny app [`shiny-clone`](https://shiny.wehi.edu.au/quaglieri.a/shiny-clone/) allows exploration of the standardised tidy data frames that be created with `varikondo` or in some other ways, as fare as the input requirements are met. 
+
+
+# Bibliography

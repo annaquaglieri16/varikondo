@@ -49,8 +49,22 @@
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
-<li>
-  <a href="articles/standardise-variant-fields.html">Articles</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li class="dropdown-header">Standardise VCF fields across callers</li>
+    <li>
+      <a href="articles/standardise-variant-fields.html"></a>
+    </li>
+    <li class="dropdown-header">Example - Variant calling in RNA-Seq</li>
+    <li>
+      <a href="articles/rna-seq-pipe.html"></a>
+    </li>
+  </ul>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -78,40 +92,39 @@
 <div id="find-the-spark-joy-in-your-variants" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#find-the-spark-joy-in-your-variants" class="anchor"></a>Find the spark joy in your variants!</h1></div>
-<p>Bioinformatics can be very overwhelming at times, with all its different file formats, fields specifications and many ways of storing the same things! That’s how the <code>varikondo</code> package came to life. It was developed by the need to <strong>re-organise</strong>, <strong>standardise</strong> and <strong>combine</strong> variant calling outputs from several callers. It has specific functions which help with:</p>
-<ol style="list-style-type: decimal">
-<li>Variant import in R and parse into a data frame with standardised fields the output from several variant callers (see <a href="https://annaquaglieri16.github.io/varikondo/articles/standardise-variant-fields.html">how fields are standardaised</a>). The function which achieve this are:</li>
-</ol>
+<p>Bioinformatics can be very overwhelming at times, with all its different file formats, fields specifications and many ways of storing the same things! That’s how the <code>varikondo</code> package came to life. It was developed by the need to <strong>re-organise</strong>, <strong>standardise</strong> and <strong>combine</strong> variant calling outputs from several callers.</p>
+<div id="import-variants-from-several-callers" class="section level2">
+<h2 class="hasAnchor">
+<a href="#import-variants-from-several-callers" class="anchor"></a>Import variants from several callers</h2>
+<p>Variants from different callers can be imported in R and parsed into a data frame with standardised fields. See <a href="https://annaquaglieri16.github.io/varikondo/articles/standardise-variant-fields.html">how fields are standardaised</a> to know more about which fields from each callers are parsed. The functions which achieve this are:</p>
 <ul>
 <li>
-<code><a href="reference/import_goi_superfreq.html">import_goi_superfreq()</a></code>: to import variants found on genes of interest called by <a href="https://github.com/ChristofferFlensburg/superFreq">superFreq</a>, a caller that allows clonal tracking of cancer sequencing data. Figure @{fig:superfreq-diagram} sketches how the function works.</li>
+<code><a href="reference/import_goi_superfreq.html">import_goi_superfreq()</a></code>: to import variants found on genes of interest called by <a href="https://github.com/ChristofferFlensburg/superFreq">superFreq</a>, a caller that allows clonal tracking of cancer sequencing data. Figure 1 sketches how the function works.</li>
 </ul>
 <div class="figure">
-<img src="reference/figures/import-superfreq.png" alt="Overview of the functionality to import and organise superFreq outputs." width="621"><p class="caption">
-Overview of the functionality to import and organise superFreq outputs.
+<img src="reference/figures/import-superfreq.png" alt="Figure 1. Overview of the functionality to import and organise superFreq outputs." width="621"><p class="caption">
+Figure 1. Overview of the functionality to import and organise superFreq outputs.
 </p>
 </div>
 <ul>
 <li>
 <code><a href="reference/parse_vcf_output.html">parse_vcf_output()</a></code>: which takes a <a href="http://www.internationalgenome.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-40/">Variant Call Format (VCF)</a> file as input and outputs a parsed data frame with standardised names for the fields in the <code>VCF</code> file. Currently, <code><a href="reference/parse_vcf_output.html">parse_vcf_output()</a></code> can parse ouputs from the following callers run in tumour-only mode: <code>GATK3 MuTect2</code>, <code>VarScan2</code>, <code>VarDict</code> and <code>Freebayes</code>. It also enables parsing of the annotation field added by the <a href="https://asia.ensembl.org/info/docs/tools/vep/index.html">Variant Effect Predictor</a>.</li>
 </ul>
-<ol start="2" style="list-style-type: decimal">
-<li>Combine variant calls from different samples within the same patient.</li>
-</ol>
+</div>
+<div id="combine-variant-calls-from-different-samples-within-the-same-patient" class="section level2">
+<h2 class="hasAnchor">
+<a href="#combine-variant-calls-from-different-samples-within-the-same-patient" class="anchor"></a>Combine variant calls from different samples within the same patient</h2>
 <ul>
 <li>
 <code><a href="reference/import_any.html">import_any()</a></code> combines and filters the variant calls (already imported into <code>R</code>) from several samples collected for the same patient. This functions attempts to mimic in a very simplistic way what is performed within <a href="https://github.com/ChristofferFlensburg/superFreq">superFreq</a>. Instead of filtering each variant callset separately for each sample, variants are filtered jointly by patient. This means that if a variant reaches minimal quality threshold at any time point, then it will be kept for all other time points. If a variant is not detected in some samples it will be filled with default values, e.g. <code>zero</code> variant allele frequency. This allows to have complete information for a variant across time for one patient and to plot and evaluate the shift in VAF or depth over time.</li>
 </ul>
 <p>Below is a graphic overview of how the output of <code><a href="reference/parse_vcf_output.html">parse_vcf_output()</a></code> and <code><a href="reference/import_any.html">import_any()</a></code> interact. The example is based on files for one patient but the same can be extended to any patient.</p>
 <div class="figure">
-<img src="reference/figures/import-any.png" alt="Overview of the functionality to import and organise your VCF files." width="624"><p class="caption">
-Overview of the functionality to import and organise your VCF files.
+<img src="reference/figures/import-any.png" alt="Figure 2. Overview of the functionality to import and organise your VCF files." width="624"><p class="caption">
+Figure 2. Overview of the functionality to import and organise your VCF files.
 </p>
 </div>
 </div>
-<div id="bibliography" class="section level1">
-<h1 class="hasAnchor">
-<a href="#bibliography" class="anchor"></a>Bibliography</h1>
 </div>
   </div>
 
