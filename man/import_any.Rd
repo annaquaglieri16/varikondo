@@ -27,11 +27,13 @@ import_any(variants = NULL, patientID = NULL, studyGenes = NULL,
 
 \item{variant_type}{Label for the type of variants imported, e.g. vardict-indels.}
 }
+\value{
+This function will keep only the variants for `patientID` found on `studyGenes` and with a `minQual`. If a sample has no variants, then only clinical information will be returned with default values for the variant information. If some variants are found at some time points but not at others, missing points will be populated with default (0) values for VAF, ref_depth, alt_depth to allow consistency when plotting changes over time.
+}
 \description{
 This function will take as input a data frame of variants with specific column information and return a filtered set with sample's clinical infrmation and default variants information also for samples without variants.
 }
 \details{
-This function will keep only the variants for `patientID` found on `studyGenes` and with a `minQual`. If a sample has no variants, then only clinical information will be returned with default values for the variant information.
 More details about the `variants` input:
 
 - The `Time` column can be defined in any way and it should reflect the time of sample collection. For example it could be defined as Time0, Time1, Time2 etc...

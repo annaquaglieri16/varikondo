@@ -11,7 +11,7 @@ Description: The package was developed to organise, standardise and combine vari
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-biocViews: DataImport, GeneticVariants, Tidy, Standardise 
+biocViews: GenomicVariantsWorkflow
 Depends: 
   R (>= 3.5),
   dplyr (>= 0.8.0)

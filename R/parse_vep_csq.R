@@ -1,17 +1,13 @@
 #' Parse the CSQ field added to the `VCF` file by the Variant Effect Predictor (VEP)
 #' @param vcf_path path to where the `.vcf` file for one sample is saved.
 #' @param vcf_df `R` object returned by `parse_vcf_output()` after parsing relevant fields from the `VCF` file.
+#' @return data frame with VEP annoation fields added as columns.
 
-
-#vcf_path <- "../../../cbf_aml_agrf/variant_calling/vardict/regions_deDupl_both_cohorts/annotated_variants/10.R1.B2.M13ADE05RV.BM.Rem_germline_annotated.vcf"
-# sample_name = "10.R1.B2.M13ADE05RV.BM.Rem"
-# caller = "vardict"
-# vep = TRUE
-
-#' @import VariantAnnotation
+#' @importFrom VariantAnnotation readVcf
+#' @importFrom VariantAnnotation header
+#' @importFrom VariantAnnotation info
 #' @import dplyr
 #' @importFrom tidyselect everything
-
 
 
 parse_vep_csq <- function(vcf_path,vcf_df){

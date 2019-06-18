@@ -9,6 +9,9 @@ parse_vaf_varscan(freq)
 \arguments{
 \item{freq}{Vector of frequencies as recorded in VarScan VCF file, field FREQ.}
 }
+\value{
+numeric vector of variant allele frequecies
+}
 \description{
 Functions not to be exported
 }

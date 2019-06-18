@@ -11,6 +11,9 @@ parse_vep_csq(vcf_path, vcf_df)
 
 \item{vcf_df}{`R` object returned by `parse_vcf_output()` after parsing relevant fields from the `VCF` file.}
 }
+\value{
+data frame with VEP annoation fields added as columns.
+}
 \description{
 Parse the CSQ field added to the `VCF` file by the Variant Effect Predictor (VEP)
 }

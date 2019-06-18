@@ -25,6 +25,9 @@ import_goi_superfreq(superFreq_R_path, superFreq_meta_path,
 
 \item{sev}{numeric. Only variants with severity value < sev are kept.}
 }
+\value{
+a data frame that stores CNAs, SNVs and clones called by `superFreq` https://github.com/ChristofferFlensburg/superFreq on a set of `studyGenes` for `patientID`. CNAs, SNVs and clones are stored as explained in https://annaquaglieri16.github.io/varikondo/articles/how-variants-are-stored.html.
+}
 \description{
 This function imports superFreq's SNVs, CNAs and clones for one patient and outputs them into a tidy format where every row is a variant.
 }

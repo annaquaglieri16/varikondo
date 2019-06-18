@@ -12,15 +12,16 @@
 #'
 #' @description   This function will take as input a data frame of variants with specific column information and return a filtered set with sample's clinical infrmation and default variants information also for samples without variants.
 
-#' @details This function will keep only the variants for `patientID` found on `studyGenes` and with a `minQual`. If a sample has no variants, then only clinical information will be returned with default values for the variant information.
-
-#' More details about the `variants` input:
+#' @details More details about the `variants` input:
 #'
 #' - The `Time` column can be defined in any way and it should reflect the time of sample collection. For example it could be defined as Time0, Time1, Time2 etc...
 #'
 #' - If the column `IMPACT` is not found it will be filled with NAs and no variants will be filtered. Otherwise, values of the columns are checked and if they are within the expected values (HIGH, MODERATE, LOW or MODIFIER) only variants with `keep_impact` entries are kept. If a mutation appears twice with different `IMPACT` values only the most damaging will be kept.
 #'
 #' The variants are then merged with the clinical information of `patientID`. This step is needed so that if no variants are returned for one time point for one `patientID`, default entries for Variant Allele Frequency (VAF), reference and alterative depths will be created. The default value is 0 for all of the above. A variant is reported for a patient only if at any time point its VAF >= min_VAF and the total depth is >= 10.
+#'
+#'
+#' @return This function will keep only the variants for `patientID` found on `studyGenes` and with a `minQual`. If a sample has no variants, then only clinical information will be returned with default values for the variant information. If some variants are found at some time points but not at others, missing points will be populated with default (0) values for VAF, ref_depth, alt_depth to allow consistency when plotting changes over time.
 
 #' @export
 
@@ -63,26 +64,31 @@
 #' @import tidyr
 
 
-import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQual=20,
-                      clinicalData = NULL, min_vaf = 0.15,min_alt = 2,
+import_any <- function(variants = NULL,
+                      patientID = NULL,
+                      studyGenes = NULL,
+                      minQual=20,
+                      clinicalData = NULL,
+                      min_vaf = 0.15,
+                      min_alt = 2,
                       keep_impact = c("HIGH","MODERATE"),
                       variant_type = "indels-vardict") {
 
   options(warn=-1)
 
-  if( is.null(patientID) ){
+  if (  is.null(patientID) ){
     stop("patientID is not defined.")
   }
 
   if ( is.null(clinicalData)) {
     stop(paste0("No clinicalData available."))
   } else {
-    if(nrow(clinicalData) == 0){
+    if ( nrow(clinicalData) == 0){
       stop(paste0("No lines available in clinicalData."))
     }
   }
 
-  if( is.null(studyGenes) ){
+  if (  is.null(studyGenes) ){
     warning("studyGenes is not defined and all genes will be used.")
     studyGenes <- as.character(unique(variants$SYMBOL))
   }
@@ -98,7 +104,7 @@ import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQ
   #}
 
   # Clinical data existence
-  if(!exists("clinicalData",where = search_env)){
+  if ( !exists("clinicalData",where = search_env)){
     warning("No set of true variants provided.")
     return(NULL)
   }
@@ -116,11 +122,11 @@ import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQ
   check_columns <- sum(!(facultative_columns %in% colnames(variants)))
 
   # Check for facultative columns
-  if(check_columns > 0){
+  if ( check_columns > 0 ){
 
     missing <- facultative_columns[!(facultative_columns %in% colnames(variants))]
 
-    if(sum(missing %in% "IMPACT") > 0){
+    if ( sum(missing %in% "IMPACT" ) > 0){
 
       variants$IMPACT <- NA
       impact <- FALSE
@@ -131,7 +137,7 @@ import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQ
 
       lev <- levels(factor(variants$IMPACT))
 
-      if( sum(!(lev %in% c("HIGH","MODERATE","LOW","MODIFIER"))) > 0) {
+      if ( sum(!(lev %in% c("HIGH","MODERATE","LOW","MODIFIER"))) > 0) {
 
         warning(paste0("The impact columns contains unknown values and won't be used for filtering.
                        They should only contain HIGH,MODERATE,LOW,MODIFIER.
@@ -143,7 +149,7 @@ import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQ
 
     }
 
-    if(sum(missing %in% "qual") > 0){
+    if ( sum(missing %in% "qual") > 0){
       variants$qual <- 0
       minQual <- 0
       cat(paste0("qual is missing and will be filled with 0 and minQual = 0.\n"))
@@ -157,7 +163,7 @@ import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQ
 
   check_columns <- sum(!(need_columns %in% colnames(variants)))
 
-  if(check_columns > 0){
+  if ( check_columns > 0){
     missing <- need_columns[!(need_columns %in% colnames(variants))]
     stop(paste0("The following columns are missing from variants: ",
                 paste0(missing,collapse=","), "\n"))
@@ -169,7 +175,7 @@ import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQ
 
   check_columns <- sum(!(need_columns %in% colnames(clinicalData)))
 
-  if(check_columns > 0){
+  if ( check_columns > 0){
     missing <- need_columns[!(need_columns %in% colnames(clinicalData))]
     stop(paste0("The following columns are missing for clinicalData: ",
                 paste0(missing,collapse=", ")))
@@ -196,7 +202,7 @@ import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQ
 
 
   # Missing VEP annotation like with km
-  if( sum(is.na(var$IMPACT)) == nrow(var) | !impact) {
+  if (  sum(is.na(var$IMPACT)) == nrow(var) | !impact) {
 
     # set all to HIGH
     var <- var %>%
@@ -235,32 +241,33 @@ import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQ
   unique_var <- unique(var[,c("chrom","pos","ref","alt","Location","mutation_det","mutation_key","SYMBOL","Consequence")])
 
   # 2. Create all the possible combinations between variants found and clinical samples
-  clinical_var_empty <- merge(clinicalData ,unique_var,all=TRUE)
+  clinical_var_empty <- merge(clinicalData, unique_var, all=TRUE)
 
   # 3. Fill NAs in VAF and ref_depth where a mutation wasn't found in the unfiltered data frames of indels
-  clinical_var_fill <- merge(clinical_var_empty,var,all=TRUE) %>%
+  clinical_var_fill <- merge(clinical_var_empty, var, all=TRUE) %>%
     dplyr::mutate(ref_depth = ifelse(is.na(ref_depth),0,ref_depth),
-                  VAF = ifelse(is.na(VAF),0,VAF),
-                  alt_depth = ifelse(is.na(alt_depth),0,alt_depth),
-                  tot_depth = ifelse(is.na(tot_depth),0,tot_depth))
+                  VAF = ifelse(is.na(VAF), 0, VAF),
+                  alt_depth = ifelse(is.na(alt_depth), 0, alt_depth),
+                  tot_depth = ifelse(is.na(tot_depth), 0, tot_depth))
 
   # 4. Filter based on minimal required ref_depth threshold and re-add lost mutations later
   var_keep <- clinical_var_fill %>%
     dplyr::filter(tot_depth >= 15 & VAF >= min_vaf & alt_depth > min_alt)
 
   # var_leave contains some indels not found and some that do not meet the filters
-  var_leave <- clinical_var_fill %>% dplyr::filter(tot_depth < 15 | VAF < min_vaf | alt_depth <= min_alt)
+  var_leave <- clinical_var_fill %>%
+    dplyr::filter(tot_depth < 15 | VAF < min_vaf | alt_depth <= min_alt)
 
 
-  if(nrow(var_keep) == 0){
-    message(paste0("No mutations found in patient ",patientID))
+  if ( nrow(var_keep) == 0){
+    message(paste0("No mutations found in patient ", patientID))
     return(NULL)
   }
 
   # 5. If some good quality indels are found then
   # re-add indels whose key (chrom_pos_alt) was present at other time points
   var_saver <-  dplyr::bind_rows(var_keep,
-                                 subset(var_leave,mutation_key %in% var_keep$mutation_key))
+                                 subset(var_leave, mutation_key %in% var_keep$mutation_key))
 
   # Re-add indels
   var_saver <- var_saver %>%
@@ -271,8 +278,3 @@ import_any = function(variants = NULL, patientID = NULL, studyGenes = NULL, minQ
 
 
 }
-
-
-
-
-

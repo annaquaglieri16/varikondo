@@ -18,6 +18,9 @@ parse_vcf_output(vcf_path, sample_name = basename(vcf_path), caller,
 
 \item{param}{same as `param` in `VariantAnnotation::readVcf` to subset the VCF file by genomic coordinate and only import specific regions. An instance of ScanVcfParam or GRanges.}
 }
+\value{
+data frame with standardised fields containing all the variants in the input VCF.
+}
 \description{
 Currently, it only works with VCF files containing germline calls from the following callers: GATK3 MuTect2, VarScan2, VarDict and freebayes. It uses the Bioconductor package `VariantAnnotation` to read `VCF` files into `R`.
 }

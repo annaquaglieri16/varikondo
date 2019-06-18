@@ -4,6 +4,7 @@
 
 #' @param freq Vector of frequencies as recorded in VarScan VCF file, field FREQ.
 #' @keywords internal
+#' @return numeric vector of variant allele frequecies
 
 parse_vaf_varscan <- function(freq){
   freq <- gsub("%","",freq)
@@ -15,7 +16,7 @@ parse_vaf_varscan <- function(freq){
 #  Helper Functions from superFreq
 #' @keywords internal
 
-storyToLabel <- function(stories, variants, genome, maxLength = 30, mergeCNAs = F,
+storyToLabel <- function(stories, variants, genome, maxLength = 30, mergeCNAs = FALSE,
           annotationMethod = "VariantAnnotation"){
   call = stories$call
   isSNP = grepl("[0-9]", call)
@@ -25,8 +26,8 @@ storyToLabel <- function(stories, variants, genome, maxLength = 30, mergeCNAs = 
   isCNA = !isSNP & !is.na(dist)
   chr = xToChr(stories$x1, genome = genome)
   if (mergeCNAs & any(isCNA)) {
-    dups = unique(cbind(call, chr)[isCNA, , drop = F][duplicated(cbind(call,
-                                                                       chr)[isCNA, , drop = F]), , drop = F])
+    dups = unique(cbind(call, chr)[isCNA, , drop = FALSE][duplicated(cbind(call,
+                                                                       chr)[isCNA, , drop = FALSE]), , drop = FALSE])
     if (nrow(dups) > 0) {
       for (row in 1:nrow(dups)) {
         thisCall = dups[row, "call"]
@@ -110,8 +111,8 @@ storyToLabel <- function(stories, variants, genome, maxLength = 30, mergeCNAs = 
   font[!isSNP & is.na(dist)] = 4
   severity[!isSNP & is.na(dist)] = -1
   return(data.frame(label = label, colour = colour, font = font,
-                    severity = severity, stringsAsFactors = F)[order(dist,
-                                                                     decreasing = T), ])
+                    severity = severity, stringsAsFactors = FALSE)[order(dist,
+                                                                     decreasing = TRUE), ])
 }
 
 #' @keywords internal

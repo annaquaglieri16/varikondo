@@ -44,6 +44,8 @@ navbar:
       menu:
         - text: Standardise VCF fields across callers
           href: articles/standardise-variant-fields.html
+        - text: How different types of variants are stored
+          href: articles/how-variants-are-stored.html
         - text: Example - Variant calling in RNA-Seq
           href: articles/rna-seq-pipe.html
     github:
