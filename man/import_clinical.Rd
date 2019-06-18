@@ -4,8 +4,7 @@
 \alias{import_clinical}
 \title{Import clinical information for a patient}
 \usage{
-import_clinical(clinicalData = NA, patientID = NA,
-  extract_column = "Blast")
+import_clinical(clinicalData = NA, patientID = NA, extract_column)
 }
 \arguments{
 \item{clinicalData}{data frame containing the clinical information for a patient. This needs to include a column `SampleName` containing unique names for all the RNA-Seq samples available in the cohort; a `PID` columns for patient ID and a `Time` column that should reflect the time of sample collection.}

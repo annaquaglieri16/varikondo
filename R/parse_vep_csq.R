@@ -8,9 +8,7 @@
 # caller = "vardict"
 # vep = TRUE
 
-#' @importFrom VariantAnnotation readVcf
-#' @importFrom VariantAnnotation header
-#' @importFrom VariantAnnotation info
+#' @import VariantAnnotation
 #' @import dplyr
 #' @importFrom tidyselect everything
 

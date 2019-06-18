@@ -4,10 +4,9 @@
 \alias{import_goi_superfreq}
 \title{Extract SNVs, CNVs and clones on genes of interest from superFreq output}
 \usage{
-import_goi_superfreq(superFreq_R_path = superFreq_R_path,
-  superFreq_meta_path = superFreq_meta_path, studyGenes = NULL,
-  patientID = "D1", ref_genome = "hg38", min_vaf = 0.15,
-  min_alt = 2, sev = 12)
+import_goi_superfreq(superFreq_R_path, superFreq_meta_path,
+  studyGenes = NULL, patientID = "D1", ref_genome = "hg38",
+  min_vaf = 0.15, min_alt = 2, sev = 12)
 }
 \arguments{
 \item{superFreq_R_path}{Path to superFreq R folder.}

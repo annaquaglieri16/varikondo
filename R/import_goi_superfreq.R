@@ -37,8 +37,8 @@
 #' @importFrom readr read_delim
 #' @import tidyr
 
-import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
-                                 superFreq_meta_path = superFreq_meta_path,
+import_goi_superfreq <- function(superFreq_R_path,
+                                 superFreq_meta_path,
                                  studyGenes = NULL,
                                  patientID = "D1",
                                  ref_genome = "hg38",
@@ -156,7 +156,7 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
   if(!is.null(SNVoI) | !is.null(CNAoI)){
 
     MoI = rbind(SNVoI, CNAoI)
-    labels = storyToLabel(MoI, stories$variants, genome=ref_genome, mergeCNAs=F)[as.character(seq(along.with=MoI$x1)),]
+    labels = storyToLabel(MoI, stories$variants, genome=ref_genome, mergeCNAs=FALSE)[as.character(seq(along.with=MoI$x1)),]
     MoI$label = labels$label
     MoI$severity = labels$severity
     MoI$chr = xToChr(MoI$x1, genome=ref_genome)
@@ -262,9 +262,9 @@ import_goi_superfreq <- function(superFreq_R_path = superFreq_R_path,
     # Only keep somatic clone
     use = names(Nmut) != 'germline'
 
-    ret = list(mutations=paste0('clone (', Nmut[use], ' anchors)'), y_matrix=storyMx[use,,drop=F])
+    ret = list(mutations=paste0('clone (', Nmut[use], ' anchors)'), y_matrix=storyMx[use,,drop=FALSE])
     ret$mutations =  ret$mutations[matrixStats::rowMaxs(ret$y_matrix) > min_vaf]
-    ret$y_matrix =  ret$y_matrix[matrixStats::rowMaxs(ret$y_matrix) > min_vaf,,drop=F]
+    ret$y_matrix =  ret$y_matrix[matrixStats::rowMaxs(ret$y_matrix) > min_vaf,,drop=FALSE]
 
     if ( length(ret$mutations) == 0 ) {
       message(paste0("No clones found in patient ",patientID))

@@ -26,7 +26,7 @@
 
 
 import_clinical = function(clinicalData = NA, patientID = NA,
-                                     extract_column = "Blast") {
+                                     extract_column) {
 
   options(warn=-1)
   if(is.na(clinicalData)){
@@ -56,34 +56,20 @@ import_clinical = function(clinicalData = NA, patientID = NA,
     return(NULL)
   }
 
-  # The variable to be plotted has to be consistent with VAF
-   if(min(clinicalData[,extract_column],na.rm=TRUE) < 0 |
-      max(clinicalData[,extract_column],na.rm=TRUE) > 1){
-     message(paste0(extract_column," needs to be within 0-1 or 0-100"))
-     return(NULL)
-   }
+  plot_matrix <- clinicalData %>%
+    dplyr::select(.vars = c("SampleName","PID","Time",extract_column))
+  colnames(plot_matrix) <- c("SampleName","PID","Time","VAF")
 
-  # convert to long format
-  samples = unique(clinicalData$SampleName)
-  y_matrix = matrix(as.numeric(as.character(clinicalData[,extract_column,drop=TRUE])), ncol=length(samples),
-                    dimnames=list(extract_column, samples))
-
-  #blast content sometimes missing or not parsed properly. Doesn't have to mean that it's 0, so throw a warning.
-  if ( any(is.na(y_matrix)) ) {
-    warning(paste0('Replacing NA ', extract_column,' content with 0... :o'))
-    y_matrix[is.na(y_matrix)] = 0
+  if(sum(is.na(plot_matrix$Blast)) > 0){
+    message(paste0(extract_column," contains NAs. Check before plotting!"))
   }
 
-  ret = list(mutations=extract_column, y_matrix=y_matrix)
-
-  # Create tidy format
-  tidy_blast <- data.frame(ret$y_matrix) %>%
-      dplyr::mutate(mutation_key = rownames(ret$y_matrix)) %>%
-      dplyr::mutate(mutation_det = ret$mutations) %>%
-      tidyr::gather(SampleName,VAF, 1:ncol(ret$y_matrix)) %>%
-      dplyr::mutate(variant_type = extract_column)
+  plot_matrix <- plot_matrix %>%
+    dplyr::mutate(mutation_key = extract_column) %>%
+    dplyr::mutate(mutation_det = extract_column) %>%
+    dplyr::mutate(variant_type = extract_column)
 
 
-  return(tidy_blast)
+  return(plot_matrix)
 
 }

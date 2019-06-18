@@ -28,6 +28,14 @@ knitr::opts_chunk$set(echo = TRUE,
 Bioinformatics can be very overwhelming at times, with all its different file formats, fields specifications and many ways of storing the same things! That's how the `varikondo` package came to life. 
 It was developed by the need to **re-organise**, **standardise** and **combine** variant calling outputs from several callers.
 
+# Install
+
+```{r eval=FALSE}
+library(devtools)
+devtools::install_github("annaquaglieri16/varikondo")
+library(varikondo)
+```
+
 ## Import variants from several callers
 
 Variants from different callers can be imported in R and parsed into a data frame with standardised fields. See [how fields are standardaised](https://annaquaglieri16.github.io/varikondo/articles/standardise-variant-fields.html) to know more about which fields from each callers are parsed. The functions which achieve this are:
@@ -42,6 +50,7 @@ knitr::include_graphics("man/figures/import-superfreq.png")
   
   * `parse_vcf_output()`: which takes a [Variant Call Format (VCF)](http://www.internationalgenome.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-40/) file as input and outputs a parsed data frame with standardised names for the fields in the `VCF` file. Currently, `parse_vcf_output()` can parse ouputs from the following callers run in tumour-only mode: `GATK3 MuTect2`, `VarScan2`, `VarDict` and `Freebayes`. It also enables parsing of the annotation field added by the [Variant Effect Predictor](https://asia.ensembl.org/info/docs/tools/vep/index.html). 
 
+See more examples in [`Get Started`](https://annaquaglieri16.github.io/varikondo/articles/vignette.html).
 
 ## Combine variant calls from different samples within the same patient
 
@@ -54,3 +63,5 @@ Below is a graphic overview of how the output of `parse_vcf_output()` and `impor
 knitr::include_graphics("man/figures/import-any.png")
 ```
 
+
+See more examples in [`Get Started`](https://annaquaglieri16.github.io/varikondo/articles/vignette.html).

@@ -10,6 +10,9 @@ build:
 check:
 	Rscript -e "devtools::check()"
 
+biocheck:
+	R CMD BiocCheck .
+
 install:
 	Rscript -e "devtools::install(build_vignettes = TRUE, upgrade_dependencies = FALSE)"
 

@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">varikondo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.3</span>
       </span>
     </div>
 
@@ -91,6 +91,13 @@
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#find-the-spark-joy-in-your-variants" class="anchor"></a>Find the spark joy in your variants!</h1></div>
 <p>Bioinformatics can be very overwhelming at times, with all its different file formats, fields specifications and many ways of storing the same things! That’s how the <code>varikondo</code> package came to life. It was developed by the need to <strong>re-organise</strong>, <strong>standardise</strong> and <strong>combine</strong> variant calling outputs from several callers.</p>
+</div>
+<div id="install" class="section level1">
+<h1 class="hasAnchor">
+<a href="#install" class="anchor"></a>Install</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(devtools)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"annaquaglieri16/varikondo"</span>)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(varikondo)</a></code></pre></div>
 <div id="import-variants-from-several-callers" class="section level2">
 <h2 class="hasAnchor">
 <a href="#import-variants-from-several-callers" class="anchor"></a>Import variants from several callers</h2>
@@ -108,6 +115,7 @@ Figure 1. Overview of the functionality to import and organise superFreq outputs
 <li>
 <code><a href="reference/parse_vcf_output.html">parse_vcf_output()</a></code>: which takes a <a href="http://www.internationalgenome.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-40/">Variant Call Format (VCF)</a> file as input and outputs a parsed data frame with standardised names for the fields in the <code>VCF</code> file. Currently, <code><a href="reference/parse_vcf_output.html">parse_vcf_output()</a></code> can parse ouputs from the following callers run in tumour-only mode: <code>GATK3 MuTect2</code>, <code>VarScan2</code>, <code>VarDict</code> and <code>Freebayes</code>. It also enables parsing of the annotation field added by the <a href="https://asia.ensembl.org/info/docs/tools/vep/index.html">Variant Effect Predictor</a>.</li>
 </ul>
+<p>See more examples in <a href="https://annaquaglieri16.github.io/varikondo/articles/vignette.html"><code>Get Started</code></a>.</p>
 </div>
 <div id="combine-variant-calls-from-different-samples-within-the-same-patient" class="section level2">
 <h2 class="hasAnchor">
@@ -122,6 +130,7 @@ Figure 1. Overview of the functionality to import and organise superFreq outputs
 Figure 2. Overview of the functionality to import and organise your VCF files.
 </p>
 </div>
+<p>See more examples in <a href="https://annaquaglieri16.github.io/varikondo/articles/vignette.html"><code>Get Started</code></a>.</p>
 </div>
 </div>
   </div>

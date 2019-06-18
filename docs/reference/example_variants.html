@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Example cohort structure. — example_data • varikondo</title>
+<title>Example variants. — example_variants • varikondo</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -31,10 +31,9 @@
 
 
 
-<meta property="og:title" content="Example cohort structure. — example_data" />
+<meta property="og:title" content="Example variants. — example_variants" />
 
-<meta property="og:description" content="Sample dataset summarising a plausible cohort structure for a set of samples available for patients over time, across different batches and
-with different disease outcomes" />
+<meta property="og:description" content="Sample dataset summarising a plasible set of variants called across two patients" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -65,7 +64,7 @@ with different disease outcomes" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">varikondo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.3</span>
       </span>
     </div>
 
@@ -119,24 +118,25 @@ with different disease outcomes" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Example cohort structure.</h1>
+    <h1>Example variants.</h1>
     <small class="dont-index">Source: <a href='https://github.com/annaquaglieri16/varikondo/blob/master/R/data.R'><code>R/data.R</code></a></small>
-    <div class="hidden name"><code>example_data.Rd</code></div>
+    <div class="hidden name"><code>example_variants.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Sample dataset summarising a plausible cohort structure for a set of samples available for patients over time, across different batches and
-with different disease outcomes</p>
+    <p>Sample dataset summarising a plasible set of variants called across two patients</p>
     
     </div>
 
-    <pre class="usage"><span class='no'>example_data</span></pre>
+    <pre class="usage"><span class='no'>example_variants</span></pre>
         
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>A data frame with six variables: <code>Batch</code>, <code>ID</code>,
-  <code>DiseaseType</code>, <code>Gender</code> and <code>Patient</code> (<code>Time</code></p>
+    <p>A data frame with six variables: <code>SampleName</code>, <code>PID</code>,<code>Time</code>,
+<code>mutation_key</code>, <code>chrom</code>,<code>pos</code>,
+<code>alt</code>, <code>ref</code>,<code>ref_depth</code>, <code>alt_depth</code>,
+<code>VAF</code>, <code>mutation_det</code>,<code>SYMBOL</code>, <code>Consequence</code></p>
     
 
   </div>

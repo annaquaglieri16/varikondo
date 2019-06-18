@@ -24,10 +24,8 @@
 #' sample_name = "Sample1",
 #' vep = TRUE)
 
-#' @importFrom VariantAnnotation readVcf
-#' @importFrom VariantAnnotation geno
-#' @importFrom VariantAnnotation filt
-#' @importFrom IRanges ranges
+#' @import VariantAnnotation
+#' @import IRanges
 #' @import dplyr
 #' @import stringr
 #' @importFrom data.table fread

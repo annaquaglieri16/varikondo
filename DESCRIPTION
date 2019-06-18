@@ -1,7 +1,7 @@
 Package: varikondo
 Type: Package
 Title: A package to declutter, organise and standardise genomic variant calls
-Version: 0.5.16
+Version: 0.6.3
 Authors@R: c(
       person("Anna", "Quaglieri", email = "quaglieri.a@wehi.edu.au", role = c("aut", "cre")),
       person("Christoffer", "Flensburg", role = c("aut", "ctb"))
@@ -11,7 +11,7 @@ Description: The package was developed to organise, standardise and combine vari
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-biocViews:
+biocViews: DataImport, GeneticVariants, Tidy, Standardise 
 Depends: 
   R (>= 3.5),
   dplyr (>= 0.8.0)
@@ -33,7 +33,9 @@ Suggests:
     rmarkdown,
     png,
     grid,
-    readxl
+    readxl,
+    cowplot,
+    ggplot2
 VignetteBuilder: knitr
 URL: https://github.com/annaquaglieri16/varikondo
 BugReports: https://github.com/annaquaglieri16/varikondo/issues
