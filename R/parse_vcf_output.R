@@ -37,7 +37,11 @@
 #' @importFrom DelayedArray rowRanges
 #' @importFrom tidyselect everything
 
-parse_vcf_output <- function(vcf_path, sample_name = basename(vcf_path), caller, vep = TRUE, param = VariantAnnotation::ScanVcfParam()) {
+parse_vcf_output <- function(vcf_path,
+                             sample_name = basename(vcf_path),
+                             caller,
+                             vep = FALSE,
+                             param = VariantAnnotation::ScanVcfParam()) {
 
   # The VCF file needs to be tabixed
   if(!str_detect(pattern = ".bgz$|.gz$", string = vcf_path)){
@@ -77,14 +81,17 @@ parse_vcf_output <- function(vcf_path, sample_name = basename(vcf_path), caller,
                            alt_forw = VariantAnnotation::geno(vcf)$ADF[,1],
                            alt_rev = VariantAnnotation::geno(vcf)$ADR[,1]) %>%
 
-        tidyr::separate(names,into=c("Location","alleles"),sep="_") %>%
-        tidyr::separate(Location,into=c("chrom","pos"),sep=":",remove=FALSE) %>%
+        dplyr::mutate(chrom = str_extract(string = names, pattern = "^.*?(?=:)"),
+                      pos = as.numeric(as.character(str_extract(string = names, pattern = "(?<=:)[0-9]+"))),
+                      alleles = str_remove(string = names, pattern = paste0(chrom,":",pos,"_"))) %>%
+
         tidyr::separate(alleles,into=c("ref","alt"),sep="/") %>%
-        dplyr::mutate(caller="varscan",
-                      Location = gsub(":","_",Location),
-                      SampleName = sample_name) %>%
-        dplyr::mutate(VAF = parse_vaf_varscan(freq),
-                      qual = (ref_base_quality + alt_base_quality)/2) %>%  # mean of alt/ref base qualitites
+        tidyr::unite(Location,chrom,pos,sep="_",remove=FALSE) %>%
+
+      dplyr::mutate(caller = caller,
+                    SampleName = sample_name,
+                    VAF = parse_vaf_varscan(freq),
+                    qual = (ref_base_quality + alt_base_quality)/2) %>%  # mean of alt/ref base qualitites
         dplyr::select(-freq) %>%
         dplyr::as_tibble()
 
@@ -130,11 +137,13 @@ parse_vcf_output <- function(vcf_path, sample_name = basename(vcf_path), caller,
            dplyr::mutate(qual = qual_ref + qual_alt/2) %>%
            dplyr::select(-qual_ref,-qual_alt) %>%
 
-           tidyr::separate(names,into=c("Location","alleles"),sep="_") %>%
-           tidyr::separate(Location,into=c("chrom","pos"),sep=":",remove=FALSE) %>%
-           tidyr::separate(alleles,into=c("ref","alt"),sep="/") %>%
-           dplyr::mutate(caller="mutect2",
-                         Location = gsub(":","_",Location)) %>%
+          dplyr::mutate(chrom = str_extract(string = names, pattern = "^.*?(?=:)"),
+                        pos = as.numeric(as.character(str_extract(string = names, pattern = "(?<=:)[0-9]+"))),
+                        alleles = str_remove(string = names, pattern = paste0(chrom,":",pos,"_")),
+                        caller = caller) %>%
+
+          tidyr::separate(alleles,into=c("ref","alt"),sep="/") %>%
+          tidyr::unite(Location,chrom,pos,sep="_",remove=FALSE) %>%
            as_tibble()
 
     }
@@ -157,6 +166,15 @@ parse_vcf_output <- function(vcf_path, sample_name = basename(vcf_path), caller,
         tidyr::separate(names,into=c("Location","alleles"),sep="_") %>%
         tidyr::separate(Location,into=c("chrom","pos"),sep=":",remove=FALSE) %>%
         tidyr::separate(alleles,into=c("ref","alt"),sep="/") %>%
+
+        dplyr::mutate(chrom = str_extract(string = names, pattern = "^.*?(?=:)"),
+                      pos = as.numeric(as.character(str_extract(string = names, pattern = "(?<=:)[0-9]+"))),
+                      alleles = str_remove(string = names, pattern = paste0(chrom,":",pos,"_")),
+                      caller = caller) %>%
+
+        tidyr::separate(alleles,into=c("ref","alt"),sep="/") %>%
+        tidyr::unite(Location,chrom,pos,sep="_",remove=FALSE) %>%
+
         tidyr::separate(REFBIAS,into=c("ref_forw","ref_rev"),sep=":") %>%
         tidyr::separate(VARBIAS,into=c("alt_forw","alt_rev"),sep=":") %>%
         dplyr::mutate(ref_depth = DP - VD,
@@ -164,8 +182,6 @@ parse_vcf_output <- function(vcf_path, sample_name = basename(vcf_path), caller,
         dplyr::rename(tot_depth = DP,
                       alt_depth = VD) %>%
         dplyr::select(-start) %>%
-        dplyr::mutate(caller="vardict",
-                      Location = gsub(":","_",Location))%>%
         dplyr::as_tibble()
 
     }
@@ -209,8 +225,10 @@ parse_vcf_output <- function(vcf_path, sample_name = basename(vcf_path), caller,
                            alt_forw = as.character(df_AF),
                            alt_rev = as.character(df_AR)) %>%
 
-        tidyr::separate(names,into=c("Location"),sep="_") %>%
-        tidyr::separate(Location,into=c("chrom","pos"),sep=":",remove=FALSE) %>%
+        dplyr::mutate(chrom = str_extract(string = names, pattern = "^.*?(?=:)"),
+                      pos = as.numeric(as.character(str_extract(string = names, pattern = "(?<=:)[0-9]+")))) %>%
+        tidyr::unite(Location,chrom,pos,sep="_",remove=FALSE) %>%
+
         dplyr::mutate(SampleName = sample_name) %>%
 
         tidyr::separate(alt_depth, into = c("alt_depth1"),sep=",",remove=FALSE) %>%
