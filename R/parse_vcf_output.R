@@ -92,7 +92,7 @@ parse_vcf_output <- function(vcf_path,
                     SampleName = sample_name,
                     VAF = parse_vaf_varscan(freq),
                     qual = (ref_base_quality + alt_base_quality)/2) %>%  # mean of alt/ref base qualitites
-        dplyr::select(-freq) %>%
+        dplyr::select(-freq,-names) %>%
         dplyr::as_tibble()
 
     }
@@ -144,6 +144,7 @@ parse_vcf_output <- function(vcf_path,
 
           tidyr::separate(alleles,into=c("ref","alt"),sep="/") %>%
           tidyr::unite(Location,chrom,pos,sep="_",remove=FALSE) %>%
+          dplyr::select(-names) %>%
            as_tibble()
 
     }
@@ -181,7 +182,7 @@ parse_vcf_output <- function(vcf_path,
                       SampleName = sample_name) %>%
         dplyr::rename(tot_depth = DP,
                       alt_depth = VD) %>%
-        dplyr::select(-start) %>%
+        dplyr::select(-start,-names) %>%
         dplyr::as_tibble()
 
     }
@@ -241,7 +242,8 @@ parse_vcf_output <- function(vcf_path,
 
         dplyr::select(-start,-qual_alt1,-alt_depth1) %>%
         dplyr::mutate(caller="freebayes",
-                      Location = gsub(":","_",Location))%>%
+                      Location = gsub(":","_",Location)) %>%
+        dplyr::select(-names) %>%
         dplyr::as_tibble()
 
     }
