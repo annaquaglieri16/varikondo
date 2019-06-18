@@ -60,6 +60,9 @@
       <a href="articles/standardise-variant-fields.html">Standardise VCF fields across callers</a>
     </li>
     <li>
+      <a href="articles/how-variants-are-stored.html">How different types of variants are stored</a>
+    </li>
+    <li>
       <a href="articles/rna-seq-pipe.html">Example - Variant calling in RNA-Seq</a>
     </li>
   </ul>
@@ -87,9 +90,9 @@
 
     
     
-<div id="find-the-spark-joy-in-your-variants" class="section level1">
+<div id="varikondo-find-the-spark-joy-in-your-variants" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#find-the-spark-joy-in-your-variants" class="anchor"></a>Find the spark joy in your variants!</h1></div>
+<a href="#varikondo-find-the-spark-joy-in-your-variants" class="anchor"></a>varikondo: Find the spark joy in your variants!</h1></div>
 <p>Bioinformatics can be very overwhelming at times, with all its different file formats, fields specifications and many ways of storing the same things! That’s how the <code>varikondo</code> package came to life. It was developed by the need to <strong>re-organise</strong>, <strong>standardise</strong> and <strong>combine</strong> variant calling outputs from several callers.</p>
 </div>
 <div id="install" class="section level1">
@@ -98,6 +101,10 @@
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(devtools)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"annaquaglieri16/varikondo"</span>)</a>
 <a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(varikondo)</a></code></pre></div>
+</div>
+<div id="main-functionalities" class="section level1">
+<h1 class="hasAnchor">
+<a href="#main-functionalities" class="anchor"></a>Main functionalities</h1>
 <div id="import-variants-from-several-callers" class="section level2">
 <h2 class="hasAnchor">
 <a href="#import-variants-from-several-callers" class="anchor"></a>Import variants from several callers</h2>

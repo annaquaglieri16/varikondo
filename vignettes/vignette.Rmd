@@ -6,7 +6,7 @@ output:
   rmarkdown::html_vignette:
     fig_caption: yes
     toc_float: true
-bibliography: ../biblio.bib
+bibliography: ../inst/biblio.bib
 vignette: >
   %\VignetteIndexEntry{Introduction to varikondo}
   %\VignetteEngine{knitr::rmarkdown}
@@ -180,3 +180,4 @@ import_sf <- varikondo::import_goi_superfreq(superFreq_R_path = superFreq_R_path
 ```
 
 
+# Bibliography

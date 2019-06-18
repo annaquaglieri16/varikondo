@@ -93,6 +93,9 @@
       <a href="../articles/standardise-variant-fields.html">Standardise VCF fields across callers</a>
     </li>
     <li>
+      <a href="../articles/how-variants-are-stored.html">How different types of variants are stored</a>
+    </li>
+    <li>
       <a href="../articles/rna-seq-pipe.html">Example - Variant calling in RNA-Seq</a>
     </li>
   </ul>
@@ -157,6 +160,10 @@
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>data frame with standardised fields containing all the variants in the input VCF.</p>
+    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Freebayes can report more than one alternative allele in output. This means that there will be depths and quality information for every alternative allele. Currently, `parse_vcf_output` uses the `VariantAnnotation` package to read `VCF` fields into `R` but, if multiple entries are reported in one field (alt allele, quality, depth etc..), it only reports the first of them. This should be fixed soon within the `VariantAnnotation` package but in the meantime `parse_vcf_output` parses these fields separately and adds them to the final output. Since, not many variants have a second or thirs alternative allele, the `qual` column reported by `parse_vcf_output` is the sum of the reference base qualities and the first (most common) alternative base qualities divided by the sum of reference and alternative depth for the first allele. The same applies for the variant allele frequency (VAF).</p>
@@ -180,6 +187,8 @@
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
+      <li><a href="#value">Value</a></li>
+
       <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>

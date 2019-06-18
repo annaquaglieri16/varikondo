@@ -93,6 +93,9 @@
       <a href="../articles/standardise-variant-fields.html">Standardise VCF fields across callers</a>
     </li>
     <li>
+      <a href="../articles/how-variants-are-stored.html">How different types of variants are stored</a>
+    </li>
+    <li>
       <a href="../articles/rna-seq-pipe.html">Example - Variant calling in RNA-Seq</a>
     </li>
   </ul>
@@ -174,10 +177,13 @@
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>This function will keep only the variants for `patientID` found on `studyGenes` and with a `minQual`. If a sample has no variants, then only clinical information will be returned with default values for the variant information. If some variants are found at some time points but not at others, missing points will be populated with default (0) values for VAF, ref_depth, alt_depth to allow consistency when plotting changes over time.</p>
+    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This function will keep only the variants for `patientID` found on `studyGenes` and with a `minQual`. If a sample has no variants, then only clinical information will be returned with default values for the variant information.
-More details about the `variants` input:</p>
+    <p>More details about the `variants` input:</p>
 <p>- The `Time` column can be defined in any way and it should reflect the time of sample collection. For example it could be defined as Time0, Time1, Time2 etc...</p>
 <p>- If the column `IMPACT` is not found it will be filled with NAs and no variants will be filtered. Otherwise, values of the columns are checked and if they are within the expected values (HIGH, MODERATE, LOW or MODIFIER) only variants with `keep_impact` entries are kept. If a mutation appears twice with different `IMPACT` values only the most damaging will be kept.</p>
 <p>The variants are then merged with the clinical information of `patientID`. This step is needed so that if no variants are returned for one time point for one `patientID`, default entries for Variant Allele Frequency (VAF), reference and alterative depths will be created. The default value is 0 for all of the above. A variant is reported for a patient only if at any time point its VAF &gt;= min_VAF and the total depth is &gt;= 10.</p>
@@ -220,6 +226,8 @@ More details about the `variants` input:</p>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
+      <li><a href="#value">Value</a></li>
+
       <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>
