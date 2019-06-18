@@ -72,7 +72,7 @@ storyToLabel <- function(stories, variants, genome, maxLength = 30, mergeCNAs = 
       any(isSNP)) {
     cosmicMx = sapply(variants$variants, function(q) {
       if (!("isCosmicCensus" %in% names(q)))
-        return(rep(F, sum(isSNP)))
+        return(rep(FALSE, sum(isSNP)))
       return(q[call[isSNP], ]$isCosmicCensus & q[call[isSNP],
                                                  ]$severity < 11)
     })
@@ -81,7 +81,7 @@ storyToLabel <- function(stories, variants, genome, maxLength = 30, mergeCNAs = 
     isCensus = apply(cosmicMx, 1, any)
     clinvarMx = sapply(variants$variants, function(q) {
       if (!("ClinVar_ClinicalSignificance" %in% names(q)))
-        return(rep(F, sum(isSNP)))
+        return(rep(FALSE, sum(isSNP)))
       isPathogenic = grepl("[pP]athogenic$", paste0(q[call[isSNP],
                                                       ]$ClinVar_ClinicalSignificance)) | grepl("[pP]athogenic,",
                                                                                                paste0(q[call[isSNP], ]$ClinVar_ClinicalSignificance))

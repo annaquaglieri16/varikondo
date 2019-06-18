@@ -157,7 +157,7 @@ import_goi_superfreq <- function(superFreq_R_path,
   if(!is.null(SNVoI) | !is.null(CNAoI)){
 
     MoI = rbind(SNVoI, CNAoI)
-    labels = storyToLabel(MoI, stories$variants, genome=ref_genome, mergeCNAs=FALSE)[as.character(seq(along.with=MoI$x1)),]
+    labels = storyToLabel(MoI, stories$variants, genome=ref_genome, mergeCNAs = FALSE)[as.character(seq(along.with=MoI$x1)),]
     MoI$label = labels$label
     MoI$severity = labels$severity
     MoI$chr = xToChr(MoI$x1, genome=ref_genome)
