@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>General import for patient's variants — import_any • varikondo</title>
+<title>Combine and joint filter variants within a patient — combine_and_filter • varikondo</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -31,7 +31,7 @@
 
 
 
-<meta property="og:title" content="General import for patient's variants — import_any" />
+<meta property="og:title" content="Combine and joint filter variants within a patient — combine_and_filter" />
 
 <meta property="og:description" content="This function will take as input a data frame of variants with specific column information and return a filtered set with sample's clinical infrmation and default variants information also for samples without variants." />
 <meta name="twitter:card" content="summary" />
@@ -64,7 +64,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">varikondo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.8</span>
       </span>
     </div>
 
@@ -121,9 +121,9 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>General import for patient's variants</h1>
-    <small class="dont-index">Source: <a href='https://github.com/annaquaglieri16/varikondo/blob/master/R/import_any.R'><code>R/import_any.R</code></a></small>
-    <div class="hidden name"><code>import_any.Rd</code></div>
+    <h1>Combine and joint filter variants within a patient</h1>
+    <small class="dont-index">Source: <a href='https://github.com/annaquaglieri16/varikondo/blob/master/R/combine_and_filter.R'><code>R/combine_and_filter.R</code></a></small>
+    <div class="hidden name"><code>combine_and_filter.Rd</code></div>
     </div>
 
     <div class="ref-description">
@@ -132,9 +132,10 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>import_any</span>(<span class='kw'>variants</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>patientID</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>studyGenes</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>minQual</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>clinicalData</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>min_vaf</span> <span class='kw'>=</span> <span class='fl'>0.15</span>, <span class='kw'>min_alt</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-  <span class='kw'>keep_impact</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"HIGH"</span>, <span class='st'>"MODERATE"</span>), <span class='kw'>variant_type</span> <span class='kw'>=</span> <span class='st'>"indels-vardict"</span>)</pre>
+    <pre class="usage"><span class='fu'>combine_and_filter</span>(<span class='kw'>variants</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>patientID</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>studyGenes</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>minQual</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>clinicalData</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>min_vaf</span> <span class='kw'>=</span> <span class='fl'>0.15</span>, <span class='kw'>min_alt</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>keep_impact</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"HIGH"</span>, <span class='st'>"MODERATE"</span>),
+  <span class='kw'>variant_type</span> <span class='kw'>=</span> <span class='st'>"indels-vardict"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -215,11 +216,11 @@
                           <span class='kw'>Sex</span> <span class='kw'>=</span> <span class='st'>"F"</span>,
                            <span class='kw'>BlastPerc</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>80</span>,<span class='fl'>5</span>,<span class='fl'>7</span>,<span class='fl'>40</span>))
 
-<span class='no'>import_indels</span> <span class='kw'>&lt;-</span> <span class='fu'>import_any</span>(<span class='kw'>variants</span> <span class='kw'>=</span> <span class='no'>indels</span>,
+<span class='no'>import_indels</span> <span class='kw'>&lt;-</span> <span class='fu'>combine_and_filter</span>(<span class='kw'>variants</span> <span class='kw'>=</span> <span class='no'>indels</span>,
                             <span class='kw'>patientID</span> <span class='kw'>=</span> <span class='st'>"D1"</span>,
                             <span class='kw'>studyGenes</span> <span class='kw'>=</span> <span class='st'>"BCL2"</span>,
                             <span class='kw'>minQual</span> <span class='kw'>=</span> <span class='fl'>20</span>,
-                            <span class='kw'>clinicalData</span> <span class='kw'>=</span> <span class='no'>clinicalData</span>)</div><div class='output co'>#&gt; IMPACT is missing and will be filled with NAs.</div></pre>
+                            <span class='kw'>clinicalData</span> <span class='kw'>=</span> <span class='no'>clinicalData</span>)</div><div class='output co'>#&gt; IMPACT is missing and will be filled with NAs.</div><div class='output co'>#&gt; <span class='error'>Error: Can't find column `variant_type` in `.data`.</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

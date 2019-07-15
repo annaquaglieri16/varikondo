@@ -4,14 +4,14 @@
 \alias{import_goi_superfreq}
 \title{Extract SNVs, CNVs and clones on genes of interest from superFreq output}
 \usage{
-import_goi_superfreq(superFreq_R_path, superFreq_meta_path,
+import_goi_superfreq(superFreq_R_path = "", superFreq_meta_path = "",
   studyGenes = NULL, patientID = "D1", ref_genome = "hg38",
   min_vaf = 0.15, min_alt = 2, sev = 12)
 }
 \arguments{
 \item{superFreq_R_path}{Path to superFreq R folder.}
 
-\item{superFreq_meta_path}{Path to superFreq run cohort metadata (file ending with .tsv). If the sample names in the NAME field of the metadata file start with a number, you need to add an "X" before the name with paste0() since this is done by default by superFReq.}
+\item{superFreq_meta_path}{Path to superFreq run cohort metadata saved in tab delimited file. See https://github.com/ChristofferFlensburg/superFreq for examples.}
 
 \item{studyGenes}{character vector containing genes of interest. If none provided all genes will be used.}
 

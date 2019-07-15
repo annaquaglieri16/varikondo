@@ -5,7 +5,7 @@
 \title{Parse a VCF file and return a data frame with standardised fields across callers}
 \usage{
 parse_vcf_output(vcf_path, sample_name = basename(vcf_path), caller,
-  vep = TRUE, param = VariantAnnotation::ScanVcfParam())
+  vep = FALSE, param = VariantAnnotation::ScanVcfParam())
 }
 \arguments{
 \item{vcf_path}{path to where the `.vcf` file for one sample is saved.}

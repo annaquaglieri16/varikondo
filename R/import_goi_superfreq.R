@@ -1,7 +1,7 @@
 #' Extract SNVs, CNVs and clones on genes of interest from superFreq output
 #'
 #' @param superFreq_R_path Path to superFreq R folder.
-#' @param superFreq_meta_path Path to superFreq run cohort metadata (file ending with .tsv). If the sample names in the NAME field of the metadata file start with a number, you need to add an "X" before the name with paste0() since this is done by default by superFReq.
+#' @param superFreq_meta_path Path to superFreq run cohort metadata saved in tab delimited file. See https://github.com/ChristofferFlensburg/superFreq for examples.
 #' @param studyGenes character vector containing genes of interest. If none provided all genes will be used.
 #' @param patientID a character vector specifying the patient/s id/s for which variants have to be imported.
 #' @param ref_genome character vector for the reference genome used in the analysis ('hg38' or 'hg19')
@@ -12,34 +12,12 @@
 #' @return a data frame that stores CNAs, SNVs and clones called by `superFreq` https://github.com/ChristofferFlensburg/superFreq on a set of `studyGenes` for `patientID`. CNAs, SNVs and clones are stored as explained in https://annaquaglieri16.github.io/varikondo/articles/how-variants-are-stored.html.
 #' @export
 
-# genes0 <- read.csv("/Volumes/AML_RNA/venetoclax_trial/Recurrent-AML-genes-across-studies.csv")
-# genes_cbf <- c(as.character(genes0$Symbol[genes0$CBF_AML | genes0$Myeloid_panel],c("MN1","MCL1")))
-# superFreq_R_path <- "/Volumes/AML_RNA/cbf_aml_agrf/superFreq/R_full_cohort"
-# patientID <- "PMC02CAI"
-# min_vaf <- 0.05
-# superFreq_meta_path <- file.path("/Volumes/AML_RNA/cbf_aml_agrf/superFreq/runFullCohort/metadata_varscan.tsv")
-# ref_genome = "hg38"
-# sev = 12
-# min_alt = 3
-
-#
-# genes0 <- read.csv("../../../venetoclax_trial/Recurrent-AML-genes-across-studies.csv")
-# studyGenes <- "KIT"
-# superFreq_R_path = "../../../cbf_aml_agrf/superFreq/R_full_cohort/"
-# superFreq_meta_path = "../../../cbf_aml_agrf/superFreq/runFullCohort/metadata_varscan.tsv"
-# patients <- unique(meta$INDIVIDUAL)
-# table(meta$TIMEPOINT)
-# patientID <- "RMH07PW"
-# ref_genome = "hg38"
-# min_vaf = 0.15
-
-
 #' @import dplyr
 #' @importFrom readr read_delim
 #' @import tidyr
 
-import_goi_superfreq <- function(superFreq_R_path,
-                                 superFreq_meta_path,
+import_goi_superfreq <- function(superFreq_R_path = "",
+                                 superFreq_meta_path = "",
                                  studyGenes = NULL,
                                  patientID = "D1",
                                  ref_genome = "hg38",
@@ -57,9 +35,15 @@ import_goi_superfreq <- function(superFreq_R_path,
 
   cat(patientID, '...', sep='')
 
-  # Check existence
+  # Check existence of superFreq_meta_path
   if ( !file.exists(superFreq_meta_path) ){
     warning(paste0("'superFreq_R_meta' does not exist"))
+    return(data.frame())
+  }
+
+  # Check that we can read superFreq_meta_path
+  if( class( try( readr::read_delim(superFreq_meta_path,delim = "\t"))) %in% "try-error"){
+    warning(paste0("'superFreq_R_meta' has to be a valid tab delimited file."))
     return(data.frame())
   }
 
@@ -76,6 +60,8 @@ import_goi_superfreq <- function(superFreq_R_path,
   # Load files if they exist
   load(storyFiles) # should load a `stories` object
   load(clusterFiles)
+
+  # Read metadata. It has to be a tab delimited file
   metadata <- readr::read_delim(superFreq_meta_path,delim = "\t",progress = FALSE) %>%
     dplyr::mutate(NAME = make.names(NAME))
 
@@ -83,11 +69,11 @@ import_goi_superfreq <- function(superFreq_R_path,
   # This list contains one data frame per sample - contains all the variants/somatic/germline/noise called in the VCF
   qs = stories$variants$variants
   # This data frame contains both somatic mutation (SNVs,CN) tracked
-  allS = stories$stories[[1]]$all  # q for chris - do I need this [[1]] ?
+  allS = stories$stories[[1]]$all
 
-  #
-  #all_long <- allS %>% gather(key = SampleName,value = VAF,colnames(allS$stories))
-  #a = do.call(rbind, lapply(colnames(allS$stories), function(sample) data.frame(allS[,1:3], allS$stories[,sample], 'SampleName'=sample)))
+  # To add stories
+  # all_long <- allS %>% gather(key = SampleName,value = VAF,colnames(allS$stories))
+  # a = do.call(rbind, lapply(colnames(allS$stories), function(sample) data.frame(allS[,1:3], allS$stories[,sample], 'SampleName'=sample)))
 
   # samples available for this patientID
   samples = names(qs)

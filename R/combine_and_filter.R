@@ -1,4 +1,4 @@
-#' General import for patient's variants
+#' Combine and joint filter variants within a patient
 #'
 #' @param variants a data frame where every row is a variant for one sample at a specific time point. The variants can derive from any caller but the input should be standardised to have the following columns: 'SampleName','PID','Time','chrom', 'pos', 'alt', 'ref', 'ref_depth','alt_depth' and (gene) 'SYMBOL' (see more information in Details). The columns `Consequence` and `IMPACT` (as annotated by Variant Effect Predictor (VEP) https://asia.ensembl.org/info/genome/variation/prediction/predicted_data.html) are filled with default values if not found. If VEP `Consequence` is not available it could populated with any other informations like exon number, INDEL/SNV label etc...  to add details to each mutations (useful for plotting purposes). The `SampleName` columns is unique for every sequencing sample while `PID` for every patient.
 #' @param patientID a character vector specifying the patient/s id/s for which variants have to be imported.
@@ -51,7 +51,7 @@
 #'                           Sex = "F",
 #'                            BlastPerc = c(80,5,7,40))
 #'
-#' import_indels <- import_any(variants = indels,
+#' import_indels <- combine_and_filter(variants = indels,
 #'                             patientID = "D1",
 #'                             studyGenes = "BCL2",
 #'                             minQual = 20,
@@ -64,7 +64,7 @@
 #' @import tidyr
 
 
-import_any <- function(variants = NULL,
+combine_and_filter <- function(variants = NULL,
                       patientID = NULL,
                       studyGenes = NULL,
                       minQual=20,
@@ -238,7 +238,7 @@ import_any <- function(variants = NULL,
   # was actually still present but was partially reduced at some stages.
 
   # 1. Define all the unique indels found for patientID
-  unique_var <- unique(var[,c("chrom","pos","ref","alt","Location","mutation_det","mutation_key","SYMBOL","Consequence")])
+  unique_var <- unique(var[,c("chrom","pos","ref","alt","Location","mutation_det","mutation_key","SYMBOL","Consequence","variant_type")])
 
   # 2. Create all the possible combinations between variants found and clinical samples
   clinical_var_empty <- merge(clinicalData, unique_var, all=TRUE)

@@ -69,7 +69,8 @@ import_clinical = function(clinicalData = NA, patientID = NA,
   plot_matrix <- plot_matrix %>%
     dplyr::mutate(mutation_key = extract_column) %>%
     dplyr::mutate(mutation_det = extract_column) %>%
-    dplyr::mutate(variant_type = extract_column)
+    dplyr::mutate(variant_type = extract_column,
+                  SYMBOL = extract_column)
 
 
   return(plot_matrix)

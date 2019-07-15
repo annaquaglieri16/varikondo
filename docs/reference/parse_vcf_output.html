@@ -64,7 +64,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">varikondo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.8</span>
       </span>
     </div>
 
@@ -133,7 +133,7 @@
     </div>
 
     <pre class="usage"><span class='fu'>parse_vcf_output</span>(<span class='no'>vcf_path</span>, <span class='kw'>sample_name</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/basename'>basename</a></span>(<span class='no'>vcf_path</span>), <span class='no'>caller</span>,
-  <span class='kw'>vep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>param</span> <span class='kw'>=</span> <span class='kw pkg'>VariantAnnotation</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/VariantAnnotation/topics/ScanVcfParam-class'>ScanVcfParam</a></span>())</pre>
+  <span class='kw'>vep</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>param</span> <span class='kw'>=</span> <span class='kw pkg'>VariantAnnotation</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/VariantAnnotation/topics/ScanVcfParam-class'>ScanVcfParam</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -180,7 +180,7 @@
 <span class='no'>parsed_vcf_freebayes</span> <span class='kw'>&lt;-</span> <span class='fu'>parse_vcf_output</span>(<span class='no'>vcf_path</span>,
 <span class='kw'>caller</span> <span class='kw'>=</span> <span class='st'>"freebayes"</span>,
 <span class='kw'>sample_name</span> <span class='kw'>=</span> <span class='st'>"Sample1"</span>,
-<span class='kw'>vep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div></pre>
+<span class='kw'>vep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>caller should be one of: freeabyes, vardict, mutect, varscan</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

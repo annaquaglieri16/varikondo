@@ -1,0 +1,13 @@
+SampleName,PID,Time,chrom,pos,ref,alt,Location,mutation_det,mutation_key,SYMBOL,Consequence,variant_type,Blast,Outcome,ref_depth,VAF,alt_depth,IMPACT,qual,tot_depth,IMPACT_rank
+P1.Cyc1,P1,Cyc1,chr1,20,A,ACGTCG,chr1_20,Gene2 Nonsyn,chr1-20-A-ACGTCG,Gene2,Nonsyn,INDEL,0.1,Relapse,12,0.29411764705882354,5,NA,0,17,1
+P1.Cyc2,P1,Cyc2,chr1,10,A,ACT,chr1_10,Gene1 Nonsyn,chr1-10-A-ACT,Gene1,Nonsyn,INDEL,0.5,Relapse,13,0.3157894736842105,6,NA,0,19,1
+P1.Cyc2,P1,Cyc2,chr1,20,A,ACGTCG,chr1_20,Gene2 Nonsyn,chr1-20-A-ACGTCG,Gene2,Nonsyn,INDEL,0.5,Relapse,14,0.3333333333333333,7,NA,0,21,1
+P1.Screen,P1,Screen,chr1,10,A,ACT,chr1_10,Gene1 Nonsyn,chr1-10-A-ACT,Gene1,Nonsyn,INDEL,0.78,Relapse,12,0.3684210526315789,7,NA,0,19,1
+P1.Screen,P1,Screen,chr1,20,A,ACGTCG,chr1_20,Gene2 Nonsyn,chr1-20-A-ACGTCG,Gene2,Nonsyn,INDEL,0.78,Relapse,11,0.26666666666666666,4,NA,0,15,1
+P1.Cyc1,P1,Cyc1,chr1,10,A,ACT,chr1_10,Gene1 Nonsyn,chr1-10-A-ACT,Gene1,Nonsyn,INDEL,0.1,Relapse,9,0.3076923076923077,4,NA,0,13,1
+P1.Rem,P1,Rem,chr1,10,A,ACT,chr1_10,Gene1 Nonsyn,chr1-10-A-ACT,Gene1,Nonsyn,INDEL,0.05,Relapse,0,0,0,NA,NA,0,NA
+P1.Rem,P1,Rem,chr1,20,A,ACGTCG,chr1_20,Gene2 Nonsyn,chr1-20-A-ACGTCG,Gene2,Nonsyn,INDEL,0.05,Relapse,0,0,0,NA,NA,0,NA
+P1.Screen,P1,Screen,NA,NA,NA,NA,NA,Blast,Blast,Blast,NA,Blast,NA,NA,NA,0.78,NA,NA,NA,NA,NA
+P1.Rem,P1,Rem,NA,NA,NA,NA,NA,Blast,Blast,Blast,NA,Blast,NA,NA,NA,0.05,NA,NA,NA,NA,NA
+P1.Cyc1,P1,Cyc1,NA,NA,NA,NA,NA,Blast,Blast,Blast,NA,Blast,NA,NA,NA,0.1,NA,NA,NA,NA,NA
+P1.Cyc2,P1,Cyc2,NA,NA,NA,NA,NA,Blast,Blast,Blast,NA,Blast,NA,NA,NA,0.5,NA,NA,NA,NA,NA

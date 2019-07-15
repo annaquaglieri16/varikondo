@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">varikondo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.8</span>
       </span>
     </div>
 
@@ -93,7 +93,7 @@
 <div id="varikondo-find-the-spark-joy-in-your-variants" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#varikondo-find-the-spark-joy-in-your-variants" class="anchor"></a>varikondo: Find the spark joy in your variants!</h1></div>
-<p>Bioinformatics can be very overwhelming at times, with all its different file formats, fields specifications and many ways of storing the same things! That’s how the <code>varikondo</code> package came to life. It was developed by the need to <strong>re-organise</strong>, <strong>standardise</strong> and <strong>combine</strong> variant calling outputs from several callers.</p>
+<p>Bioinformatics can be very overwhelming at times, with all its different file formats, fields specifications and many ways of storing the same information! That’s how the <code>varikondo</code> package came to life. It was developed by the need to <strong>standardise</strong> and <strong>combine</strong> variant calling outputs from several callers as well as to allow an easy way to join filtering variants called from multiple samples within a patient.</p>
 </div>
 <div id="install" class="section level1">
 <h1 class="hasAnchor">
@@ -108,7 +108,7 @@
 <div id="import-variants-from-several-callers" class="section level2">
 <h2 class="hasAnchor">
 <a href="#import-variants-from-several-callers" class="anchor"></a>Import variants from several callers</h2>
-<p>Variants from different callers can be imported in R and parsed into a data frame with standardised fields. See <a href="https://annaquaglieri16.github.io/varikondo/articles/standardise-variant-fields.html">how fields are standardaised</a> to know more about which fields from each callers are parsed. The functions which achieve this are:</p>
+<p>Variants from different callers can be imported in R and parsed into a data frame with standardised fields. See <a href="https://annaquaglieri16.github.io/varikondo/articles/standardise-variant-fields.html">how fields are standardaised</a> to know more about which fields from each callers are parsed. The import functions are:</p>
 <ul>
 <li>
 <code><a href="reference/import_goi_superfreq.html">import_goi_superfreq()</a></code>: to import variants found on genes of interest called by <a href="https://github.com/ChristofferFlensburg/superFreq">superFreq</a>, a caller that allows clonal tracking of cancer sequencing data. Figure 1 sketches how the function works.</li>
@@ -129,11 +129,11 @@ Figure 1. Overview of the functionality to import and organise superFreq outputs
 <a href="#combine-variant-calls-from-different-samples-within-the-same-patient" class="anchor"></a>Combine variant calls from different samples within the same patient</h2>
 <ul>
 <li>
-<code><a href="reference/import_any.html">import_any()</a></code> combines and filters the variant calls (already imported into <code>R</code>) from several samples collected for the same patient. This functions attempts to mimic in a very simplistic way what is performed within <a href="https://github.com/ChristofferFlensburg/superFreq">superFreq</a>. Instead of filtering each variant callset separately for each sample, variants are filtered jointly by patient. This means that if a variant reaches minimal quality threshold at any time point, then it will be kept for all other time points. If a variant is not detected in some samples it will be filled with default values, e.g. <code>zero</code> variant allele frequency. This allows to have complete information for a variant across time for one patient and to plot and evaluate the shift in VAF or depth over time.</li>
+<code><a href="reference/combine_and_filter.html">combine_and_filter()</a></code> combines and filters the variant calls (already imported into <code>R</code>) from several samples collected for the same patient. This functions attempts to mimic in a very simplistic way what is performed within <a href="https://github.com/ChristofferFlensburg/superFreq">superFreq</a>. Instead of filtering each variant callset separately for each sample, variants are filtered jointly by patient. This means that if a variant reaches minimal quality threshold at any time point, then it will be kept for all other time points. If a variant is not detected in some samples it will be filled with default values, e.g. <code>zero</code> variant allele frequency. This allows to have complete information for a variant across time for one patient and to plot and evaluate the shift in VAF or depth over time.</li>
 </ul>
-<p>Below is a graphic overview of how the output of <code><a href="reference/parse_vcf_output.html">parse_vcf_output()</a></code> and <code><a href="reference/import_any.html">import_any()</a></code> interact. The example is based on files for one patient but the same can be extended to any patient.</p>
+<p>Below is a graphic overview of how the output of <code><a href="reference/parse_vcf_output.html">parse_vcf_output()</a></code> and <code><a href="reference/combine_and_filter.html">combine_and_filter()</a></code> interact. The example is based on files for one patient but the same can be extended to any patient.</p>
 <div class="figure">
-<img src="reference/figures/import-any.png" alt="Figure 2. Overview of the functionality to import and organise your VCF files." width="624"><p class="caption">
+<img src="reference/figures/import-any.png" alt="Figure 2. Overview of the functionality to import and organise your VCF files." width="548"><p class="caption">
 Figure 2. Overview of the functionality to import and organise your VCF files.
 </p>
 </div>

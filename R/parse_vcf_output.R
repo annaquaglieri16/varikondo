@@ -26,10 +26,8 @@
 #' sample_name = "Sample1",
 #' vep = TRUE)
 
-#' @importFrom VariantAnnotation readVcf
-#' @importFrom VariantAnnotation geno
-#' @importFrom VariantAnnotation filt
-#' @importFrom IRanges ranges
+#' @import VariantAnnotation
+#' @import IRanges
 #' @import dplyr
 #' @import stringr
 #' @importFrom data.table fread
@@ -42,6 +40,12 @@ parse_vcf_output <- function(vcf_path,
                              caller,
                              vep = FALSE,
                              param = VariantAnnotation::ScanVcfParam()) {
+
+
+  if( !(caller %in% c("freeabyes","vardict","mutect","varscan") )) {
+    message("caller should be one of: freeabyes, vardict, mutect, varscan")
+    return(NULL)
+  }
 
   # The VCF file needs to be tabixed
   if(!str_detect(pattern = ".bgz$|.gz$", string = vcf_path)){
@@ -58,10 +62,15 @@ parse_vcf_output <- function(vcf_path,
   # Read VCF in
   vcf <- VariantAnnotation::readVcf(vcf_path, param = param)
 
+  if( nrow(vcf) == 0 ){
+    message(paste0("No variants available for ",sample_name))
+    return(NULL)
+  }
+
   # Check if is comes from somatic calls
   if(ncol(VariantAnnotation::geno(vcf)$GT) > 1){
 
-    stop("parse_vcf_output wasn't implemented for somatic calls")
+    stop("parse_vcf_output() is implemented for one sample calls")
 
   } else {
 
@@ -164,13 +173,9 @@ parse_vcf_output <- function(vcf_path,
                            REFBIAS = VariantAnnotation::info(vcf)$REFBIAS,
                            VARBIAS = VariantAnnotation::info(vcf)$VARBIAS) %>%
 
-        tidyr::separate(names,into=c("Location","alleles"),sep="_") %>%
-        tidyr::separate(Location,into=c("chrom","pos"),sep=":",remove=FALSE) %>%
-        tidyr::separate(alleles,into=c("ref","alt"),sep="/") %>%
-
-        dplyr::mutate(chrom = str_extract(string = names, pattern = "^.*?(?=:)"),
+        dplyr::mutate(chrom = str_extract(string = as.character(names), pattern = "^.*?(?=:)"),
                       pos = as.numeric(as.character(str_extract(string = names, pattern = "(?<=:)[0-9]+"))),
-                      alleles = str_remove(string = names, pattern = paste0(chrom,":",pos,"_")),
+                      alleles = str_remove(string = as.character(names), pattern = paste0(chrom,":",pos,"_")),
                       caller = caller) %>%
 
         tidyr::separate(alleles,into=c("ref","alt"),sep="/") %>%

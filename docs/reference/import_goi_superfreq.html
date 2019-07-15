@@ -64,7 +64,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">varikondo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.8</span>
       </span>
     </div>
 
@@ -132,7 +132,7 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>import_goi_superfreq</span>(<span class='no'>superFreq_R_path</span>, <span class='no'>superFreq_meta_path</span>,
+    <pre class="usage"><span class='fu'>import_goi_superfreq</span>(<span class='kw'>superFreq_R_path</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>superFreq_meta_path</span> <span class='kw'>=</span> <span class='st'>""</span>,
   <span class='kw'>studyGenes</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>patientID</span> <span class='kw'>=</span> <span class='st'>"D1"</span>, <span class='kw'>ref_genome</span> <span class='kw'>=</span> <span class='st'>"hg38"</span>,
   <span class='kw'>min_vaf</span> <span class='kw'>=</span> <span class='fl'>0.15</span>, <span class='kw'>min_alt</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>sev</span> <span class='kw'>=</span> <span class='fl'>12</span>)</pre>
     
@@ -145,7 +145,7 @@
     </tr>
     <tr>
       <th>superFreq_meta_path</th>
-      <td><p>Path to superFreq run cohort metadata (file ending with .tsv). If the sample names in the NAME field of the metadata file start with a number, you need to add an "X" before the name with paste0() since this is done by default by superFReq.</p></td>
+      <td><p>Path to superFreq run cohort metadata saved in tab delimited file. See https://github.com/ChristofferFlensburg/superFreq for examples.</p></td>
     </tr>
     <tr>
       <th>studyGenes</th>

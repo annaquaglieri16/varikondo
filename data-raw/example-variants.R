@@ -76,6 +76,7 @@ example_variants <- data.frame(PID = rep(c("P1","P2"),c(6,4)),
          variant_type = case_when(nchar(as.character(alt)) > 1 | nchar(as.character(ref)) > 1 ~ "INDEL",
                                   TRUE ~ "SNV"))
 
+
 # example clinical
 example_metadata <- data.frame(PID = c(rep("P1",3),rep("P2",3)),
                        Time = c("Pre.Treat","After.Treat1","After.Treat2",
